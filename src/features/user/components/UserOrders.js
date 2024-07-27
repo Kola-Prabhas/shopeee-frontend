@@ -4,19 +4,21 @@ import { Link, Navigate } from 'react-router-dom';
 
 
 export default function UserOrders() {
-	const orders = useSelector(selectUserOrders);    
+	const orders = useSelector(selectUserOrders); 
+	
+	console.log('orders ', orders);
 
 	return (
 	  <>
-			{
+			{/* {
 				orders.length === 0 && <Navigate to='/' replace={true}></Navigate>
-			}
+			} */}
 
 			<h1 className="text-4xl my-4 font-bold tracking-tight text-gray-800 text-center">Your Orders</h1>
 			
 
 			{
-				orders.map(order => {
+				orders?.map(order => {
 					return (
 						<div className="mx-auto my-12 max-w-5xl px-4 py-8 sm:px-6 lg:px-8 bg-[#f9f9f9]">
 

@@ -15,9 +15,9 @@ export default function Home() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchUserInfoAsync(user.id));
+		dispatch(fetchUserInfoAsync());
 		dispatch(fetchOrdersByUserIdAsync(user.id));
-		dispatch(fetchItemsByUserIdAsync(user.id));
+		dispatch(fetchItemsByUserIdAsync());
 
 	}, [dispatch, user]);
 

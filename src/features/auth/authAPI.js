@@ -25,7 +25,7 @@ export function createUser(user) {
 	})
 }
 
-export function checkUser(user) {
+export function loginUser(user) {
 	return new Promise(async (resolve, reject) => {
 		const res = await fetch('http://localhost:8000/auth/login', {
 			method: 'POST',
@@ -46,6 +46,23 @@ export function checkUser(user) {
 		}		
 	})
 }
+
+/* export function checkAuth() {
+	return new Promise(async (resolve, reject) => {
+		const res = await fetch('http://localhost:8000/auth/check');
+
+		if (res.ok) {
+			const data = await res.json();
+
+			resolve({ data });
+		} else {
+			const data = await res.json();
+
+			reject({ data });
+		}
+	})
+}
+ */
 
 export function signOut(userId) {
 	return new Promise(async (resolve, reject) => {

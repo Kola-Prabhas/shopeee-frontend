@@ -10,9 +10,9 @@ export  function fetchCount(amount = 1) {
 
 
 
-export function fetchOrdersByUserId(userId) {
+export function fetchOrdersByUserId() {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/orders/'+userId);
+		const res = await fetch('http://localhost:8000/orders/own');
 		const data = await res.json();
 
 		resolve({ data });
@@ -20,9 +20,9 @@ export function fetchOrdersByUserId(userId) {
 }
 
 
-export function fetchUserInfo(userId) {
+export function fetchUserInfo() {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/users/' + userId);
+		const res = await fetch('http://localhost:8000/users/own');
 		const data = await res.json();
 
 		console.log(data);

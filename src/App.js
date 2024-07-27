@@ -30,8 +30,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import AdminProductFormPage from './pages/AdminProductFormPage';
 import AdminEditProductPage from './pages/AdminEditProductPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
-
-
+import StripeCheckout from './pages/StripeCheckout';
 
 
 
@@ -63,6 +62,10 @@ const router = createBrowserRouter([
 	{
 		path: "/checkout",
 		element: <Protected><CheckoutPage /></Protected>,
+	},
+	{
+		path: "/stripe-checkout",
+		element: <Protected><StripeCheckout /></Protected>,
 	},
 	{
 		path: "/product-details/:id",
@@ -109,12 +112,10 @@ const router = createBrowserRouter([
 
 
 function App() {
-	
-
 
   return (
 	  <div className="App">
-		  <RouterProvider router={router} />
+		   <RouterProvider router={router} />
 	  </div>
   );
 }

@@ -53,7 +53,6 @@ export default function ProductDetails() {
 		dispatch(addToCartAsync({
 			...product,
 			quantity: 1,
-			user: user.id
 		}));
 	}
 

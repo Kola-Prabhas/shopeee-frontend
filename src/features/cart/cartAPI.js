@@ -25,9 +25,9 @@ export function addToCart(item) {
 }
 
 
-export function fetchItemsByUserId(id) {
+export function fetchItemsByUserId() {
 	return new Promise(async resolve => {
-		const res = await fetch(`http://localhost:8000/cart?user=${id}`);
+		const res = await fetch(`http://localhost:8000/cart`);
 		const data = await res.json();
 
 		// console.log(data);
@@ -78,8 +78,8 @@ export function deleteItem(itemId) {
 }
 
 
-export async function resetCart(userId) {
-	const res = await fetchItemsByUserId(userId);
+export async function resetCart() {
+	const res = await fetchItemsByUserId();
 	const items = await res.data;
 
 	for (let item of items) {

@@ -21,7 +21,7 @@ export function createOrder(order) {
 		const data = await res.json();
 
 
-		const response = await fetch('http://localhost: 8000/users/' + order.user, {
+		const response = await fetch('http://localhost:8000/users/' + order.user, {
 			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json',

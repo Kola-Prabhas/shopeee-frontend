@@ -1,7 +1,7 @@
 import { Link, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { checkUserAsync, selectLoginError, selectUser } from "../authSlice";
+import { loginUserAsync, selectLoginError, selectUser } from "../authSlice";
 
 
 const initialLoginDetails = {
@@ -25,13 +25,16 @@ export default function Login() {
 		const loggedInUser = JSON.parse(sessionStorage.getItem('user'));
 
 		if (loggedInUser) {
-			dispatch(checkUserAsync(loggedInUser));
+			dispatch(loginUserAsync(loggedInUser));
 		}
 
 		if (user) {
 			sessionStorage.setItem('user', JSON.stringify(user));
 		}
 	})
+
+
+	console.log('user in login ', user);
 
 
 
@@ -63,7 +66,7 @@ export default function Login() {
 	function handleSubmit(e) {
 		e.preventDefault();
 
-		dispatch(checkUserAsync(loginDetails));
+		dispatch(loginUserAsync(loginDetails));
 
 		setLoginDetails(initialLoginDetails);
 	}

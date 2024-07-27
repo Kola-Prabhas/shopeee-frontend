@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { selectUserInfo } from '../user/userSlice';
 
 
-const userInfo = {
+const user = {
 	name: 'Tom Cook',
 	email: 'tom@example.com',
 	imageUrl:
@@ -33,10 +33,10 @@ function classNames(...classes) {
 
 export default function Navbar({ children }) {
 	const items = useSelector(selectItems);
-	const user = useSelector(selectUserInfo);
+	const userInfo = useSelector(selectUserInfo);
 
 	return (
-	 user && <>
+	 userInfo && <>
 		<div className="min-h-full">
 			<Disclosure as="nav" className="bg-gray-800">
 				{({ open }) => (
@@ -55,7 +55,7 @@ export default function Navbar({ children }) {
 										<div className="ml-10 flex items-baseline space-x-4">
 											{
 													navigation.map((item) => {
-														return item[user.role] && (
+														return item[userInfo.role] && (
 															<Link
 																key={item.name}
 																to={item.link}
@@ -97,7 +97,7 @@ export default function Navbar({ children }) {
 												<Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
 													<span className="absolute -inset-1.5" />
 													<span className="sr-only">Open user menu</span>
-													<img className="h-8 w-8 rounded-full" src={userInfo.imageUrl} alt="" />
+													<img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
 												</Menu.Button>
 											</div>
 											<Transition
@@ -170,11 +170,11 @@ export default function Navbar({ children }) {
 								<div className="flex justify-between items-center px-2">
 									<div className='flex items-center px-5'>
 										<div className="flex-shrink-0">
-											<img className="h-10 w-10 rounded-full" src={userInfo.imageUrl} alt="" />
+											<img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
 										</div>
 										<div className="ml-3">
-											<div className="text-base font-medium leading-none text-white">{user.name}</div>
-											<div className="text-sm font-medium leading-none text-gray-400">{user.email}</div>
+											<div className="text-base font-medium leading-none text-white">{userInfo.name}</div>
+											<div className="text-sm font-medium leading-none text-gray-400">{userInfo.email}</div>
 										</div>
 									</div>
 									

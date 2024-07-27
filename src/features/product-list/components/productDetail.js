@@ -55,7 +55,6 @@ export default function ProductDetails() {
 			dispatch(addToCartAsync({
 				product: product.id,
 				quantity: 1,
-				user: user.id
 			}));
 		} else {
 			console.log('Item already added')

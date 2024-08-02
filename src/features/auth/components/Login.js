@@ -12,7 +12,7 @@ const initialLoginDetails = {
 
 export default function Login() {
 	const [loginDetails, setLoginDetails] = useState(initialLoginDetails);
-	const [emailError, setEmailError] = useState(false);
+	const [emailError, setEmailError] = useState(false); // used to check whether the email is valid or not
 
 	const dispatch = useDispatch();
 	const loginError = useSelector(selectLoginError);
@@ -31,11 +31,8 @@ export default function Login() {
 		if (user) {
 			sessionStorage.setItem('user', JSON.stringify(user));
 		}
-	})
-
-
-	console.log('user in login ', user);
-
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 
 	function handleChange(e) {
@@ -58,10 +55,9 @@ export default function Login() {
 			return emailError;
 		}
 
-
 		return e.target.value.match(validEmail) == null;
-
 	}
+
 
 	function handleSubmit(e) {
 		e.preventDefault();
@@ -70,6 +66,8 @@ export default function Login() {
 
 		setLoginDetails(initialLoginDetails);
 	}
+
+	
 
   return (
 	    <>
@@ -88,16 +86,15 @@ export default function Login() {
 				  </h2>
 
 				  <p className="text-red-700  text-xl text-center mt-6">{loginError}</p>
-
 			  </div>
 
 			  <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
 				  <form className="space-y-6" onSubmit={handleSubmit}>
-					  <div>
+					  <div className="space-y-2">
 						  <label htmlFor="email" className="block text-sm text-left font-medium leading-6 text-gray-900">
 							  Email address
 						  </label>
-						  <div className="mt-2">
+						  <div className="space-y-1">
 							  <input
 								  id="email"
 								  name="email"
@@ -107,7 +104,7 @@ export default function Login() {
 								  onChange={handleChange}
 								  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 							  />
-							  <p className="text-red-900 text-sm font-semibold">{emailError && 'Invalid Email Address'}</p>
+							  <p className="text-red-500 italic text-sm font-semibold">{emailError && 'Invalid Email Address'}</p>
 						  </div>
 					  </div>
 
@@ -122,7 +119,7 @@ export default function Login() {
 								  </Link>
 							  </div>
 						  </div>
-						  <div className="mt-2">
+						  <div className="my-2">
 							  <input
 								  id="password"
 								  name="password"

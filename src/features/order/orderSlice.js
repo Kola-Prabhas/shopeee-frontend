@@ -41,14 +41,12 @@ export const orderSlice = createSlice({
 		resetOrder: (state) => {
 			state.currentOrder = null;			
 	    }
-   
-   
     },
  
   extraReducers: (builder) => {
     builder
 		.addCase(createOrderAsync.pending, (state) => {
-		state.status = 'loading';
+		    state.status = 'loading';
 		})
 		.addCase(createOrderAsync.fulfilled, (state, action) => {
 			state.status = 'idle';

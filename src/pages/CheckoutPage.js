@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 import { createOrderAsync, selectCurrentOrder } from '../features/order/orderSlice';
 import { selectUserInfo, updateUserAsync } from '../features/user/userSlice';
 import Navbar from "../features/navbar";
+import { getDiscountprice } from '../../../services/common';
+
 
 
 
@@ -19,19 +21,22 @@ function CheckoutPage() {
 	const user = useSelector(selectUserInfo);
 	const order = useSelector(selectCurrentOrder);
 
+	
+	
 	const {
 		register,
 		handleSubmit,
 		reset,
 	} = useForm();
-
+	
 	const [selectedAddress, setSelectedAddress] = useState(null);
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('cash');
-
-
+	
+	
 	const items = useSelector(selectItems);
 	const totalItems = items.reduce((total, current) => total + current.quantity, 0);
 	const totalPrice = items.reduce((total, current) => total + current.product.price * current.quantity, 0);
+	const totalDiscountPrice = items.reduce((total, current) => total + getDiscountprice(current.product.price * current.quantity, current.product.discountPercentage), 0)
 
 	function handleQuantityChange(e, item) {
 		dispatch(updateItemAsync({
@@ -320,7 +325,10 @@ function CheckoutPage() {
 														<h3>
 															<a href={item.product.href}>{item.product.title}</a>
 														</h3>
-														<p className="ml-4">${item.product.price * item.quantity}</p>
+														<div>
+															<p className="ml-4 line-through text-gray-400">${item.product.price * item.quantity}</p>
+															<p className="ml-4">${getDiscountprice(item.product.price * item.quantity, item.product.discountPercentage)}</p>
+														</div>
 													</div>
 													<p className="mt-1 text-sm text-gray-500">red</p>
 												</div>
@@ -369,7 +377,10 @@ function CheckoutPage() {
 							</div>
 							<div className="flex justify-between mx-2 my-2 text-base font-medium text-gray-900">
 								<p>Subtotal</p>
-								<p>$ {totalPrice}</p>
+								<div>
+									<p className='text-gray-400 line-through'>$ {totalPrice}</p>
+									<p>{totalDiscountPrice}</p>
+								</div>
 							</div>
 							<p className="mt-0.5 mx-2 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 							<div className="mt-6 mx-auto max-w-[400px]">

@@ -25,6 +25,11 @@ function AdminOrders() {
 
 
 	function handleEdit(order) {
+		if (editableOrderId === order.id) {
+			setEditableOrderId(-1);
+			return;
+		}
+
 		setEditableOrderId(order.id);
 	}
 
@@ -172,7 +177,7 @@ function AdminOrders() {
 											</td>
 											<td className="py-3 px-6 text-center">
 												{editableOrderId === order.id ? (
-													<select onChange={(e) => handleUpdate(e, order)}>
+													<select value={order.status}  onChange={(e) => handleUpdate(e, order)}>
 														<option value="pending">Pending</option>
 														<option value="dispatched">Dispatched</option>
 														<option value="delivered">Delivered</option>

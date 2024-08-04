@@ -57,9 +57,10 @@ export default function Cart() {
 												<h3>
 													<a href={item.product.href}>{item.product.title}</a>
 												</h3>
-												<p className="ml-4 line-through text-gray-400">${item.product.price}</p>
-												<p className="ml-4">${getDiscountprice(item.product.price * item.quantity, item.product.discountPercentage)}</p>
-												{/* <p className="ml-4">${item.product.price * item.quantity}</p> */}
+												<div>
+													<p className="ml-4 line-through text-gray-400">${item.product.price * item.quantity}</p>
+													<p className="ml-4">${getDiscountprice(item.product.price * item.quantity, item.product.discountPercentage)}</p>
+												</div>
 											</div>
 											<p className="mt-1 text-sm text-gray-500">red</p>
 										</div>
@@ -107,8 +108,10 @@ export default function Cart() {
 				</div>
 				<div className="flex justify-between mx-2 my-2 text-base font-medium text-gray-900">
 					<p>Subtotal</p>
-					<p>$ {totalPrice}</p>
-					<p className='text-gray-400 line-through'>{totalDiscountPrice}</p>
+					<div>
+						<p className='text-gray-400 line-through'>$ {totalPrice}</p>
+						<p>{totalDiscountPrice}</p>
+					</div>
 				</div>
 				<p className="mt-0.5 mx-2 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 				<Link to='/checkout'>

@@ -24,11 +24,10 @@ export default function Home() {
 	console.log('user in home ', user);
 
 	return (		
-		<div>
+		<>
 			<Navbar>
 				<ProductList />
 			</Navbar>
-
-		</div>		
+		</>		
 	)
 }

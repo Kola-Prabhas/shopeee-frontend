@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { checkAuth, createUser, loginUser, /* updateUser, */ signOut } from './authAPI';
 
 const initialState = {
-	loggedInUserToken: null,
+	loggedInUser: null,
 	loginError: '',
 	signUpError: '',
 	status: 'idle',
@@ -74,7 +74,7 @@ export const authSlice = createSlice({
 		})
 		.addCase(createUserAsync.fulfilled, (state, action) => {
 		state.status = 'idle';
-		state.loggedInUserToken = action.payload;
+		state.loggedInUser = action.payload;
 		})
 		.addCase(createUserAsync.rejected, (state, action) => {
 			state.status = 'idle';
@@ -86,7 +86,7 @@ export const authSlice = createSlice({
 		})
 		.addCase(loginUserAsync.fulfilled, (state, action) => {
 			state.status = 'idle';
-			state.loggedInUserToken = action.payload;
+			state.loggedInUser = action.payload;
 		})
 		.addCase(loginUserAsync.rejected, (state, action) => {
 			state.status = 'idle';
@@ -97,14 +97,14 @@ export const authSlice = createSlice({
 		})
 		.addCase(signOutAsync.fulfilled, (state, action) => {
 			state.status = 'idle';
-			state.loggedInUserToken = null;
+			state.loggedInUser = null;
 		})
 /* 		.addCase(checkAuthAsync.pending, (state) => {
 			state.status = 'loading';
 		})
 		.addCase(checkAuthAsync.fulfilled, (state, action) => {
 			state.status = 'idle';
-			state.loggedInUserToken = action.payload;
+			state.loggedInUser = action.payload;
 			state.userChecked = true;
 		})
 		.addCase(checkAuthAsync.rejected, (state, action) => {
@@ -116,7 +116,7 @@ export const authSlice = createSlice({
 })
 
 
-export const selectUser = (state) => state.auth.loggedInUserToken;
+export const selectUser = (state) => state.auth.loggedInUser;
 export const selectLoginError = (state) => state.auth.loginError.message;
 export const selectSignUpError = (state) => state.auth.signUpError.message;
 export const selectUserChecked = (state) => state.auth.userChecked;

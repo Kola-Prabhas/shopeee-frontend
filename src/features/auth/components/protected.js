@@ -8,7 +8,7 @@ function Protected({ children }) {
 	console.log('user ', user)
 
 	if (!user) {
-		return <Navigate to='/login' replace={true}></Navigate>
+		return <Navigate to='/login' replace={true} />
 	}
 	
 	return children;

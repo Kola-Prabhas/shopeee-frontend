@@ -33,7 +33,7 @@ export const updateUserAsync = createAsyncThunk(
 );
 
 export const userSlice = createSlice({
-  name: 'counter',
+  name: 'user',
   initialState,
   reducers: {
     increment: (state) => {

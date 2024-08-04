@@ -24,6 +24,8 @@ export default function Login() {
 	useEffect(() => {
 		const loggedInUser = JSON.parse(sessionStorage.getItem('user'));
 
+		console.log('loggedInUser ', loggedInUser);
+
 		if (loggedInUser) {
 			dispatch(loginUserAsync(loggedInUser));
 		}
@@ -32,7 +34,7 @@ export default function Login() {
 			sessionStorage.setItem('user', JSON.stringify(user));
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	})
 
 
 	function handleChange(e) {

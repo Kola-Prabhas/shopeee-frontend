@@ -9,7 +9,9 @@ import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, StarI
 import { fetchBrandsAsync, fetchCategoriesAsync, fetchProductsByFilterAsync, selectAllProducts, selectBrands, selectCategories, selectTotalItems } from '../productSlice';
 
 import { ITEMS_PER_PAGE } from '../../../app/constants';
-import  Pagination from '../../components/Pagination';
+import Pagination from '../../components/Pagination';
+
+import { getDiscountprice } from '../../../services/common';
 
 
 
@@ -27,6 +29,8 @@ export default function ProductList() {
 	const totalItems = useSelector(selectTotalItems);
 	const categories = useSelector(selectCategories);
 	const brands = useSelector(selectBrands);
+
+	console.log('products ', products);
 
 	const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 	const [filter, setFilter] = useState({
@@ -86,7 +90,7 @@ export default function ProductList() {
 
 	useEffect(() => {
 		const pagination = { _page: page, _per_page: ITEMS_PER_PAGE };
-		dispatch(fetchProductsByFilterAsync({ filter, pagination, sortOptions:sort }));
+		dispatch(fetchProductsByFilterAsync({ filter, pagination, sort }));
 
 	}, [dispatch, filter, sort, page]);
 
@@ -108,7 +112,7 @@ export default function ProductList() {
 				<div className="bg-white border border-red-800">
 					<div>
 						{/* Mobile filter dialog */}
-						<MobileFilter mobileFiltersOpen={mobileFiltersOpen} setMobileFiltersOpen={setMobileFiltersOpen} handleFilter={handleFilter} filters={filters} />						
+						<MobileFilter mobileFiltersOpen={mobileFiltersOpen} setMobileFiltersOpen={setMobileFiltersOpen} filter={filter} handleFilter={handleFilter} filters={filters} />						
 
 						<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 							<div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
@@ -178,7 +182,7 @@ export default function ProductList() {
 							<section aria-labelledby="products-heading" className="pb-24 pt-6">
 								<div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
 									{/* Desktop Filters */}
-									<DesktopFilter handleFilter={handleFilter} filters={filters} />
+									<DesktopFilter filter={filter} handleFilter={handleFilter} filters={filters}/>
 									
 
 									{/* Product grid */}
@@ -189,9 +193,9 @@ export default function ProductList() {
 							</section>
 
 							{/* Page numbers */}
-							<div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-								<Pagination page={page} setPage={setPage} handlePage={handlePage} totalItems={totalItems}/>
-							</div>							
+							{totalItems > 10 && <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+								<Pagination page={page} setPage={setPage} handlePage={handlePage} totalItems={totalItems} />
+							</div>}						
 
 						</main>
 					</div>
@@ -203,7 +207,7 @@ export default function ProductList() {
 
 
 
-function MobileFilter({ mobileFiltersOpen, setMobileFiltersOpen, handleFilter, filters}) {
+function MobileFilter({ mobileFiltersOpen, setMobileFiltersOpen, filter, handleFilter, filters}) {
 
 	return (
 		<Transition.Root show={mobileFiltersOpen} as={Fragment}>
@@ -273,7 +277,7 @@ function MobileFilter({ mobileFiltersOpen, setMobileFiltersOpen, handleFilter, f
 																	defaultValue={option.value}
 																	type="checkbox"
 																	onChange={(e) => handleFilter(e, section, option)}
-																	defaultChecked={option.checked}
+																	defaultChecked={filter[section.id]?.includes(option.value)}
 																	className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
 																/>
 																<label
@@ -299,7 +303,10 @@ function MobileFilter({ mobileFiltersOpen, setMobileFiltersOpen, handleFilter, f
 	)
 }
 
-function DesktopFilter({handleFilter, filters}) {
+function DesktopFilter({ filter, handleFilter, filters }) {
+	console.log('filters ', filter);
+
+
 	return (
 		<form className="hidden lg:block">
 
@@ -321,15 +328,15 @@ function DesktopFilter({handleFilter, filters}) {
 							</h3>
 							<Disclosure.Panel className="pt-6">
 								<div className="space-y-4">
-									{section.options.map((option, optionIdx) => (
-										<div key={option.value} className="flex items-center">
+									{section.options.map((option, optionIdx) => {
+										return (<div key={option.value} className="flex items-center">
 											<input
 												id={`filter-${section.id}-${optionIdx}`}
-												name={`${section.id}[]`}
+												name={`filter-${section.id}-${optionIdx}`}
 												defaultValue={option.value}
 												type="checkbox"
 												onChange={(e) => handleFilter(e, section, option)}
-												defaultChecked={option.checked}
+												defaultChecked={filter[section.id]?.includes(option.value)}
 												className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
 											/>
 											<label
@@ -338,8 +345,8 @@ function DesktopFilter({handleFilter, filters}) {
 											>
 												{option.label}
 											</label>
-										</div>
-									))}
+										</div>)
+									})}
 								</div>
 							</Disclosure.Panel>
 						</>
@@ -349,6 +356,9 @@ function DesktopFilter({handleFilter, filters}) {
 		</form>
 	)
 }
+
+
+
 
 
 
@@ -388,7 +398,7 @@ function ProductGrid({ products }) {
 									</div>
 									<div>
 										<p className="text-sm font-medium line-through text-gray-400">${product.price}</p>
-										<p className="text-sm font-medium text-gray-900">${Math.round(product.price * (1 - product.discountPercentage / 100))}</p>
+										<p className="text-sm font-medium text-gray-900">${getDiscountprice(product.price, product.discountPercentage)}</p>
 									</div>
 									
 								</div>

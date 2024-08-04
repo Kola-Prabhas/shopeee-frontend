@@ -21,8 +21,6 @@ export default function Home() {
 
 	}, [dispatch, user]);
 
-	console.log('user in home ', user);
-
 	return (		
 		<>
 			<Navbar>

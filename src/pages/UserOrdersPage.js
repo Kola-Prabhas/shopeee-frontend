@@ -1,9 +1,13 @@
 import UserOrders from "../features/user/components/UserOrders";
+import Navbar from "../features/navbar";
+
 
 function UserOrdersPage() {
 	return ( 
 		<>
-			<UserOrders></UserOrders>
+			<Navbar>
+				<UserOrders />
+			</Navbar>
 		</>
 
 	);

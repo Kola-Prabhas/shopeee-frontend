@@ -1,10 +1,10 @@
-import Order from "../features/order/Order"
+import OrderSuccess from "../features/order/OrderSuccess"
 
 
-export default function OrderPage() {
+export default function OrderSuccessPage() {
 	return (
 		<>
-			<Order></Order>
+			<OrderSuccess />
 		</>
 	)
 }

@@ -9,7 +9,7 @@ import LogoutPage from './pages/LogoutPage';
 import Home from './pages/Home';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
-import OrderPage from './pages/OrderPage';
+import OrderSuccessPage from './pages/OrderPage';
 import UserOrdersPage from './pages/UserOrdersPage';
 import UserProfilePage from './pages/UserProfilePage';
 import ProductDetailsPage from './pages/ProductDetailPage';
@@ -37,7 +37,7 @@ import StripeCheckout from './pages/StripeCheckout';
 const router = createBrowserRouter([
 	{
 		path: "/",
-		element: <Protected><Home /></Protected>,
+		element: <Protected><Home /></Protected> ,
 	},
 	{
 		path: "/admin",
@@ -61,7 +61,7 @@ const router = createBrowserRouter([
 	},
 	{
 		path: "/checkout",
-		element: <Protected><CheckoutPage /></Protected>,
+		element: <CheckoutPage />,
 	},
 	{
 		path: "/stripe-checkout",
@@ -89,19 +89,19 @@ const router = createBrowserRouter([
 	},
 	{
 		path: "/order-details/:id",
-		element: <Protected><OrderPage></OrderPage></Protected>,
+		element: <Protected><OrderSuccessPage /></Protected>,
 	},
 	{
 		path: "/user-orders",
-		element: <Protected><UserOrdersPage></UserOrdersPage></Protected>,
+		element: <Protected><UserOrdersPage /></Protected>,
 	},
 	{
 		path: "/profile",
-		element: <Protected><UserProfilePage></UserProfilePage></Protected>,
+		element: <Protected><UserProfilePage /></Protected>,
 	},
 	{
 		path: "/logout",
-		element: <Protected><LogoutPage></LogoutPage></Protected>,
+		element: <Protected><LogoutPage /></Protected>,
 	},
 	{
 		path: "*",

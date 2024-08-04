@@ -1,9 +1,13 @@
 import UserProfile from "../features/user/components/UserProfile";
+import Navbar from "../features/navbar";
+
 
 function UserProfilePage() {
 	return (
 		<>
-			<UserProfile></UserProfile>
+			<Navbar>
+				<UserProfile />
+			</Navbar>
 		</>
 
 	);

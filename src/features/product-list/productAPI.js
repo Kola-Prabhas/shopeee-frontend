@@ -6,6 +6,13 @@
 export function fetchProductsByFilter(filter, sortOptions, pagination, admin) {
 	let queryString = '';
 
+
+	for (let key in filter) {
+		for (let item of filter[key]) {
+			queryString += `${key}=${item}&`
+		}
+	}
+
 	for (let key in pagination) {
 		queryString += `${key}=${pagination[key]}&`;
 	}

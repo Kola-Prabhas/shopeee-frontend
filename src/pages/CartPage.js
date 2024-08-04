@@ -1,16 +1,20 @@
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Cart from "../features/cart/components/cart";
-// import { selectItems } from "../features/cart/cartSlice";
+import { selectItems } from "../features/cart/cartSlice";
+import Navbar from "../features/navbar";
+
 
 function CartPage() {
-	// const items = useSelector(selectItems);
+	const items = useSelector(selectItems);
 
-	// console.log(items);
+	console.log(items);
 
 	return ( 
-		<div>
-			<Cart />
-		</div>
+		<>
+			<Navbar>
+			  <Cart />
+			</Navbar>
+		</>
 	);
 }
 

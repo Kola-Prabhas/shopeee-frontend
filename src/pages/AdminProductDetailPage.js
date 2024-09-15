@@ -1,6 +1,6 @@
 function AdminProductDetailPage() {
 	return (
-		<AdminProductDetailPage></AdminProductDetailPage>
+		<AdminProductDetailPage />
 	);
 }
 

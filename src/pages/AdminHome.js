@@ -22,10 +22,6 @@ export default function AdminHome() {
 
 
 	return (
-		<>
-			<Navbar>
-				<AdminProductList />
-			</Navbar>
-		</>
+		<AdminProductList />
 	)
 }

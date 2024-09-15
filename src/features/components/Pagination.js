@@ -2,13 +2,8 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { ITEMS_PER_PAGE } from '../../app/constants';
 
 
-
-
-
 export default function Pagination({ page, setPage, handlePage, totalItems }) {
-
 	const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-
 
 	function itemsShown() {
 		if (page !== Math.ceil(totalItems / ITEMS_PER_PAGE)) {
@@ -51,7 +46,6 @@ export default function Pagination({ page, setPage, handlePage, totalItems }) {
 							<span className="sr-only">Previous</span>
 							<ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
 						</div>
-						{/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
 						{
 							Array.from({ length: totalPages }).map((val, idx) => {
 								return (
@@ -63,7 +57,6 @@ export default function Pagination({ page, setPage, handlePage, totalItems }) {
 									>
 										{idx + 1}
 									</div>
-
 								)
 							})
 						}

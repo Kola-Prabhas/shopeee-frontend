@@ -4,43 +4,40 @@ import { RadioGroup } from '@headlessui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProductByIdAsync, selectProductById } from '../productSlice'
 import { useParams } from 'react-router-dom'
-import { addToCartAsync, selectItems } from '../../cart/cartSlice'
+import { addToCartAsync, selectCartItems } from '../../cart/cartSlice'
 import { selectUserInfo } from '../../user/userSlice'
 
 
+// const colors = [
+// 	{ name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
+// 	{ name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400' },
+// 	{ name: 'Black', class: 'bg-gray-900', selectedClass: 'ring-gray-900' },
+// ]
 
-
-const colors = [
-	{ name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
-	{ name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400' },
-	{ name: 'Black', class: 'bg-gray-900', selectedClass: 'ring-gray-900' },
-]
-
-const sizes = [
-	{ name: 'XXS', inStock: false },
-	{ name: 'XS', inStock: true },
-	{ name: 'S', inStock: true },
-	{ name: 'M', inStock: true },
-	{ name: 'L', inStock: true },
-	{ name: 'XL', inStock: true },
-	{ name: '2XL', inStock: true },
-	{ name: '3XL', inStock: true },
-];
+// const sizes = [
+// 	{ name: 'XXS', inStock: false },
+// 	{ name: 'XS', inStock: true },
+// 	{ name: 'S', inStock: true },
+// 	{ name: 'M', inStock: true },
+// 	{ name: 'L', inStock: true },
+// 	{ name: 'XL', inStock: true },
+// 	{ name: '2XL', inStock: true },
+// 	{ name: '3XL', inStock: true },
+// ];
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
 }
 
 export default function ProductDetails() {
-	const [selectedColor, setSelectedColor] = useState(colors[0]);
-	const [selectedSize, setSelectedSize] = useState(sizes[2]);
+	// const [selectedColor, setSelectedColor] = useState(colors[0]);
+	// const [selectedSize, setSelectedSize] = useState(sizes[2]);
 	const product = useSelector(selectProductById);
 	const user = useSelector(selectUserInfo);
-	const items = useSelector(selectItems);
+	const items = useSelector(selectCartItems);
 
 	const dispatch = useDispatch();
 	const params = useParams();
-
 
 	useEffect(() => {
 		dispatch(fetchProductByIdAsync(params.id))
@@ -103,7 +100,7 @@ export default function ProductDetails() {
 				<div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
 					<div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
 						<img
-							src={product.images[0]}
+							src={product.images[3]}
 							alt={product.title}
 							className="h-full w-full object-cover object-center"
 						/>
@@ -126,7 +123,7 @@ export default function ProductDetails() {
 					</div>
 					<div className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg">
 						<img
-							src={product.images[3]}
+							src={product.images[0]}
 							alt={product.title}
 							className="h-full w-full object-cover object-center"
 						/>
@@ -142,14 +139,15 @@ export default function ProductDetails() {
 					{/* Options */}
 					<div className="mt-4 lg:row-span-3 lg:mt-0">
 						<h2 className="sr-only">Product information</h2>
-						<p className="text-3xl tracking-tight text-gray-900">{product.price}</p>
+						<p className="tracking-tight text-gray-400 line-through">${product.price}</p>
+						<p className="text-3xl tracking-tight text-gray-900">${product.discountPrice.toFixed(2)}</p>
 
 						{/* Reviews */}
 						<div className="mt-6">
 							<h3 className="sr-only">Reviews</h3>
 							<div className="flex items-center">
 								<div className="flex items-center">
-									{[0, 1, 2, 3, 4].map((rating) => (
+									{Array.from({length: product.rating}).map((rating) => (
 										<StarIcon
 											key={rating}
 											className={classNames(
@@ -167,7 +165,7 @@ export default function ProductDetails() {
 
 						<form className="mt-10">
 							{/* Colors */}
-							<div>
+							{/* <div>
 								<h3 className="text-sm font-medium text-gray-900">Color</h3>
 
 								<RadioGroup value={selectedColor} onChange={setSelectedColor} className="mt-4">
@@ -200,10 +198,10 @@ export default function ProductDetails() {
 										))}
 									</div>
 								</RadioGroup>
-							</div>
+							</div> */}
 
 							{/* Sizes */}
-							<div className="mt-10">
+							{/* <div className="mt-10">
 								<div className="flex items-center justify-between">
 									<h3 className="text-sm font-medium text-gray-900">Size</h3>
 									<a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
@@ -262,7 +260,7 @@ export default function ProductDetails() {
 										))}
 									</div>
 								</RadioGroup>
-							</div>
+							</div> */}
 
 							<button
 								type="submit"
@@ -283,8 +281,9 @@ export default function ProductDetails() {
 								<p className="text-base text-gray-900">{product.description}</p>
 							</div>
 						</div>
-
-						<div className="mt-10">
+                        
+						{/* Highlights section */}
+						{/* <div className="mt-10">
 							<h3 className="text-sm font-medium text-gray-900">Highlights</h3>
 
 							<div className="mt-4">
@@ -296,14 +295,27 @@ export default function ProductDetails() {
 									))}
 								</ul>
 							</div>
-						</div>
+						</div> */}
 
 						<div className="mt-10">
-							<h2 className="text-sm font-medium text-gray-900">Details</h2>
-
-							<div className="mt-4 space-y-6">
-								<p className="text-sm text-gray-600">{product.description}</p>
-							</div>
+								<h2 className="font-bold">Details</h2>
+								<ul className='list-disc mx-6'>
+									<li className='text-gray-600 font-semibold'>
+										Brand: <span className='text-blue-600 font-medium'>{product.brand}</span>
+									</li>
+									<li className='text-gray-600 font-semibold'>
+										Warranty: <span className='text-blue-600 font-medium'>{product.warrantyInformation}</span>
+									</li>
+									<li className='text-gray-600 font-semibold'>
+										Stock Availability: <span className='text-blue-600 font-medium'>{product.availabilityStatus} ({product.stock})</span>
+									</li>
+									<li className='text-gray-600 font-semibold'>
+										Return Policy: <span className='text-blue-600 font-medium'>{product.returnPolicy}</span>
+									</li>
+									<li className='text-gray-600 font-semibold'>
+										Shipping Information: <span className='text-blue-600 font-medium'>{product.shippingInformation}</span>
+									</li>
+								</ul>
 						</div>
 					</div>
 				</div>

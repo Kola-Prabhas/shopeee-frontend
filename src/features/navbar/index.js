@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { selectItems } from '../cart/cartSlice';
+import { selectCartItems } from '../cart/cartSlice';
 import { useSelector } from 'react-redux';
 import { selectUserInfo } from '../user/userSlice';
 
@@ -16,9 +16,10 @@ const user = {
 
 // Links in the navbar
 const navigation = [
-	{ name: 'Products', link: '/', user: true },
-	{ name: 'Products', link: '/admin', admin: true },
-	{ name: 'Orders', link: '/admin/orders', admin: true },
+	{ name: 'Home', link: '/', user: true },
+	{ name: 'Orders', link: '/user-orders', user: true },
+	{ name: 'Home', link: '/admin', admin: true },
+	{ name: 'Orders Dashboard', link: '/admin/orders', admin: true },
 
 ]
 
@@ -36,7 +37,7 @@ function classNames(...classes) {
 
 
 export default function Navbar({ children }) {
-	const items = useSelector(selectItems);
+	const items = useSelector(selectCartItems);
 	const userInfo = useSelector(selectUserInfo);
 
 	return (
@@ -118,6 +119,7 @@ export default function Navbar({ children }) {
 														{userNavigation.map((item) => (
 															<Menu.Item
 																key={item.name}
+																className={`${item.link === '/user-orders' && 'md:hidden'}`}
 																onClick={item.name === 'Sign Out' ? () => sessionStorage.removeItem('user') : null}
 
 															>
@@ -207,6 +209,7 @@ export default function Navbar({ children }) {
 											<Link
 												key={item.name}
 												to={item.link}
+												className={`${item.link === '/user-orders' && 'md:hidden'}`}
 											>
 												<Disclosure.Button
 													key={item.name}
@@ -227,11 +230,11 @@ export default function Navbar({ children }) {
 				</Disclosure>
 			    
                 {/* Custom heading to show in all pages on top of the actual page content */}
-				<header className="bg-white shadow">
+				{/* <header className="bg-white shadow">
 					<div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
 						<h1 className="text-3xl font-bold tracking-tight text-gray-900">E-commerce</h1>
 					</div>
-				</header>
+				</header> */}
 
 
 				{/* Content of all the pages is rendered here */}

@@ -1,7 +1,9 @@
 // A mock function to mimic making an async request for data
 export  function fetchCount(amount = 1) {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8080');
+		const res = await fetch('http://localhost:8080', {
+			credentials: 'include', // Include cookies in the request
+		});
 		const data = await res.json();
 
 		resolve({ data });
@@ -12,6 +14,7 @@ export function createOrder(order) {
 	return new Promise(async resolve => {
 		const res = await fetch('http://localhost:8000/orders/', {
 			method: 'POST',
+			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -57,7 +60,9 @@ export function fetchAllOrders({ pagination, sortOptions, admin }) {
 
 
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/orders?' + queryString);
+		const res = await fetch('http://localhost:8000/orders?' + queryString, {
+			credentials: 'include', // Include cookies in the request
+		});
 		const data = await res.json(); 
 
 		console.log('querystring ', queryString);
@@ -76,6 +81,7 @@ export function updateOrder(update) {
 	return new Promise(async resolve => {
 		const res = await fetch('http://localhost:8000/orders/'+update.id, {
 			method: 'PATCH',
+			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},

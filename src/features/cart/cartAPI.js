@@ -1,23 +1,18 @@
-// A mock function to mimic making an async request for data
-// export  function fetchCount(amount = 1) {
-// 	return new Promise(async resolve => {
-// 		const res = await fetch('http://localhost:8080');
-// 		const data = await res.json();
-
-// 		resolve({ data });
-// 	}) 
-// }
+const baseUrl = process.env.BASE_URL;
 
 export function addToCart(item) {
 	return new Promise(async resolve => {
 		const res = await fetch('http://localhost:8000/cart', {
 			method: 'POST',
+			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(item)
 		});
 		const data = await res.json();
+
+		console.log('item added to cart ', data);
 
 
 		resolve({ data });
@@ -27,7 +22,9 @@ export function addToCart(item) {
 
 export function fetchItemsByUserId() {
 	return new Promise(async resolve => {
-		const res = await fetch(`http://localhost:8000/cart`);
+		const res = await fetch('http://localhost:8000/cart', {
+			credentials: 'include', // Include cookies in the request
+		});
 		const data = await res.json();
 
 		// console.log(data);
@@ -41,6 +38,7 @@ export function updateItem(item) {
 	return new Promise(async resolve => {
 		const res = await fetch('http://localhost:8000/cart/'+item.id, {
 			method: 'PATCH',
+			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -61,6 +59,7 @@ export function deleteItem(itemId) {
 	return new Promise(async resolve => {
 		const res = await fetch('http://localhost:8000/cart/' + itemId, {
 			method: 'DELETE',
+			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},

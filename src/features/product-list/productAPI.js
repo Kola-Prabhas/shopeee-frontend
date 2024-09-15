@@ -31,7 +31,9 @@ export function fetchProductsByFilter(filter, sortOptions, pagination, admin) {
 
 
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/products?'+queryString);
+		const res = await fetch('http://localhost:8000/products?' + queryString, {
+			credentials: 'include', // Include cookies in the request
+		});
 		const data = await res.json();
 
 		const totalItems = await res.headers.get('X-Total-Count');
@@ -42,7 +44,9 @@ export function fetchProductsByFilter(filter, sortOptions, pagination, admin) {
 
 export function fetchCategories() {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/categories');
+		const res = await fetch('http://localhost:8000/categories', {
+			credentials: 'include', // Include cookies in the request
+		});
 		const data = await res.json();
 
 		resolve({ data });
@@ -51,7 +55,9 @@ export function fetchCategories() {
 
 export function fetchBrands() {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/brands');
+		const res = await fetch('http://localhost:8000/brands', {
+			credentials: 'include', // Include cookies in the request
+		});
 		const data = await res.json();
 
 		resolve({ data } );
@@ -60,7 +66,9 @@ export function fetchBrands() {
 
 export function fetchProductById(id) {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/products/' + id);
+		const res = await fetch('http://localhost:8000/products/' + id, {
+			credentials: 'include', // Include cookies in the request
+		});
 		const data = await res.json();
 
 		console.log(data);
@@ -74,6 +82,7 @@ export function addProduct(product) {
 	return new Promise(async resolve => {
 		const res = await fetch('http://localhost:8000/products', {
 			method: 'POST',
+			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -92,6 +101,7 @@ export function updateProduct(update) {
 	return new Promise(async resolve => {
 		const res = await fetch('http://localhost:8000/products/' + update.id, {
 			method: 'PATCH',
+			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},

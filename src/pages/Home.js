@@ -1,4 +1,3 @@
-import Navbar from "../features/navbar";
 import ProductList from "../features/product-list/components/productList";
 
 
@@ -16,16 +15,12 @@ export default function Home() {
 
 	useEffect(() => {
 		dispatch(fetchUserInfoAsync());
-		dispatch(fetchOrdersByUserIdAsync(user.id));
+		dispatch(fetchOrdersByUserIdAsync(user?.id));
 		dispatch(fetchItemsByUserIdAsync());
 
 	}, [dispatch, user]);
 
-	return (		
-		<>
-			<Navbar>
-				<ProductList />
-			</Navbar>
-		</>		
+	return (
+		<ProductList />
 	)
 }

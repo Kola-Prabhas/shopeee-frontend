@@ -10,10 +10,6 @@ import { getDiscountprice } from '../services/common';
 
 
 
-
-
-
-
 function CheckoutPage() {
 	const [open, setOpen] = useState(false);
 	const dispatch = useDispatch();

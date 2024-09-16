@@ -50,18 +50,6 @@ const router = createBrowserRouter([
 				element: <AdminProtected><AdminHome /></AdminProtected>,
 			},
 			{
-				path: "/login",
-				element: <LoginPage />,
-			},
-			{
-				path: "/signup",
-				element: <SignUpPage />,
-			},
-			{
-				path: "/forgot-password",
-				element: <ForgotPasswordPage />,
-			},
-			{
 				path: "/cart",
 				element: <Protected><CartPage /></Protected>,
 			},
@@ -108,13 +96,25 @@ const router = createBrowserRouter([
 			{
 				path: "/logout",
 				element: <Protected><LogoutPage /></Protected>,
-			},			
+			}	
 		]
+	},
+	{
+		path: "/login",
+		element: <LoginPage />,
+	},
+	{
+		path: "/signup",
+		element: <SignUpPage />,
+	},
+	{
+		path: "/forgot-password",
+		element: <ForgotPasswordPage />,
 	},
 	{
 		path: "*",
 		element: <PageNotFound></PageNotFound>,
-	},
+	}
 ]);
 
 

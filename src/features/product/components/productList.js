@@ -9,12 +9,13 @@ import {
 	selectBrands,
 	selectCategories,
 	selectTotalItems
-} from '../../product/productSlice';
+} from '../productSlice';
 
-import ProductsSort from '../../product/components/productsSort';
-import ProductGrid from '../../product/components/productGrid';
-import MobileFilter from '../../product/components/MobileFilter';
-import DesktopFilter from '../../product/components/DesktopFilter';
+import ProductGrid from './productGrid';
+import MobileFilter from './MobileFilter';
+import DesktopFilter from './DesktopFilter';
+import ProductsSort from './productsSort';
+
 
 import { ITEMS_PER_PAGE } from '../../../app/constants';
 import Pagination from '../../../components/Pagination';
@@ -34,9 +35,8 @@ export default function ProductList() {
 		category: [],
 		brand: []
 	});
-	const [sort, setSort] = useState({ _sort: '', order: '' });
+	const [sort, setSort] = useState({});
 	const [page, setPage] = useState(1);
-
 
 	const filters = [
 		{
@@ -51,16 +51,12 @@ export default function ProductList() {
 		},
 	]
 
-
-
 	const handlePage = (idx) => () => setPage(idx);
-
-
 
 	useEffect(() => {
 		const pagination = { _page: page, _per_page: ITEMS_PER_PAGE };
+		dispatch(fetchProductsByFilterAsync({ filter, pagination, sort }));
 
-		dispatch(fetchProductsByFilterAsync({ filter, sort, pagination, admin: true }));
 	}, [dispatch, filter, sort, page]);
 
 
@@ -98,16 +94,23 @@ export default function ProductList() {
 						setFilter={setFilter}
 						filters={filters}
 					/>
-
 					<div className="lg:col-span-3">
 						<ProductGrid products={products} />
 					</div>
 				</div>
 
-				<div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+				{totalItems > 10 && <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
 					<Pagination page={page} setPage={setPage} handlePage={handlePage} totalItems={totalItems} />
-				</div>
+				</div>}
 			</main>
 		</div>
 	);
 }
+
+
+
+
+
+
+
+

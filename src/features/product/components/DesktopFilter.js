@@ -3,10 +3,21 @@ import { Disclosure} from '@headlessui/react'
 import { MinusIcon, PlusIcon} from '@heroicons/react/20/solid'
 
 
-export default function DesktopFilter({ filter, handleFilter, filters }) {
+export default function DesktopFilter({ filter, setFilter, filters }) {
+
+	function handleFilter(e, section, option) {
+		const newFilter = { ...filter };
+
+		if (e.target.checked) {
+			newFilter[section.id] = [...newFilter[section.id], option.value];
+		} else {
+			newFilter[section.id] = newFilter[section.id].filter(value => value !== option.value);
+		}
+		setFilter(newFilter);
+	}
+
 	return (
 		<form className="hidden lg:block">
-
 			{filters.map((section) => (
 				<Disclosure as="div" key={section.id} className="border-b border-gray-200 py-6">
 					{({ open }) => (

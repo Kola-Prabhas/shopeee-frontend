@@ -4,7 +4,25 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import {  MinusIcon, PlusIcon} from '@heroicons/react/20/solid'
 
 
-export default function MobileFilter({ mobileFiltersOpen, setMobileFiltersOpen, filter, handleFilter, filters }) {
+export default function MobileFilter({
+	mobileFiltersOpen,
+	setMobileFiltersOpen,
+	filter,
+	setFilter,
+	filters
+}) {
+	
+	function handleFilter(e, section, option) {
+		const newFilter = { ...filter };
+
+		if (e.target.checked) {
+			newFilter[section.id] = [...newFilter[section.id], option.value];
+		} else {
+			newFilter[section.id] = newFilter[section.id].filter(value => value !== option.value);
+		}
+		setFilter(newFilter);
+	}
+
 	return (
 		<Transition.Root show={mobileFiltersOpen} as={Fragment}>
 			<Dialog as="div" className="relative z-40 lg:hidden" onClose={setMobileFiltersOpen}>

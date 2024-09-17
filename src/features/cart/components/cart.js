@@ -8,9 +8,6 @@ import CartTotalStats from './cartTotalStats';
 
 
 export default function Cart() {
-	// const [open, setOpen] = useState(true);
-
-
 	const items = useSelector(selectCartItems);
 	const totalItems = items.length;
 	const totalPrice = items.reduce((total, current) => total + current.product.price * current.quantity, 0);

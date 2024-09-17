@@ -20,7 +20,7 @@ const user = {
 const navigation = [
 	{ name: 'Home', link: '/', user: true },
 	{ name: 'Orders', link: '/user-orders', user: true },
-	{ name: 'Home', link: '/admin', admin: true },
+	{ name: 'Admin Home', link: '/admin', admin: true },
 	{ name: 'Orders Dashboard', link: '/admin/orders', admin: true },
 
 ]
@@ -46,11 +46,13 @@ export default function Navbar({ children }) {
 
 	useEffect(() => {
 		dispatch(fetchUserInfoAsync());
-		dispatch(fetchOrdersByUserIdAsync());
-		dispatch(fetchItemsByUserIdAsync());
+		if (userInfo?.role !== 'admin') {
+			dispatch(fetchOrdersByUserIdAsync());
+			dispatch(fetchItemsByUserIdAsync());
+		}
 	}, [dispatch, userInfo]);
 
-	console.log('user info ', userInfo);
+	// console.log('user info ', userInfo);
 
 
 	return (
@@ -72,22 +74,22 @@ export default function Navbar({ children }) {
 									<div className="hidden md:block">
 										<div className="ml-10 flex items-baseline space-x-4">
 											{navigation.map((item) => {
-													return item[userInfo.role] && (
-														<Link
-															key={item.name}
-															to={item.link}
-															className={classNames(
-																item.current
-																	? 'bg-gray-900 text-white'
-																	: 'text-gray-300 hover:bg-gray-700 hover:text-white',
-																'rounded-md px-3 py-2 text-sm font-medium'
-															)}
-															aria-current={item.current ? 'page' : undefined}
-														>
-															{item.name}
-														</Link>
-													)
-												})}
+												return item[userInfo.role] && (
+													<Link
+														key={item.name}
+														to={item.link}
+														className={classNames(
+															item.current
+																? 'bg-gray-900 text-white'
+																: 'text-gray-300 hover:bg-gray-700 hover:text-white',
+															'rounded-md px-3 py-2 text-sm font-medium'
+														)}
+														aria-current={item.current ? 'page' : undefined}
+													>
+														{item.name}
+													</Link>
+												)
+											})}
 										</div>
 									</div>
 								</div>
@@ -128,26 +130,31 @@ export default function Navbar({ children }) {
 												leaveTo="transform opacity-0 scale-95"
 											>
 												<Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-													{userNavigation.map((item) => (
-														<Menu.Item
-															key={item.name}
-															className={`${item.link === '/user-orders' && 'md:hidden'}`}
-															onClick={item.name === 'Sign Out' ? () => sessionStorage.removeItem('user') : null}
+													{userNavigation
+														.filter(x => x.link !== '/user-orders' || userInfo.role !== 'admin')
+														.map((item) => {
+															return (
+																<Menu.Item
+																	key={item.name}
+																	className={`${item.link === '/user-orders' && 'md:hidden'}`}
+																	onClick={item.name === 'Sign Out' ? () => sessionStorage.removeItem('user') : null}
 
-														>
-															{({ active }) => (
-																<Link
-																	to={item.link}
-																	className={classNames(
-																		active ? 'bg-gray-100' : '',
-																		'block px-4 py-2 text-sm text-gray-700'
-																	)}
 																>
-																	{item.name}
-																</Link>
-															)}
-														</Menu.Item>
-													))}
+																	{({ active }) => (
+																		<Link
+																			to={item.link}
+																			className={classNames(
+																				active ? 'bg-gray-100' : '',
+																				'block px-4 py-2 text-sm text-gray-700'
+																			)}
+																		>
+																			{item.name}
+																		</Link>
+																	)}
+																</Menu.Item>
+															)
+
+														})}
 												</Menu.Items>
 											</Transition>
 										</Menu>
@@ -217,7 +224,9 @@ export default function Navbar({ children }) {
 
 								</div>
 								<div className="mt-3 space-y-1 px-2">
-									{userNavigation.map((item) => (
+									{userNavigation
+										.filter(x => x.link !== '/user-orders' || userInfo.role !== 'admin')
+										.map((item) => (
 										<Link
 											key={item.name}
 											to={item.link}
@@ -240,7 +249,7 @@ export default function Navbar({ children }) {
 					</>
 				)}
 			</Disclosure>}
-			    
+
 			{/* Custom heading to show in all pages on top of the actual page content */}
 			{/* <header className="bg-white shadow">
 					<div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">

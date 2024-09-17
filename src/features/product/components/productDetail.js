@@ -4,8 +4,9 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProductByIdAsync, selectProductById } from '../productSlice'
 import { addToCartAsync, selectCartItems } from '../../cart/cartSlice'
-import CartQuantityChange from '../../cart/components/cartItemQuantityChange'
+import { selectUser } from '../../auth/authSlice'
 
+import CartQuantityChange from '../../cart/components/cartItemQuantityChange'
 
 
 function classNames(...classes) {
@@ -13,9 +14,11 @@ function classNames(...classes) {
 }
 
 export default function ProductDetails() {
+	const user = useSelector(selectUser);
 	const product = useSelector(selectProductById);
 	const items = useSelector(selectCartItems);
 	const itemInCart = items.find(item => item.product?.id === product?.id);
+
 
 
 	const dispatch = useDispatch();
@@ -111,7 +114,7 @@ export default function ProductDetails() {
 							</div>
 						</div>
 
-						<form className="mt-10">
+						{user.role !== 'admin' && <form className="mt-10">
 							{!itemInCart ? (
 								<button
 									type="submit"
@@ -121,7 +124,7 @@ export default function ProductDetails() {
 									Add to Cart
 								</button>
 							) : (
-								<div className='flex items-center jsutify-center'>	
+								<div className='flex items-center jsutify-center'>
 									<CartQuantityChange itemId={itemInCart.id} quantity={itemInCart.quantity} />
 									<Link
 										to='/cart'
@@ -131,7 +134,7 @@ export default function ProductDetails() {
 									</Link>
 								</div>
 							)}
-						</form>
+						</form>}
 					</div>
 
 					<div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">

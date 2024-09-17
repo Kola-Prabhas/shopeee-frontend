@@ -1,22 +1,14 @@
-import { useDispatch} from 'react-redux';
-import { deleteItemFromCartAsync, updateItemAsync } from '../cartSlice';
-
-
+import { useDispatch } from 'react-redux';
+import { deleteItemFromCartAsync } from '../cartSlice'
+import CartQuantityChange from "./cartItemQuantityChange";
 
 function CartItem({ item }) {
 	const dispatch = useDispatch();
 
-	function handleQuantityChange(e, item) {
-		dispatch(updateItemAsync({
-			id: item.id,
-			quantity: +e.target.value
-		}));
-	}
-
 	function handleDelete(itemId) {
 		dispatch(deleteItemFromCartAsync(itemId));
 	}
-
+	
 
 	return ( 
 		<li key={item.product.id} className="flex py-6">
@@ -36,28 +28,12 @@ function CartItem({ item }) {
 						</h3>
 						<div>
 							<p className="ml-4 line-through text-gray-400">${item.product.price * item.quantity}</p>
-							<p className="ml-4">${item.discountPrice?.toFixed(2)}</p>
+							<p className="ml-4">${item.product.discountPrice?.toFixed(2) * item.quantity}</p>
 						</div>
 					</div>
-					{/* <p className="mt-1 text-sm text-gray-500">red</p> */}
 				</div>
 				<div className="flex flex-1 items-end justify-between text-sm">
-					<div className="text-gray-500">
-						<label htmlFor="quantity" className="inline text-sm mr-5 text-left font-medium leading-6 text-gray-900">
-							Qty
-						</label>
-						<select
-							id='quantity'
-							onChange={(e) => handleQuantityChange(e, item)}
-							value={item.quantity}
-						>
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4">4</option>
-							<option value="5">5</option>
-						</select>
-					</div>
+					<CartQuantityChange itemId={item.id}  quantity={item.quantity}/>
 
 					<div className="flex">
 						<button

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { EyeIcon, PencilIcon, ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
 
 import { ITEMS_PER_PAGE } from '../../../app/constants';
-import Pagination from "../../components/Pagination";
+import Pagination from "../../../components/Pagination";
 
 
 function AdminOrders() {

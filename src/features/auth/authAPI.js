@@ -9,7 +9,6 @@ export function createUser(user) {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(user),
-
 		});
 		const data = await response.json();
 
@@ -32,7 +31,6 @@ export function loginUser(user) {
 
 		if (res.ok) {
 			const data = await res.json();
-			console.log('login response ', data);
 
 			resolve({ data });
 		} else {

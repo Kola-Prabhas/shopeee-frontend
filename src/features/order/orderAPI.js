@@ -26,6 +26,7 @@ export function createOrder(order) {
 
 		const response = await fetch('http://localhost:8000/users/' + order.user, {
 			method: 'PATCH',
+			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},

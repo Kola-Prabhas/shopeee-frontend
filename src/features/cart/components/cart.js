@@ -1,17 +1,18 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { selectCartItems } from '../cartSlice';
 
 import CartItem from './cartItem';
+import CartTotalStats from './cartTotalStats';
 
 
 export default function Cart() {
-	const [open, setOpen] = useState(true);
+	// const [open, setOpen] = useState(true);
 
 
 	const items = useSelector(selectCartItems);
-	const totalItems = items.reduce((total, current) => total + current.quantity, 0);
+	const totalItems = items.length;
 	const totalPrice = items.reduce((total, current) => total + current.product.price * current.quantity, 0);
 	const totalDiscountPrice = items.reduce((total, current) => total + current.product.discountPrice.toFixed(2) * current.quantity, 0)
 
@@ -31,17 +32,11 @@ export default function Cart() {
 				</div>
 											
 				<div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-					<div className="flex justify-between mx-2 my-2 text-base font-medium text-gray-900">
-						<p>Total Items in cart</p>
-						<p>{totalItems} items</p>
-					</div>
-					<div className="flex justify-between mx-2 my-2 text-base font-medium text-gray-900">
-						<p>Subtotal</p>
-						<div>
-							<p className='text-gray-400 line-through'>$ {totalPrice}</p>
-							<p>{totalDiscountPrice}</p>
-						</div>
-					</div>
+					<CartTotalStats
+						totalItems={totalItems}
+						totalPrice={totalPrice}
+						totalDiscountPrice={totalDiscountPrice}
+					/>
 					<p className="mt-0.5 mx-2 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 					<Link to='/checkout'>
 						<div className="mt-6 mx-auto max-w-[400px]">
@@ -57,7 +52,7 @@ export default function Cart() {
 								<button
 									type="button"
 									className="font-medium text-indigo-600 hover:text-indigo-500"
-									onClick={() => setOpen(false)}
+									// onClick={() => setOpen(false)}
 								>
 									Continue Shopping
 									<span aria-hidden="true"> &rarr;</span>

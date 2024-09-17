@@ -1,22 +1,19 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCartItems } from '../features/cart/cartSlice';
-import { updateItemAsync, deleteItemFromCartAsync } from '../features/cart/cartSlice';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { createOrderAsync, selectCurrentOrder } from '../features/order/orderSlice';
 import { selectUserInfo, updateUserAsync } from '../features/user/userSlice';
-import { getDiscountprice } from '../services/common';
 
+import CartItem from '../features/cart/components/cartItem';
+import CartTotalStats from '../features/cart/components/cartTotalStats';
 
 
 function CheckoutPage() {
-	const [open, setOpen] = useState(false);
 	const dispatch = useDispatch();
 	const user = useSelector(selectUserInfo);
 	const order = useSelector(selectCurrentOrder);
-
-
 
 	const {
 		register,
@@ -29,22 +26,10 @@ function CheckoutPage() {
 
 
 	const items = useSelector(selectCartItems);
-	const totalItems = items.reduce((total, current) => total + current.quantity, 0);
+	const totalItems = items.length;
 	const totalPrice = items.reduce((total, current) => total + current.product.price * current.quantity, 0);
-	const totalDiscountPrice = items.reduce((total, current) => total + getDiscountprice(current.product.price * current.quantity, current.product.discountPercentage), 0)
+	const totalDiscountPrice = items.reduce((total, current) => total + current.product.discountPrice.toFixed(2) * current.quantity, 0)
 
-	function handleQuantityChange(e, item) {
-		dispatch(updateItemAsync({
-			id: item.id,
-			quantity: +e.target.value
-		}));
-	}
-
-
-	function handleDelete(itemId) {
-		console.log('Item Id: ', itemId);
-		dispatch(deleteItemFromCartAsync(itemId));
-	}
 
 	function handleAddressChange(index) {
 		console.log(user.addresses[index])
@@ -55,6 +40,7 @@ function CheckoutPage() {
 	function handlePaymentChange(e) {
 		setSelectedPaymentMethod(e.target.value);
 	}
+	
 
 	function handleOrder() {
 		if (selectedAddress && selectedPaymentMethod) {
@@ -72,16 +58,12 @@ function CheckoutPage() {
 		}
 	}
 
-	console.log('order ', order);
-	console.log('payment method ', selectedPaymentMethod);
 
 
 
 	return (
 		<div className="mx-auto w-[90%] max-w-[1500px] px-4 sm:px-6 lg:px-4 ">
-			{
-				items.length === 0 && <Navigate to='/' replace={true}></Navigate>
-			}
+			{items.length === 0 && <Navigate to='/' replace={true}></Navigate>}
 
 			{order && order.selectedPaymentMethod === 'card' && <Navigate to={`/stripe-checkout`} replace={true} />}
 
@@ -304,60 +286,7 @@ function CheckoutPage() {
 						<div className="flow-root">
 							<ul className="-my-6 divide-y divide-gray-200">
 								{items.map((item) => (
-									<li key={item.product.id} className="flex py-6">
-										<div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-											<img
-												src={item.product.images[0]}
-												alt={item.product.title}
-												className="h-full w-full object-cover object-center"
-											/>
-										</div>
-
-										<div className="ml-4 flex flex-1 flex-col">
-											<div>
-												<div className="flex justify-between text-base font-medium text-gray-900">
-													<h3>
-														<a href={item.product.href}>{item.product.title}</a>
-													</h3>
-													<div>
-														<p className="ml-4 line-through text-gray-400">${item.product.price * item.quantity}</p>
-														<p className="ml-4">${getDiscountprice(item.product.price * item.quantity, item.product.discountPercentage)}</p>
-													</div>
-												</div>
-												<p className="mt-1 text-sm text-gray-500">red</p>
-											</div>
-											<div className="flex flex-1 items-end justify-between text-sm">
-												<div className="text-gray-500">
-													<label htmlFor="quantity" className="inline text-sm mr-5 text-left font-medium leading-6 text-gray-900">
-														Qty
-													</label>
-													<select
-														id='quantity'
-														onChange={(e) => handleQuantityChange(e, item)}
-														value={item.quantity}
-														className='w-[65px] h-[40px]'
-
-													>
-														<option value="1">1</option>
-														<option value="2">2</option>
-														<option value="3">3</option>
-														<option value="4">4</option>
-														<option value="5">5</option>
-													</select>
-												</div>
-
-												<div className="flex">
-													<button
-														type="button"
-														className="font-medium text-indigo-600 hover:text-indigo-500"
-														onClick={() => handleDelete(item.id)}
-													>
-														Remove
-													</button>
-												</div>
-											</div>
-										</div>
-									</li>
+									<CartItem item={item} />
 								))}
 							</ul>
 						</div>
@@ -365,17 +294,11 @@ function CheckoutPage() {
 
 
 					<div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-						<div className="flex justify-between mx-2 my-2 text-base font-medium text-gray-900">
-							<p>Total Items in cart</p>
-							<p>{totalItems} items</p>
-						</div>
-						<div className="flex justify-between mx-2 my-2 text-base font-medium text-gray-900">
-							<p>Subtotal</p>
-							<div>
-								<p className='text-gray-400 line-through'>$ {totalPrice}</p>
-								<p>{totalDiscountPrice}</p>
-							</div>
-						</div>
+						<CartTotalStats
+							totalItems={totalItems}
+							totalPrice={totalPrice}
+							totalDiscountPrice={totalDiscountPrice}
+						/>
 						<p className="mt-0.5 mx-2 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 						<div className="mt-6 mx-auto max-w-[400px]">
 							<div
@@ -392,7 +315,6 @@ function CheckoutPage() {
 									<button
 										type="button"
 										className="font-medium text-indigo-600 hover:text-indigo-500"
-										onClick={() => setOpen(false)}
 									>
 										Continue Shopping
 										<span aria-hidden="true"> &rarr;</span>

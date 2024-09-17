@@ -1,4 +1,4 @@
-import Navbar from "../features/navbar";
+import Navbar from "../components/Navbar";
 import AdminProductList from "../features/admin/components/AdminProductList";
 
 

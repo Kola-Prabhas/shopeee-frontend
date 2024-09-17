@@ -26,9 +26,6 @@ export function fetchProductsByFilter(filter, sortOptions, pagination, admin) {
 	}
 
 
-	console.log('queryString ', queryString);
-
-
 
 	return new Promise(async resolve => {
 		const res = await fetch('http://localhost:8000/products?' + queryString, {

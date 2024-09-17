@@ -29,8 +29,6 @@ export function fetchUserInfo() {
 		});
 		const data = await res.json();
 
-		console.log(data);
-
 		resolve({ data });
 	})
 }

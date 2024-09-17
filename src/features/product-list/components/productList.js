@@ -1,15 +1,13 @@
 import React, { useState, Fragment, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, StarIcon } from '@heroicons/react/20/solid'
+import { Menu, Transition } from '@headlessui/react'
+import { ChevronDownIcon, FunnelIcon, Squares2X2Icon} from '@heroicons/react/20/solid'
 
 import { fetchBrandsAsync, fetchCategoriesAsync, fetchProductsByFilterAsync, selectAllProducts, selectBrands, selectCategories, selectTotalItems } from '../productSlice';
 
 import { ITEMS_PER_PAGE } from '../../../app/constants';
-import Pagination from '../../components/Pagination';
+import Pagination from '../../../components/Pagination';
 
 // import { getDiscountprice } from '../../../services/common';
 
@@ -114,7 +112,12 @@ export default function ProductList() {
 				<div className="bg-white">
 					<div>
 						{/* Mobile filter dialog */}
-						<MobileFilter mobileFiltersOpen={mobileFiltersOpen} setMobileFiltersOpen={setMobileFiltersOpen} filter={filter} handleFilter={handleFilter} filters={filters} />						
+						<MobileFilter
+							mobileFiltersOpen={mobileFiltersOpen}
+							setMobileFiltersOpen={setMobileFiltersOpen}
+							filter={filter} handleFilter={handleFilter}
+							filters={filters}
+						/>						
 
 						<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 							<div className="flex items-baseline justify-end border-b border-gray-200 pb-6 pt-4">

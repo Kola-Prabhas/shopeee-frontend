@@ -96,7 +96,7 @@ const router = createBrowserRouter([
 			{
 				path: "/logout",
 				element: <Protected><LogoutPage /></Protected>,
-			}	
+			},
 		]
 	},
 	{

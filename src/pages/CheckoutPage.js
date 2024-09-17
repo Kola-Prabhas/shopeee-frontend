@@ -14,6 +14,8 @@ function CheckoutPage() {
 	const dispatch = useDispatch();
 	const user = useSelector(selectUserInfo);
 	const order = useSelector(selectCurrentOrder);
+	const items = useSelector(selectCartItems);
+
 
 	const {
 		register,
@@ -25,7 +27,6 @@ function CheckoutPage() {
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('cash');
 
 
-	const items = useSelector(selectCartItems);
 	const totalItems = items.length;
 	const totalPrice = items.reduce((total, current) => total + current.product.price * current.quantity, 0);
 	const totalDiscountPrice = items.reduce((total, current) => total + current.product.discountPrice.toFixed(2) * current.quantity, 0)
@@ -63,7 +64,9 @@ function CheckoutPage() {
 
 	return (
 		<div className="mx-auto w-[90%] max-w-[1500px] px-4 sm:px-6 lg:px-4 ">
-			{items.length === 0 && <Navigate to='/' replace={true}></Navigate>}
+			{user.role === 'admin' && <Navigate to='/' replace={true} />}
+
+			{items.length === 0 && <Navigate to='/' replace={true} />}
 
 			{order && order.selectedPaymentMethod === 'card' && <Navigate to={`/stripe-checkout`} replace={true} />}
 

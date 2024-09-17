@@ -20,7 +20,7 @@ function ProductsSort({ setSort, sortOptions, setMobileFiltersOpen }) {
 
 
 	return ( 
-		<div className="flex items-center">
+		<div className="mt-6 flex items-center justify-end">
 			<Menu as="div" className="relative inline-block text-left">
 				<div>
 					<Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">

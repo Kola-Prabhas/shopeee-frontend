@@ -1,4 +1,4 @@
-import { selectCategories, selectBrands, updateProductAsync, selectProductById, fetchProductByIdAsync } from '../../product-list/productSlice';
+import { selectCategories, selectBrands, updateProductAsync, selectProductById, fetchProductByIdAsync } from '../../product/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import {  useEffect } from 'react';

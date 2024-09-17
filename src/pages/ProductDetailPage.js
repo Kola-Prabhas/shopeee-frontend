@@ -1,7 +1,8 @@
-import ProductDetails from "../features/product-list/components/productDetail";
+import ProductDetails from "../features/product/components/productDetail";
 
 
 function ProductDetailsPage() {
+
 	return (
 		<ProductDetails />
 	);

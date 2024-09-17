@@ -1,4 +1,4 @@
-import { selectCategories, selectBrands, addProductAsync } from '../../product-list/productSlice';
+import { selectCategories, selectBrands, addProductAsync } from '../../product/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';

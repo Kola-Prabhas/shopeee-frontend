@@ -12,8 +12,8 @@ import {
 } from '../productSlice';
 
 import ProductGrid from './productGrid';
-import MobileFilter from './MobileFilter';
-import DesktopFilter from './DesktopFilter';
+import MobileFilter from '../../../components/MobileFilter';
+import DesktopFilter from '../../../components/DesktopFilter';
 import ProductsSort from './productsSort';
 
 

@@ -31,12 +31,11 @@ export function loginUser(user) {
 		if (res.ok) {
 			const data = await res.json();
 
+			console.log('login data ', data)
+
 			resolve({ data });
 		} else {
 			const data = await res.json();
-			console.log('login error ', data);
-
-
 			reject({ data });
 		}		
 	})

@@ -13,7 +13,7 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignupPage';
 import LogoutPage from './pages/LogoutPage';
 
-import Home from './pages/Home';
+import HomePage from './pages/HomePage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
@@ -22,7 +22,6 @@ import UserProfilePage from './pages/UserProfilePage';
 import ProductDetailsPage from './pages/ProductDetailPage';
 
 
-import AdminHome from './pages/AdminHome';
 import AdminProductDetailPage from './pages/AdminProductDetailPage';
 
 import Protected from './features/auth/components/protected';
@@ -36,15 +35,6 @@ import AdminEditProductPage from './pages/AdminEditProductPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import StripeCheckout from './pages/StripeCheckout';
 
-import { positions, Provider } from "react-alert";
-import AlertTemplate from "react-alert-template-basic";
-
-
-const options = {
-	timeout: 5000,
-	position: positions.TOP_RIGHT,
-};
-
 
 const router = createBrowserRouter([
 	{
@@ -52,12 +42,12 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "/",
-				element: <Protected><Home /></Protected>,
+				element: <Protected><HomePage /></Protected>,
 			},
-			{
-				path: "/admin",
-				element: <AdminProtected><AdminHome /></AdminProtected>,
-			},
+			// {
+			// 	path: "/admin",
+			// 	element: <AdminProtected><AdminHome /></AdminProtected>,
+			// },
 			{
 				path: "/cart",
 				element: <Protected><CartPage /></Protected>,
@@ -133,13 +123,11 @@ const router = createBrowserRouter([
 
 
 function App() {
-  return (
-	  <div className="App">
-		  <Provider template={AlertTemplate} {...options}>
-			  <RouterProvider router={router} />
-		  </Provider>
-	  </div>
-  );
+	return (
+		<div className="App">
+			<RouterProvider router={router} />
+		</div>
+	);
 }
 
 export default App;

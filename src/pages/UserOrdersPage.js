@@ -1,4 +1,4 @@
-import UserOrders from "../features/user/components/UserOrders";
+import UserOrders from "../features/order/components/UserOrders";
 
 
 function UserOrdersPage() {

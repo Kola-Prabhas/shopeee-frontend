@@ -12,7 +12,6 @@ import { selectCartItemsStatus } from '../../cart/cartSlice';
 
 import CartQuantityChange from '../../cart/components/cartItemQuantityChange'
 
-import { useAlert } from "react-alert";
 
 import Modal from '../../../components/Modal';
 
@@ -33,8 +32,6 @@ export default function ProductDetails() {
 
 	const itemInCart = items.find(item => item.product?.id === product?.id);
 
-	const alert = useAlert();
-
 
 	const dispatch = useDispatch();
 	const params = useParams();
@@ -53,16 +50,12 @@ export default function ProductDetails() {
 				product: product.id,
 				quantity: 1,
 			}));
-
-			alert.success('Item Added to Cart');
 		}
 	}
 
 
 	function handleDelete(itemId) {
 		dispatch(deleteItemFromCartAsync(itemId));
-		alert.info('Item Removed from cart');
-
 	}
 
 
@@ -189,6 +182,7 @@ export default function ProductDetails() {
 												setOpen={setOpen}
 												itemId={itemInCart.id}
 												quantity={itemInCart.quantity}
+												stock={product.stock}
 											/>
 											<Link
 												to='/cart'
@@ -221,6 +215,9 @@ export default function ProductDetails() {
 								</li>
 								<li className='text-gray-600 font-semibold'>
 									Warranty: <span className='text-blue-600 font-medium'>{product.warrantyInformation}</span>
+								</li>
+								<li className='text-gray-600 font-semibold'>
+									Stock: <span className='text-blue-600 font-medium'>{product.stock}</span>
 								</li>
 								<li className='text-gray-600 font-semibold'>
 									Return Policy: <span className='text-blue-600 font-medium'>{product.returnPolicy}</span>

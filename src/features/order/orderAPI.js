@@ -1,15 +1,3 @@
-// A mock function to mimic making an async request for data
-export  function fetchCount(amount = 1) {
-	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8080', {
-			credentials: 'include', // Include cookies in the request
-		});
-		const data = await res.json();
-
-		resolve({ data });
-	}) 
-}
-
 export function createOrder(order) {
 	return new Promise(async resolve => {
 		const res = await fetch('http://localhost:8000/orders/', {
@@ -47,8 +35,6 @@ export function fetchAllOrders({ pagination, sortOptions, admin }) {
 		queryString += `${key}=${pagination[key]}&`;
 	}
 
-	console.log('sort options ', sortOptions);
-
 	for (let key in sortOptions) {
 		queryString += `${key}=${sortOptions[key]}&`;
 	}
@@ -56,8 +42,6 @@ export function fetchAllOrders({ pagination, sortOptions, admin }) {
 	if (admin) {
 		queryString += `admin=true&`;
 	}
-
-	console.log('queryString ', queryString);
 
 
 	return new Promise(async resolve => {
@@ -73,7 +57,6 @@ export function fetchAllOrders({ pagination, sortOptions, admin }) {
 
 
 		resolve({ data: {data, totalOrders} });
-
 	})
 }
 

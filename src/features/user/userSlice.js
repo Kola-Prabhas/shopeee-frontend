@@ -35,6 +35,14 @@ export const updateUserAsync = createAsyncThunk(
 export const userSlice = createSlice({
 	name: 'user',
 	initialState,
+	reducers: {
+		resetUser: state => {
+			console.log('In use reset User');
+			state.userInfo = null;
+
+			console.log('state.userInfo ', state.userInfo);
+		}
+	},
 
 	extraReducers: (builder) => {
 		builder
@@ -43,7 +51,9 @@ export const userSlice = createSlice({
 			})
 			.addCase(fetchOrdersByUserIdAsync.fulfilled, (state, action) => {
 				state.status = 'idle';
-				state.userInfo.orders = action.payload;
+				if (action.payload.length > 0) {
+					state.userInfo.orders = action.payload;
+				}
 			})
 			.addCase(fetchUserInfoAsync.pending, (state) => {
 				state.status = 'loading';
@@ -63,6 +73,7 @@ export const userSlice = createSlice({
 });
 
 
+export const { resetUser } = userSlice.actions;
 export const selectUserOrders = (state) => state.user.userInfo.orders;
 export const selectUserInfo = (state) => state.user.userInfo;
 

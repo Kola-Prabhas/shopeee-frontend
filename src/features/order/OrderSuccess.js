@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { resetOrder } from './orderSlice';
-import { resetCartAsync } from "../cart/cartSlice";
+import { clearCartAsync, selectCartItems } from "../cart/cartSlice";
 import { selectUserInfo } from "../user/userSlice";
 
 
@@ -10,11 +10,12 @@ export default function Order() {
 	const params = useParams();
 	const user = useSelector(selectUserInfo);
 	const dispatch = useDispatch();
+	const cartItems = useSelector(selectCartItems);
 
 	useEffect(() => {
-		dispatch(resetCartAsync());
+		dispatch(clearCartAsync(cartItems));
 		dispatch(resetOrder());
-	}, [user, dispatch]);
+	}, [user, dispatch, cartItems]);
 
 
 	return (

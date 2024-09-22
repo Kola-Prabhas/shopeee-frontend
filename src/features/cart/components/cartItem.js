@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteItemFromCartAsync } from '../cartSlice'
 import CartQuantityChange from "./cartItemQuantityChange";
-import { useAlert } from "react-alert";
 import { ThreeDots } from 'react-loader-spinner'
 import { selectCartItemsStatus } from '../../cart/cartSlice';
 
@@ -12,7 +11,6 @@ import { useState } from 'react';
 
 function CartItem({ item }) {
 	const dispatch = useDispatch();
-	const alert = useAlert();
 
 	const [open, setOpen] = useState(false);
 
@@ -21,7 +19,6 @@ function CartItem({ item }) {
 
 	function handleDelete(itemId) {
 		dispatch(deleteItemFromCartAsync(itemId));
-		alert.info(`${item.product.title} Removed from cart`);
 
 	}
 
@@ -71,13 +68,14 @@ function CartItem({ item }) {
 								message='Are you sure? Do you want to remove this item from cart?'
 								cancelOption='Cancel'
 								confirmOption='Remove'
-								cancelAction={() => setOpen(false)}
+								// cancelAction={() => setOpen(false)}
 								confirmAction={() => handleDelete(item.id)}
 							/>
 							<CartQuantityChange
 								setOpen={setOpen}
 								itemId={item.id}
 								quantity={item.quantity}
+								stock={item.product.stock}
 							/>
 
 							<div className="flex">

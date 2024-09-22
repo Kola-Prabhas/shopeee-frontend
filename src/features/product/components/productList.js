@@ -33,8 +33,6 @@ export default function ProductList() {
 	const categories = useSelector(selectCategories);
 	const brands = useSelector(selectBrands);
 
-	console.log('products ', products);
-
 	const productsStatus = useSelector(selectProductsStatus);
 
 	const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);

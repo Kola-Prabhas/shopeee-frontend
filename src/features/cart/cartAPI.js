@@ -33,7 +33,7 @@ export function fetchItemsByUserId() {
 
 export function updateItem(item) {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/cart/'+item.id, {
+		const res = await fetch('http://localhost:8000/cart/' + item.id, {
 			method: 'PATCH',
 			credentials: 'include', // Include cookies in the request
 			headers: {
@@ -60,7 +60,7 @@ export function deleteItem(itemId) {
 				'Content-Type': 'application/json',
 			},
 		});
-		
+
 		await res.json();
 
 
@@ -73,14 +73,31 @@ export function deleteItem(itemId) {
 }
 
 
-export async function resetCart() {
-	const res = await fetchItemsByUserId();
-	const items = await res.data;
+export async function clearCart(cartItems) {
+	const cartItemIds = [];
 
-	for (let item of items) {
-		await deleteItem(item.id);
+	for (const item of cartItems) {
+		cartItemIds.push(item.id)
 	}
 
-	new Promise.resolve({ data: { status: 'successful' } })
+	console.log('cartItems ', cartItems)
+	console.log('cartItemIds ', cartItemIds)
 
+	try {
+		const res = await fetch('http://localhost:8000/cart/', {
+			method: 'DELETE',
+			credentials: 'include', // Include cookies in the request
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ cartItemIds })
+		});
+
+		const data = await res.json();
+
+		return { data };
+	} catch (e) {
+		console.log(e);
+		throw e;
+	}
 }

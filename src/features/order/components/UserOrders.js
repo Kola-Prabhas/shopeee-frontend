@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
-import { selectUserOrders } from '../userSlice';
+import { selectUserOrders } from '../../user/userSlice';
 import { Link } from 'react-router-dom';
-import { selectOrdersStatus} from '../../order/orderSlice';
+import { selectOrdersStatus} from '../orderSlice';
 
 import { ThreeDots } from 'react-loader-spinner'
 
@@ -10,6 +10,7 @@ export default function UserOrders() {
 	const orders = useSelector(selectUserOrders);
 	const ordersStatus = useSelector(selectOrdersStatus);
 
+	console.log('orders ', orders);
 
 	return (
 		<>
@@ -52,7 +53,10 @@ export default function UserOrders() {
 														<h3>
 															<a href={item.product.href}>{item.product.title}</a>
 														</h3>
-														<p className="ml-4">${item.product.price * item.quantity}</p>
+														<div>
+															<p className="ml-4 line-through text-gray-400">${(item.product.price * item.quantity).toFixed(2)}</p>
+															<p className="ml-4">${(item.product.discountPrice * item.quantity).toFixed(2)}</p>
+														</div>
 													</div>
 													{/* <p className="mt-1 text-sm text-gray-500">red</p> */}
 												</div>
@@ -74,9 +78,12 @@ export default function UserOrders() {
 								<p>Total Items in cart</p>
 								<p>{order.totalItems} items</p>
 							</div>
-							<div className="flex justify-between mx-2 my-2 text-base font-medium text-gray-900">
+							<div className="flex justify-between mx-2 mt-2 mb-4 text-base font-medium text-gray-900">
 								<p>Subtotal</p>
-								<p>$ {order.totalPrice}</p>
+								<div>
+									<p className='line-through text-gray-400'>${order.totalPrice}</p>
+									<p>${order.totalDiscountPrice}</p>
+								</div>
 							</div>
 							<div className="border-b px-2 sm:px-6 md:px-8 xl:px-16 border-gray-900/10 pb-12">
 								<h2 className="text-xl text-center font-semibold leading-7 text-indigo-600">Shipping Details</h2>

@@ -132,6 +132,8 @@ export const authSlice = createSlice({
 			})
 			.addCase(logoutUserAsync.fulfilled, (state) => {
 				state.status = 'idle';
+
+				console.log('This code executed');
 				state.loggedInUser = null;
 			})
 			.addCase(resetPasswordRequestAsync.pending, (state) => {

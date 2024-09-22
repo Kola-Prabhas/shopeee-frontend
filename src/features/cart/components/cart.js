@@ -1,23 +1,32 @@
 // import { useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { ThreeDots } from 'react-loader-spinner'
 
-import { selectCartItems, selectCartItemsStatus } from '../cartSlice';
+import { clearCartAsync, selectCartItems, selectCartItemsStatus } from '../cartSlice';
 
 import CartItem from './cartItem';
 import CartTotalStats from './cartTotalStats';
+import Modal from '../../../components/Modal';
+import { useState } from 'react';
 
 
 export default function Cart() {
+	const [open, setOpen] = useState(false);
 	const items = useSelector(selectCartItems);
-
 	const cartItemsStatus = useSelector(selectCartItemsStatus);
+
+	const dispatch = useDispatch();
+
 
 	const totalItems = items.length;
 	const totalPrice = items.reduce((total, current) => total + current.product.price * current.quantity, 0);
-	const totalDiscountPrice = items.reduce((total, current) => total + current.product.discountPrice.toFixed(2) * current.quantity, 0)
+	const totalDiscountPrice = items.reduce((total, current) => total + current.product.discountPrice.toFixed(2) * current.quantity, 0);
+
+	function handleClearCart() {
+		dispatch(clearCartAsync(items));
+	}
 
 
 	return (
@@ -37,8 +46,24 @@ export default function Cart() {
 			<div className="min-h-[70vh] mx-auto max-w-5xl p-4 sm:p-6 lg:px-8 bg-[#f9f9f9]">
 				<h1 className="text-4xl mb-4 font-bold tracking-tight text-gray-900 text-center">Cart</h1>
 				{items.length > 0 && <>
-					<div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-						<div className="flow-root">
+					<div className="relative border-t border-gray-200 px-4 py-6 sm:px-6">
+						<button
+							onClick={() => setOpen(true)}
+							className='absolute right-0 -mt-2 mb-4 px-2 py-1 rounded-md hover:bg-red-500 hover:text-white duration-500 active:scale-90 border border-red-200 text-red-500 text-sm font-medium'
+						>
+							Clear Cart
+						</button>
+						<Modal
+							open={open}
+							setOpen={setOpen}
+							title='Do you really want to clear your cart?'
+							message='This will remove all items from you cart!'
+							cancelOption='Cancel'
+							confirmOption='Clear'
+							// cancelAction={() => }
+							confirmAction={handleClearCart}
+						/>
+						<div className="flow-root mt-10">
 							<ul className="-my-6 divide-y divide-gray-200">
 								{items?.map((item) => {
 									return <CartItem key={item.product.id} item={item} />
@@ -77,9 +102,9 @@ export default function Cart() {
 						</div>
 					</div>
 				</>}
-					{items.length === 0 && <h3 className="mt-20 text-xl font-semibold tracking-tight text-indigo-500 text-center">
-						Your cart is empty. Add items to cart to view them here
-					</h3>}
+				{items.length === 0 && <h3 className="mt-20 text-xl font-semibold tracking-tight text-indigo-500 text-center">
+					Your cart is empty. Add items to cart to view them here
+				</h3>}
 			</div>
 		)
 	);

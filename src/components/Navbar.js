@@ -4,23 +4,15 @@ import { Link } from 'react-router-dom';
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { selectCartItems, fetchItemsByUserIdAsync } from '../features/cart/cartSlice';
+import { fetchOrdersByUserIdAsync, fetchUserInfoAsync, selectUserInfo } from '../features/user/userSlice';
 import { selectUser } from '../features/auth/authSlice';
-import { fetchOrdersByUserIdAsync, fetchUserInfoAsync } from '../features/user/userSlice';
 
-
-
-const user = {
-	name: 'Tom Cook',
-	email: 'tom@example.com',
-	imageUrl:
-		'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
 
 // Links in the navbar
 const navigation = [
 	{ name: 'Home', link: '/', user: true },
 	{ name: 'Orders', link: '/user-orders', user: true },
-	{ name: 'Admin Home', link: '/admin', admin: true },
+	{ name: 'Admin Home', link: '/', admin: true },
 	{ name: 'Orders Dashboard', link: '/admin/orders', admin: true },
 
 ]
@@ -37,22 +29,28 @@ function classNames(...classes) {
 }
 
 
-
 export default function Navbar({ children }) {
-	const userInfo = useSelector(selectUser);
+	const userInfo = useSelector(selectUserInfo);
+	const user = useSelector(selectUser);
 	const items = useSelector(selectCartItems);
 	const dispatch = useDispatch();
 
+	console.log('In navbar');
 
+	
 	useEffect(() => {
-		dispatch(fetchUserInfoAsync());
-		if (userInfo?.role !== 'admin') {
-			dispatch(fetchOrdersByUserIdAsync());
+		if (!userInfo && user) {
+			dispatch(fetchUserInfoAsync());
+		}
+
+		if (userInfo && userInfo.role !== 'admin') {
 			dispatch(fetchItemsByUserIdAsync());
 		}
-	}, [dispatch, userInfo]);
 
-	// console.log('user info ', userInfo);
+		if (userInfo && userInfo.role !== 'admin' && userInfo.orders.length === 0) {
+			dispatch(fetchOrdersByUserIdAsync());
+		}
+	}, [dispatch, userInfo, user]);
 
 
 	return (
@@ -74,6 +72,8 @@ export default function Navbar({ children }) {
 									<div className="hidden md:block">
 										<div className="ml-10 flex items-baseline space-x-4">
 											{navigation.map((item) => {
+												console.log('userInfo ', userInfo);
+												
 												return item[userInfo.role] && (
 													<Link
 														key={item.name}
@@ -106,7 +106,7 @@ export default function Navbar({ children }) {
 													<ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
 												</button>
 											</Link>
-											<span className="inline-flex items-center rounded-full mb-5 -ml-3 z-10 bg-indigo-50 px-1.5 py-0.5 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10">
+											<span className="size-[20px] shrink-0 inline-flex items-center justify-center rounded-[50%] mb-5 -ml-3 z-10 bg-indigo-50 text-xs font-bold text-indigo-700 ring-1 ring-inset ring-indigo-700/10">
 												{items.length}
 											</span>
 										</>}
@@ -114,10 +114,14 @@ export default function Navbar({ children }) {
 										{/* Profile dropdown */}
 										<Menu as="div" className="relative ml-3">
 											<div>
-												<Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+												<Menu.Button className="relative flex max-w-xs items-center rounded-full  text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
 													<span className="absolute -inset-1.5" />
 													<span className="sr-only">Open user menu</span>
-													<img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
+													<img
+														src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+														className="h-8 w-8 rounded-full z-20"
+														alt=""
+													/>
 												</Menu.Button>
 											</div>
 											<Transition
@@ -198,8 +202,12 @@ export default function Navbar({ children }) {
 							<div className="border-t border-gray-700 pb-3 pt-4">
 								<div className="flex justify-between items-center px-2">
 									<div className='flex items-center px-5'>
-										<div className="flex-shrink-0">
-											<img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
+										<div className="shrink-0">
+											<img
+												src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+												className="h-10 w-10 rounded-full"
+												alt=""
+											/>
 										</div>
 										<div className="ml-3">
 											<div className="text-base font-medium leading-none text-white">{userInfo.name}</div>
@@ -217,7 +225,7 @@ export default function Navbar({ children }) {
 												<ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
 											</button>
 										</Link>
-										<span className="inline-flex items-center rounded-full mb-8 -ml-3 z-10 bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10">
+										<span className="size-[20px] shrink-0 inline-flex items-center justify-center rounded-[50%] mb-8 -ml-3 z-10 bg-indigo-50 text-xs font-bold text-indigo-700 ring-1 ring-inset ring-indigo-700/10">
 											{items.length}
 										</span>
 									</div>

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCartItems } from '../features/cart/cartSlice';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useAlert } from "react-alert";
 import { createOrderAsync, selectCurrentOrder, selectCurrentOrderStatus } from '../features/order/orderSlice';
 import { selectUserInfo, updateUserAsync } from '../features/user/userSlice';
 
@@ -21,8 +20,6 @@ function CheckoutPage() {
 	const items = useSelector(selectCartItems);
 
 	const currentOrderStatus = useSelector(selectCurrentOrderStatus);
-
-	const alert = useAlert();
 
 
 	const {
@@ -52,19 +49,12 @@ function CheckoutPage() {
 
 
 	function handleOrder() {
-		if (!selectedAddress) {
-			alert.info('Please select address to order');
-		}
-
-		if (!selectedPaymentMethod) {
-			alert.info('Please select payment method to order');
-		}
-
 		if (selectedAddress && selectedPaymentMethod) {
 			const order = {
 				items,
 				totalItems,
-				totalPrice: totalDiscountPrice,
+				totalPrice,
+				totalDiscountPrice,
 				user: user.id,
 				selectedAddress,
 				selectedPaymentMethod,
@@ -74,8 +64,6 @@ function CheckoutPage() {
 			dispatch(createOrderAsync(order));
 		}
 	}
-
-
 
 
 	return (

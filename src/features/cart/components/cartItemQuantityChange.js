@@ -1,13 +1,11 @@
 import { useDispatch } from 'react-redux';
 import { deleteItemFromCartAsync, updateItemAsync } from '../cartSlice'
-import { useAlert } from "react-alert";
 
 
 
-function CartQuantityChange({setOpen, itemId, quantity }) {
+function CartQuantityChange({setOpen, itemId, quantity, stock }) {
 	const dispatch = useDispatch();
 
-	const alert = useAlert();
 
 
 	function handleQuantityChange(quantity, itemId) {
@@ -15,7 +13,6 @@ function CartQuantityChange({setOpen, itemId, quantity }) {
 			id: itemId,
 			quantity: quantity
 		}));
-		alert.success('Item updated successfully');
 	}
 
 
@@ -37,8 +34,9 @@ function CartQuantityChange({setOpen, itemId, quantity }) {
 			<p className='text-gray-400 text-lg'>{quantity}</p>
 			<button
 				type='button'
+				disabled={quantity === stock}
 				onClick={() => handleQuantityChange(quantity + 1, itemId)}
-				className='size-[30px] flex items-center justify-center active:scale-90 duration-900 hover:bg-gray-100 rounded'
+				className={`${quantity === stock? 'cursor-not-allowed': ''} size-[30px] flex items-center justify-center active:scale-90 duration-900 hover:bg-gray-100 rounded`}
 			>
 				<img src='/plus-icon.svg' alt='Plus Icon' className='size-[20px]' />
 			</button>

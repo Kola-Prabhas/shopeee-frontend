@@ -28,7 +28,7 @@ export default function AdminProduct({ product }) {
 						</div>
 						<div>
 							<p className="text-sm font-medium line-through text-gray-400">${product.price}</p>
-							<p className="text-sm font-medium text-gray-900">${product.discountPrice.toFixed(2)}</p>
+							<p className="text-sm font-medium text-gray-900">${product.discountPrice?.toFixed(2)}</p>
 						</div>
 					</div>
 					{product.deleted && <p className='text-sm text-center font-bold text-red-500'>Product Deleted!</p>}

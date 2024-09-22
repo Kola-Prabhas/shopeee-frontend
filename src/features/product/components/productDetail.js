@@ -1,12 +1,21 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchProductByIdAsync, selectProductById } from '../productSlice'
-import { addToCartAsync, selectCartItems } from '../../cart/cartSlice'
-import { selectUser } from '../../auth/authSlice'
+
+import { ThreeDots } from 'react-loader-spinner'
+
+import { fetchProductByIdAsync, selectProductById, selectProductStatus } from '../productSlice'
+import { addToCartAsync, selectCartItems, deleteItemFromCartAsync, } from '../../cart/cartSlice'
+import { selectUser } from '../../auth/authSlice';
+import { selectCartItemsStatus } from '../../cart/cartSlice';
 
 import CartQuantityChange from '../../cart/components/cartItemQuantityChange'
+
+import { useAlert } from "react-alert";
+
+import Modal from '../../../components/Modal';
+
 
 
 function classNames(...classes) {
@@ -14,11 +23,17 @@ function classNames(...classes) {
 }
 
 export default function ProductDetails() {
+	const [open, setOpen] = useState(false);
 	const user = useSelector(selectUser);
 	const product = useSelector(selectProductById);
 	const items = useSelector(selectCartItems);
+	const productStatus = useSelector(selectProductStatus);
+	const cartItemsStatus = useSelector(selectCartItemsStatus);
+
+
 	const itemInCart = items.find(item => item.product?.id === product?.id);
 
+	const alert = useAlert();
 
 
 	const dispatch = useDispatch();
@@ -38,15 +53,37 @@ export default function ProductDetails() {
 				product: product.id,
 				quantity: 1,
 			}));
+
+			alert.success('Item Added to Cart');
 		}
+	}
+
+
+	function handleDelete(itemId) {
+		dispatch(deleteItemFromCartAsync(itemId));
+		alert.info('Item Removed from cart');
+
 	}
 
 
 
 
 	return (
-		product && <div className="bg-white">
-			<div className="pt-6">
+		productStatus === 'loading' ? (
+			<div className='min-h-[100vh] flex items-center justify-center'>
+				<ThreeDots
+					visible={true}
+					height="80"
+					width="80"
+					color="#4F46E5"
+					radius="10"
+					ariaLabel="three-dots-loading"
+					wrapperStyle={{}}
+					wrapperClass=""
+				/>
+			</div>
+		) : (
+			product && <div className="pt-6 bg-white">
 				{/* Image gallery */}
 				<div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
 					<div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
@@ -124,14 +161,43 @@ export default function ProductDetails() {
 									Add to Cart
 								</button>
 							) : (
-								<div className='flex items-center jsutify-center'>
-									<CartQuantityChange itemId={itemInCart.id} quantity={itemInCart.quantity} />
-									<Link
-										to='/cart'
-										className="w-full flex items-center justify-center rounded-md border border-indigo-600 text-indigo-600 px-8 py-3 text-base font-medium bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-									>
-										View Cart
-									</Link>
+								<div className='flex items-center justify-center'>
+									{cartItemsStatus === 'loading' ? (
+										<ThreeDots
+											visible={true}
+											height="50"
+											width="50"
+											color="#4F46E5"
+											radius="10"
+											ariaLabel="three-dots-loading"
+											wrapperStyle={{}}
+											wrapperClass=""
+										/>
+									) : (
+										<>
+											<Modal
+												open={open}
+												setOpen={setOpen}
+												title={`Remove ${product.title}!`}
+												message='Are you sure? Do you want to remove this item from cart?'
+												cancelOption='Cancel'
+												confirmOption='Remove'
+												// cancelAction={() => setItemId(-1)}
+												confirmAction={() => handleDelete(product.id)}
+											/>
+											<CartQuantityChange
+												setOpen={setOpen}
+												itemId={itemInCart.id}
+												quantity={itemInCart.quantity}
+											/>
+											<Link
+												to='/cart'
+												className="w-full flex items-center justify-center rounded-md border border-indigo-600 text-indigo-600 px-8 py-3 text-base font-medium bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+											>
+												View Cart
+											</Link>
+										</>
+									)}
 								</div>
 							)}
 						</form>}
@@ -167,6 +233,5 @@ export default function ProductDetails() {
 					</div>
 				</div>
 			</div>
-		</div>
-	)
+		))
 }

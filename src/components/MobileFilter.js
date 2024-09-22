@@ -1,8 +1,10 @@
-import { Fragment} from 'react';
+import { Fragment } from 'react';
 import { Dialog, Disclosure, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import {  MinusIcon, PlusIcon} from '@heroicons/react/20/solid'
-
+import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
+import { TailSpin } from 'react-loader-spinner'
+import { useSelector } from 'react-redux';
+import { selectBrandsStatus, selectCategoriesStatus } from '../features/product/productSlice';
 
 export default function MobileFilter({
 	mobileFiltersOpen,
@@ -11,7 +13,10 @@ export default function MobileFilter({
 	setFilter,
 	filters
 }) {
-	
+	const brandsStatus = useSelector(selectBrandsStatus);
+	const categoriesStatus = useSelector(selectCategoriesStatus);
+
+
 	function handleFilter(e, section, option) {
 		const newFilter = { ...filter };
 
@@ -82,27 +87,43 @@ export default function MobileFilter({
 													</Disclosure.Button>
 												</h3>
 												<Disclosure.Panel className="pt-6">
-													<div className="space-y-6">
-														{section.options.map((option, optionIdx) => (
-															<div key={option.value} className="flex items-center">
-																<input
-																	id={`filter-mobile-${section.id}-${optionIdx}`}
-																	name={`${section.id}[]`}
-																	defaultValue={option.value}
-																	type="checkbox"
-																	onChange={(e) => handleFilter(e, section, option)}
-																	defaultChecked={filter[section.id]?.includes(option.value)}
-																	className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+													{(section.name === 'Brands' && brandsStatus === 'loading')
+														|| (section.name === 'Category' && categoriesStatus === 'loading')
+														? (
+															<div className='mt-2 flex items-center justify-center'>
+																<TailSpin
+																	visible={true}
+																	height="50"
+																	width="50"
+																	color="#4F46E5"
+																	ariaLabel="tail-spin-loading"
+																	radius="1"
+																	wrapperStyle={{}}
+																	wrapperClass=""
 																/>
-																<label
-																	htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-																	className="ml-3 min-w-0 flex-1 text-gray-500"
-																>
-																	{option.label}
-																</label>
 															</div>
-														))}
-													</div>
+														) : (
+															<div className="space-y-6">
+																{section.options.map((option, optionIdx) => (
+																	<div key={option.value} className="flex items-center">
+																		<input
+																			id={`filter-mobile-${section.id}-${optionIdx}`}
+																			name={`${section.id}[]`}
+																			defaultValue={option.value}
+																			type="checkbox"
+																			onChange={(e) => handleFilter(e, section, option)}
+																			defaultChecked={filter[section.id]?.includes(option.value)}
+																			className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+																		/>
+																		<label
+																			htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
+																			className="ml-3 min-w-0 flex-1 text-gray-500"
+																		>
+																			{option.label}
+																		</label>
+																	</div>
+																))}
+															</div>)}
 												</Disclosure.Panel>
 											</>
 										)}

@@ -39,6 +39,7 @@ export function updateUser(update) {
 
 		const res = await fetch('http://localhost:8000/users/' + update.id, {
 			method: 'PATCH',
+			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},

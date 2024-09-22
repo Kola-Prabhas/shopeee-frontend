@@ -9,6 +9,7 @@ export default function Product({ product }) {
 					<img
 						src={product.thumbnail}
 						alt={product.title}
+						loading='lazy'
 						className="h-full w-full object-cover object-center lg:h-full lg:w-full"
 					/>
 				</div>

@@ -68,8 +68,6 @@ export function fetchProductById(id) {
 		});
 		const data = await res.json();
 
-		console.log(data);
-
 		resolve({ data });
 	})
 }
@@ -93,8 +91,6 @@ export function addProduct(product) {
 }
 
 export function updateProduct(update) {
-	console.log('Updated product ', update);
-
 	return new Promise(async resolve => {
 		const res = await fetch('http://localhost:8000/products/' + update.id, {
 			method: 'PATCH',

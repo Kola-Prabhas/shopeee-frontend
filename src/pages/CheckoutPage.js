@@ -3,11 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCartItems } from '../features/cart/cartSlice';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { createOrderAsync, selectCurrentOrder } from '../features/order/orderSlice';
+import { useAlert } from "react-alert";
+import { createOrderAsync, selectCurrentOrder, selectCurrentOrderStatus } from '../features/order/orderSlice';
 import { selectUserInfo, updateUserAsync } from '../features/user/userSlice';
+
+import { ThreeDots } from 'react-loader-spinner'
 
 import CartItem from '../features/cart/components/cartItem';
 import CartTotalStats from '../features/cart/components/cartTotalStats';
+
 
 
 function CheckoutPage() {
@@ -15,6 +19,10 @@ function CheckoutPage() {
 	const user = useSelector(selectUserInfo);
 	const order = useSelector(selectCurrentOrder);
 	const items = useSelector(selectCartItems);
+
+	const currentOrderStatus = useSelector(selectCurrentOrderStatus);
+
+	const alert = useAlert();
 
 
 	const {
@@ -41,14 +49,22 @@ function CheckoutPage() {
 	function handlePaymentChange(e) {
 		setSelectedPaymentMethod(e.target.value);
 	}
-	
+
 
 	function handleOrder() {
+		if (!selectedAddress) {
+			alert.info('Please select address to order');
+		}
+
+		if (!selectedPaymentMethod) {
+			alert.info('Please select payment method to order');
+		}
+
 		if (selectedAddress && selectedPaymentMethod) {
 			const order = {
 				items,
 				totalItems,
-				totalPrice,
+				totalPrice: totalDiscountPrice,
 				user: user.id,
 				selectedAddress,
 				selectedPaymentMethod,
@@ -63,8 +79,8 @@ function CheckoutPage() {
 
 
 	return (
-		<div className="mx-auto w-[90%] max-w-[1500px] px-4 sm:px-6 lg:px-4 ">
-			{user.role === 'admin' && <Navigate to='/' replace={true} />}
+		<div className="mx-auto w-[95%] max-w-[1500px] px-2 ">
+			{user?.role === 'admin' && <Navigate to='/' replace={true} />}
 
 			{items.length === 0 && <Navigate to='/' replace={true} />}
 
@@ -205,7 +221,7 @@ function CheckoutPage() {
 
 						<div className="border-b border-gray-900/10 pb-12">
 							<h2 className="text-base font-semibold leading-7 text-gray-900">Addresses</h2>
-							{user.addresses.length > 0 ? (
+							{user?.addresses.length > 0 ? (
 								<p className="mt-1 text-sm leading-6 text-gray-600">
 									Choose from existing addresses
 								</p>
@@ -215,7 +231,7 @@ function CheckoutPage() {
 								</p>
 							)}
 							<ul className="divide-y divide-gray-100">
-								{user.addresses.map((address, index) => (
+								{user?.addresses.map((address, index) => (
 									<li key={index} className="flex justify-between gap-x-6 py-5">
 										<div className="flex min-w-0 gap-x-4">
 											<input
@@ -304,12 +320,27 @@ function CheckoutPage() {
 						/>
 						<p className="mt-0.5 mx-2 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 						<div className="mt-6 mx-auto max-w-[400px]">
-							<div
-								onClick={handleOrder}
-								className="flex items-center justify-center cursor-pointer rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-							>
-								Order Now
-							</div>
+							{currentOrderStatus === 'loading' ? (
+								<div className='flex justify-center'>
+									<ThreeDots
+										visible={true}
+										height="50"
+										width="50"
+										color="#4F46E5"
+										radius="10"
+										ariaLabel="three-dots-loading"
+										wrapperStyle={{}}
+										wrapperClass=""
+									/>
+								</div>
+								) : (
+								<div
+									onClick={handleOrder}
+									className="flex items-center justify-center cursor-pointer rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+								>
+									Order Now
+								</div>
+							)}
 						</div>
 						<div className="mt-6 flex justify-center text-center text-sm text-gray-500">
 							<p>

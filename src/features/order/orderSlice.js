@@ -5,7 +5,8 @@ const initialState = {
 	orders: [],
 	currentOrder: null,
 	totalOrders: 0,
-    status: 'idle',
+	ordersStatus: 'idle',
+	currentOrderStatus: 'idle'
 };
 
 
@@ -46,26 +47,26 @@ export const orderSlice = createSlice({
   extraReducers: (builder) => {
     builder
 		.addCase(createOrderAsync.pending, (state) => {
-		    state.status = 'loading';
+		    state.currentOrderStatus = 'loading';
 		})
 		.addCase(createOrderAsync.fulfilled, (state, action) => {
-			state.status = 'idle';
+			state.currentOrderStatus = 'idle';
 			state.orders.push(action.payload);
 			state.currentOrder = action.payload;
 		})
 		.addCase(fetchAllOrdersAsync.pending, (state) => {
-			state.status = 'loading';
+			state.ordersStatus = 'loading';
 		})
 		.addCase(fetchAllOrdersAsync.fulfilled, (state, action) => {
-			state.status = 'idle';
+			state.ordersStatus = 'idle';
 			state.orders = action.payload.data;
 			state.totalOrders = action.payload.totalOrders;
 		})
 		.addCase(updateOrderAsync.pending, (state) => {
-			state.status = 'loading';
+			state.ordersStatus = 'loading';
 		})
 		.addCase(updateOrderAsync.fulfilled, (state, action) => {
-			state.status = 'idle';
+			state.ordersStatus = 'idle';
 			state.orders = state.orders.map(order => {
 				if (order.id === action.payload.id) {
 					return action.payload;
@@ -82,5 +83,8 @@ export const selectCurrentOrder = (state) => state.order.currentOrder;
 export const selectOrders = (state) => state.order.orders;
 export const selectTotalOrders = (state) => state.order.totalOrders;
 export const { resetOrder } = orderSlice.actions;
+
+export const selectOrdersStatus = (state) => state.order.ordersStatus
+export const selectCurrentOrderStatus = (state) => state.order.currentOrderStatus
 
 export default orderSlice.reducer;

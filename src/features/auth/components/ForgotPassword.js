@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import {  useState } from "react";
-// import {  useSelector } from "react-redux";
-// import {   selectUser } from "../authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectMailSent, resetPasswordRequestAsync, selectMailSentStatus } from "../authSlice";
+import { ThreeDots } from 'react-loader-spinner'
 
 
 
@@ -11,10 +12,16 @@ export default function ForgotPassword() {
 	const [email, setEmail] = useState('');
 	const [emailError, setEmailError] = useState(false);
 
-	// const user = useSelector(selectUser);
+	const disabled = email === '' || emailError;
+	
+	const dispatch = useDispatch();
 
-	const disabled = email === '' ||  emailError;
+	const mailSentStatus = useSelector(selectMailSentStatus);
+	const mailSent = useSelector(selectMailSent);
 
+	// let mailSent = true;
+
+	// let mailSentStatus = 'idle';
 
 
 
@@ -41,20 +48,21 @@ export default function ForgotPassword() {
 	}
 
 	function handleSubmit(e) {
-		
+		e.preventDefault();
+		dispatch(resetPasswordRequestAsync(email));
+		setEmail('');
 	}
 
 	return (
 		<>
-			{
-				// user && <Navigate to='/' replace={true}></Navigate>
+			{//user && <Navigate to='/' replace={true}></Navigate> 
 			}
 			<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
 				<div className="sm:mx-auto sm:w-full sm:max-w-sm">
 					<img
 						className="mx-auto h-10 w-auto"
-						src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-						alt="Your Company"
+						src="/ecommerce.png"
+						alt="Swift Store"
 					/>
 					<h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
 						Reset password
@@ -73,31 +81,56 @@ export default function ForgotPassword() {
 									id="email"
 									name="email"
 									type="email"
+									autoFocus={true}
 									autoComplete="email"
 									value={email}
 									onChange={handleEmailChange}
 									className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 								/>
-								<p className="text-red-900 text-sm font-semibold">{emailError && 'Invalid Email Address'}</p>
+								<p className="text-red-500 italic text-sm font-semibold">{emailError && 'Invalid Email Address'}</p>
 							</div>
 						</div>
 						<div>
-							<button
-								type="submit"
-								className={`${disabled ? 'bg-gray-200 text-gray-800 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-500 cursor-pointer'} flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6  shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
-								disabled={disabled}
-							>
-								Send Email
-							</button>
+							{mailSentStatus === 'idle' && (
+								<button
+									type="submit"
+									className={`${disabled ? 'bg-gray-200 text-gray-800 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-500 cursor-pointer'} flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6  shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+									disabled={disabled}
+								>
+									Send Email
+								</button>
+							)}
+
+							{mailSentStatus === 'loading' && (
+								<div className="flex justify-center">
+									<ThreeDots
+										visible={true}
+										height="50"
+										width="50"
+										color="#4F46E5"
+										radius="10"
+										ariaLabel="three-dots-loading"
+										wrapperStyle={{}}
+										wrapperClass=""
+									/>
+							    </div>
+							)}
+
+							{/* {mailSent && mailSentStatus === 'idle' && (
+								<p className="mt-10 text-center text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+									We have sent a link to your gmail to reset password.									
+								</p>
+							)} */}
+							
 						</div>
 					</form>
 
-					<p className="mt-10 text-center text-sm text-gray-500">
-						Back to ?{' '}
+					{mailSentStatus !== 'loading' && <p className="mt-10 text-center text-sm text-gray-500">
+						Back to {' '}
 						<Link to='/signup' className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
 							Login
 						</Link>
-					</p>
+					</p>}
 				</div>
 			</div>
 		</>

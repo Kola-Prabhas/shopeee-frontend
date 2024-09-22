@@ -1,61 +1,40 @@
 import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ThreeDots } from 'react-loader-spinner'
-import { createUserAsync, selectUser, selectSignUpError, selectAuthStatus } from "../authSlice";
+import { selectPasswordReset, selectPasswordResetStatus, resetPasswordAsync } from "../authSlice";
 import { useDispatch, useSelector } from 'react-redux';
 
-const initialSignupDetails = {
-	email: '',
-	password: '',
-	"confirm-password": ''
-}
 
-export default function SignUp() {
-	const [signupDetails, setSignupDetails] = useState(initialSignupDetails);
+export default function ResetPassword() {
+	const [passwords, setPasswords] = useState({password: '', 'confirm-password': ''});
 	const [passwordError, setPasswordError] = useState(false);
-	const [emailError, setEmailError] = useState(false);
 
-	const disabled = signupDetails.email === '' || signupDetails.password === '' ||
-		signupDetails["confirm-password"] === '' || emailError || passwordError;
+	const disabled = passwords.password === '' ||
+		passwords["confirm-password"] === '' || passwordError;
 
 	const dispatch = useDispatch();
-	const user = useSelector(selectUser);
-	const signUpError = useSelector(selectSignUpError);
-	const authStatus = useSelector(selectAuthStatus);
 
+	const passwordReset = useSelector(selectPasswordReset)
+	const passwordResetStatus = useSelector(selectPasswordResetStatus)
 
+	const query = new URLSearchParams(window.location.search);
+	const email = query.get('email');
+	const token = query.get('token');
 
 
 	function handleChange(e) {
-		const newDetails = {
-			...signupDetails,
+		const newPasswords = {
+			...passwords,
 			[e.target.id]: e.target.value
 		};
 
 		// Validate 
-
-		const emailError = validateEmail(e);
 		const passwordError = validatePassword(e);
 
-		
-
-		setEmailError(emailError);
 		setPasswordError(passwordError);
-		setSignupDetails(newDetails);
+		setPasswords(newPasswords);
 	}
 
-
-	function validateEmail(e) {
-		const validEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-
-		if (e.target.id !== 'email' || e.target.value === '') {
-			return emailError;
-		}
-
-
-		return e.target.value.match(validEmail) == null;
-				
-	}
 
 	function validatePassword(e) {
 		const id = e.target.id;
@@ -65,12 +44,11 @@ export default function SignUp() {
 		}
 
 
-		if (id === 'password' && signupDetails['confirm-password'] !== '') {
-			return e.target.value !== signupDetails['confirm-password'];
-		} else if (id === 'confirm-password' && signupDetails['password'] !== '') {
-			return e.target.value !== signupDetails['password'];
+		if (id === 'password' && passwords['confirm-password'] !== '') {
+			return e.target.value !== passwords['confirm-password'];
+		} else if (id === 'confirm-password' && passwords['password'] !== '') {
+			return e.target.value !== passwords['password'];
 		}
-
 
 		return false;
 	}
@@ -79,20 +57,22 @@ export default function SignUp() {
 	function handleSubmit(e) {
 		e.preventDefault();
 
-		dispatch(createUserAsync({
-			email: signupDetails.email,
-			password: signupDetails.password,
-			addresses: [],
-			role: 'user',
-		}));
-
-		setSignupDetails(initialSignupDetails);
+		dispatch(resetPasswordAsync({ email, password: passwords.password, token }))
+		
+		setPasswords({password: '', 'confirm-password': ''});
 	}
-	
+
+	if (!email || !token) {
+		return <div className='min-h-[50vh] flex items-center justify-center'>
+			<p className="text-red-500 text-xl font-semibold">
+				Invalid or Broken Link :(
+			</p>
+		</div>
+	}
 
 
 	return (
-		authStatus === 'loading' ? (
+		passwordResetStatus === 'loading' ? (
 			<div className='min-h-[100vh] flex items-center justify-center'>
 				<ThreeDots
 					visible={true}
@@ -107,7 +87,6 @@ export default function SignUp() {
 			</div>
 		) : (
 		<>
-			{user && <Navigate to='/' replace={true}></Navigate>}
 			<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
 				<div className="sm:mx-auto sm:w-full sm:max-w-sm">
 					<img
@@ -116,35 +95,16 @@ export default function SignUp() {
 						alt="Swift Store"
 					/>
 					<h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-						Create an Account
+						Reset Password
 					</h2>
-					<p className="text-red-700  text-xl text-center mt-6">{signUpError}</p>
 				</div>
 
 				<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
 					<form className="space-y-6" onSubmit={handleSubmit}>
-						<div className="space-y-2">
-							<label htmlFor="email" className="block text-sm text-left font-medium leading-6 text-gray-900">
-								Email address
-							</label>
-							<div className="space-y-1">
-								<input
-									id="email"
-									name="email"
-									type="email"
-									autoComplete="email"
-									value={signupDetails.email}
-									onChange={handleChange}
-									className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-								/>
-								<p className="text-red-500 italic text-sm font-semibold">{emailError && 'Invalid Email Address' }</p>
-							</div>
-						</div>
-
 						<div>
 							<div className="flex items-center justify-between">
 								<label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-									Password
+									New Password
 								</label>
 								
 							</div>
@@ -154,7 +114,7 @@ export default function SignUp() {
 									name="password"
 									type="password"
 									autoComplete="current-password"
-									value={signupDetails.password}
+									value={passwords.password}
 									onChange={handleChange}
 									className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 								/>
@@ -173,7 +133,7 @@ export default function SignUp() {
 									name="password"
 									type="password"
 									autoComplete="current-password"
-									value={signupDetails['confirm-password']}
+									value={passwords['confirm-password']}
 									onChange={handleChange}
 									className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 								/>
@@ -187,7 +147,7 @@ export default function SignUp() {
 								className={`${disabled ? 'bg-gray-200 text-gray-800 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-500 cursor-pointer'} flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6  shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
 								disabled={disabled}
 							>
-								Sign up
+								Reset Password
 							</button>
 						</div>
 					</form>

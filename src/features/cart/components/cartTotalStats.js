@@ -8,8 +8,8 @@ function CartTotalStats({totalItems, totalDiscountPrice, totalPrice}) {
 			<div className="flex justify-between mx-2 my-2 text-base font-medium text-gray-900">
 				<p>Subtotal</p>
 				<div>
-					<p className='text-gray-400 line-through'>${totalPrice}</p>
-					<p>${totalDiscountPrice}</p>
+					<p className='text-gray-400 line-through'>${totalPrice.toFixed(2)}</p>
+					<p>${totalDiscountPrice.toFixed(2)}</p>
 				</div>
 			</div>
 		</>

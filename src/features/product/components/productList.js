@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { Grid } from 'react-loader-spinner'
+
 import {
 	fetchBrandsAsync,
 	fetchCategoriesAsync,
@@ -8,6 +10,7 @@ import {
 	selectAllProducts,
 	selectBrands,
 	selectCategories,
+	selectProductsStatus,
 	selectTotalItems
 } from '../productSlice';
 
@@ -29,6 +32,10 @@ export default function ProductList() {
 	const totalItems = useSelector(selectTotalItems);
 	const categories = useSelector(selectCategories);
 	const brands = useSelector(selectBrands);
+
+	console.log('products ', products);
+
+	const productsStatus = useSelector(selectProductsStatus);
 
 	const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 	const [filter, setFilter] = useState({
@@ -72,38 +79,54 @@ export default function ProductList() {
 
 
 	return (
-		<div className="bg-white">
-			<MobileFilter
-				mobileFiltersOpen={mobileFiltersOpen}
-				setMobileFiltersOpen={setMobileFiltersOpen}
-				filter={filter}
-				setFilter={setFilter}
-				filters={filters}
-			/>
-
-			<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-				<ProductsSort
-					setSort={setSort}
-					sortOptions={sortOptions}
+		<>
+			<div className="bg-white">
+				<MobileFilter
+					mobileFiltersOpen={mobileFiltersOpen}
 					setMobileFiltersOpen={setMobileFiltersOpen}
+					filter={filter}
+					setFilter={setFilter}
+					filters={filters}
 				/>
 
-				<div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4 pb-24 pt-6">
-					<DesktopFilter
-						filter={filter}
-						setFilter={setFilter}
-						filters={filters}
+				<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+					<ProductsSort
+						setSort={setSort}
+						sortOptions={sortOptions}
+						setMobileFiltersOpen={setMobileFiltersOpen}
 					/>
-					<div className="lg:col-span-3">
-						<ProductGrid products={products} />
-					</div>
-				</div>
 
-				{totalItems > 10 && <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-					<Pagination page={page} setPage={setPage} handlePage={handlePage} totalItems={totalItems} />
-				</div>}
-			</main>
-		</div>
+					<div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4 pb-24 pt-6">
+						<DesktopFilter
+							filter={filter}
+							setFilter={setFilter}
+							filters={filters}
+						/>
+						<div className="lg:col-span-3">
+							{productsStatus === 'loading' ? (
+								<div className='h-[100px] flex items-center justify-center'>
+									<Grid
+										visible={true}
+										height="80"
+										width="80"
+										color="#4F46E5"
+										ariaLabel="grid-loading"
+										radius="12.5"
+										wrapperStyle={{}}
+										wrapperClass="grid-wrapper"
+									/>
+								</div>) : (
+								<ProductGrid products={products} />	
+							)}
+						</div>
+					</div>
+
+					{totalItems > 10 && <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+						<Pagination page={page} setPage={setPage} handlePage={handlePage} totalItems={totalItems} />
+					</div>}
+				</main>
+			</div>
+		</>
 	);
 }
 

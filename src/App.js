@@ -30,11 +30,20 @@ import AdminProtected from './features/admin/components/AdminProtected';
 
 
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import AdminProductFormPage from './pages/AdminProductFormPage';
 import AdminEditProductPage from './pages/AdminEditProductPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import StripeCheckout from './pages/StripeCheckout';
 
+import { positions, Provider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
+
+
+const options = {
+	timeout: 5000,
+	position: positions.TOP_RIGHT,
+};
 
 
 const router = createBrowserRouter([
@@ -112,6 +121,10 @@ const router = createBrowserRouter([
 		element: <ForgotPasswordPage />,
 	},
 	{
+		path: "/reset-password",
+		element: <ResetPasswordPage />,
+	},
+	{
 		path: "*",
 		element: <PageNotFound></PageNotFound>,
 	}
@@ -122,7 +135,9 @@ const router = createBrowserRouter([
 function App() {
   return (
 	  <div className="App">
-		   <RouterProvider router={router} />
+		  <Provider template={AlertTemplate} {...options}>
+			  <RouterProvider router={router} />
+		  </Provider>
 	  </div>
   );
 }

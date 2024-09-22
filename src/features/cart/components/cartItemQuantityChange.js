@@ -1,9 +1,13 @@
 import { useDispatch } from 'react-redux';
 import { deleteItemFromCartAsync, updateItemAsync } from '../cartSlice'
+import { useAlert } from "react-alert";
 
 
-function CartQuantityChange({itemId, quantity }) {
+
+function CartQuantityChange({setOpen, itemId, quantity }) {
 	const dispatch = useDispatch();
+
+	const alert = useAlert();
 
 
 	function handleQuantityChange(quantity, itemId) {
@@ -11,11 +15,9 @@ function CartQuantityChange({itemId, quantity }) {
 			id: itemId,
 			quantity: quantity
 		}));
+		alert.success('Item updated successfully');
 	}
 
-	function handleDelete(itemId) {
-		dispatch(deleteItemFromCartAsync(itemId));
-	}
 
 	return ( 
 		<div className="flex items-center gap-4 px-4 py-2 bg-[#FEFEFE] rounded-xl">
@@ -23,7 +25,7 @@ function CartQuantityChange({itemId, quantity }) {
 				type='button'
 				onClick={() => {
 					if (quantity === 1) {
-						handleDelete(itemId)
+						setOpen(true);
 					} else {
 						handleQuantityChange(quantity - 1, itemId)
 					}

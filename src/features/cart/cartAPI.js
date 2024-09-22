@@ -12,8 +12,6 @@ export function addToCart(item) {
 		});
 		const data = await res.json();
 
-		console.log('item added to cart ', data);
-
 
 		resolve({ data });
 	})
@@ -27,7 +25,6 @@ export function fetchItemsByUserId() {
 		});
 		const data = await res.json();
 
-		// console.log(data);
 
 		resolve({ data });
 	})
@@ -55,7 +52,6 @@ export function updateItem(item) {
 
 
 export function deleteItem(itemId) {
-	console.log('item Id ', itemId);
 	return new Promise(async resolve => {
 		const res = await fetch('http://localhost:8000/cart/' + itemId, {
 			method: 'DELETE',

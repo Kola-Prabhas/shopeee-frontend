@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Navigate } from 'react-router-dom';
-import { selectUser, signOutAsync } from "../authSlice";
+import { selectUser, logoutUserAsync } from "../authSlice";
 import { useDispatch } from "react-redux";
 
 
@@ -11,24 +11,13 @@ function Logout() {
 
 	useEffect(() => {
 		sessionStorage.removeItem('user');
-		dispatch(signOutAsync(user.id))
-	}, []);
-
-
-	console.log(user)
+		dispatch(logoutUserAsync(user.id))
+	}, [dispatch, user.id]);
 
 
 
-
-	return (
-		<>
-			{
-				!user && <Navigate to='/login'></Navigate>
-			}	
-			
-		</>
-		 
-	);
+	return !user && <Navigate to='/login'></Navigate>	
 }
+
 
 export default Logout;

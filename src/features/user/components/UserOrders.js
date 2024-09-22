@@ -1,15 +1,34 @@
 import { useSelector } from 'react-redux';
 import { selectUserOrders } from '../userSlice';
 import { Link } from 'react-router-dom';
+import { selectOrdersStatus} from '../../order/orderSlice';
+
+import { ThreeDots } from 'react-loader-spinner'
 
 
 export default function UserOrders() {
 	const orders = useSelector(selectUserOrders);
+	const ordersStatus = useSelector(selectOrdersStatus);
+
 
 	return (
 		<>
 			<h1 className="text-4xl my-4 font-bold tracking-tight text-gray-800 text-center">Your Orders</h1>
-			{orders?.map(order => {
+			{ordersStatus === 'loading' ? (
+				<div className='min-h-[100vh] mt-[-100px] flex items-center justify-center'>
+					<ThreeDots
+						visible={true}
+						height="80"
+						width="80"
+						color="#4F46E5"
+						radius="10"
+						ariaLabel="three-dots-loading"
+						wrapperStyle={{}}
+						wrapperClass=""
+					/>
+				</div>
+			): 
+				(orders?.map(order => {
 				return (
 					<div className="mx-auto my-12 max-w-5xl px-4 py-8 sm:px-6 lg:px-8 bg-[#f9f9f9]">
 						<h3 className="text-2xl mb-4 font-bold tracking-tight text-indigo-500 text-center">Order: #{order.id}</h3>
@@ -92,9 +111,9 @@ export default function UserOrders() {
 							</div>
 						</div>
 					</div>
-				)})
+				)}))
 			}
-			{orders.length === 0 && <h3 className="mt-20 text-2xl font-semibold tracking-tight text-indigo-500 text-center">You don't have any orders. Order something to see them here</h3>}
+			{orders.length === 0 && <h3 className="mt-20 mb-[50vh] text-2xl font-semibold tracking-tight text-indigo-500 text-center">You don't have any orders. Order something to see them here</h3>}
 		</>
 	);
 }

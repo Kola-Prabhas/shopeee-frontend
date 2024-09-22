@@ -1,17 +1,33 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteItemFromCartAsync } from '../cartSlice'
 import CartQuantityChange from "./cartItemQuantityChange";
+import { useAlert } from "react-alert";
+import { ThreeDots } from 'react-loader-spinner'
+import { selectCartItemsStatus } from '../../cart/cartSlice';
+
+import Modal from '../../../components/Modal';
+import { useState } from 'react';
+
+
 
 function CartItem({ item }) {
 	const dispatch = useDispatch();
+	const alert = useAlert();
+
+	const [open, setOpen] = useState(false);
+
+	const cartItemsStatus = useSelector(selectCartItemsStatus);
+
 
 	function handleDelete(itemId) {
 		dispatch(deleteItemFromCartAsync(itemId));
-	}
-	
+		alert.info(`${item.product.title} Removed from cart`);
 
-	return ( 
-		<li key={item.product.id} className="flex py-6">
+	}
+
+
+	return (
+		<li key={item.id} className="flex py-6">
 			<div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
 				<img
 					src={item.product.images[0]}
@@ -27,27 +43,57 @@ function CartItem({ item }) {
 							<a href={item.product.href}>{item.product.title}</a>
 						</h3>
 						<div>
-							<p className="ml-4 line-through text-gray-400">${item.product.price * item.quantity}</p>
-							<p className="ml-4">${item.product.discountPrice?.toFixed(2) * item.quantity}</p>
+							<p className="ml-4 line-through text-gray-400">${(item.product.price.toFixed(2) * item.quantity).toFixed(2)}</p>
+							<p className="ml-4">${(item.product.discountPrice * item.quantity).toFixed(2)}</p>
 						</div>
 					</div>
 				</div>
-				<div className="flex flex-1 items-end justify-between text-sm">
-					<CartQuantityChange itemId={item.id}  quantity={item.quantity}/>
+				<div className={`flex flex-1 items-center justify-between text-sm`}>
+					{cartItemsStatus === 'loading' ? (
+						<div className='ml-10'>
+							<ThreeDots
+								visible={true}
+								height="50"
+								width="50"
+								color="#4F46E5"
+								radius="10"
+								ariaLabel="three-dots-loading"
+								wrapperStyle={{}}
+								wrapperClass=""
+							/>
+						</div>
+					) : (
+						<>
+							<Modal
+								open={open}
+								setOpen={setOpen}
+								title={`Remove ${item.product.title}`}
+								message='Are you sure? Do you want to remove this item from cart?'
+								cancelOption='Cancel'
+								confirmOption='Remove'
+								cancelAction={() => setOpen(false)}
+								confirmAction={() => handleDelete(item.id)}
+							/>
+							<CartQuantityChange
+								setOpen={setOpen}
+								itemId={item.id}
+								quantity={item.quantity}
+							/>
 
-					<div className="flex">
-						<button
-							type="button"
-							className="font-medium text-indigo-600 hover:text-indigo-500"
-							onClick={() => handleDelete(item.id)}
-						>
-							Remove
-						</button>
-					</div>
+							<div className="flex">
+								<button
+									type="button"
+									className="font-medium text-indigo-600 hover:text-indigo-500"
+									onClick={() => setOpen(true)}
+								>
+									Remove
+								</button>
+							</div>
+						</>)}
 				</div>
 			</div>
 		</li>
-	 );
+	);
 }
 
 export default CartItem;

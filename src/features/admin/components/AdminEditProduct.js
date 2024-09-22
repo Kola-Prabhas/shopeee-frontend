@@ -1,14 +1,32 @@
-import { selectCategories, selectBrands, updateProductAsync, selectProductById, fetchProductByIdAsync } from '../../product/productSlice';
+import {
+	selectCategories,
+	selectBrands,
+	updateProductAsync,
+	selectProductById,
+	fetchProductByIdAsync,
+	selectProductStatus
+} from '../../product/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import {  useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+
+import { ThreeDots } from 'react-loader-spinner';
+
+import Modal from '../../../components/Modal';
+
 
 
 export default function AdminEditProduct() {
+	const [open, setOpen] = useState(false);
 	const categories = useSelector(selectCategories);
 	const brands = useSelector(selectBrands);
 	const product = useSelector(selectProductById);
+
+	const productStatus = useSelector(selectProductStatus);
+
+	// console.log('product status ', productStatus);
+	console.log('product ', product);
 
 	const params = useParams();
 
@@ -19,6 +37,7 @@ export default function AdminEditProduct() {
 		register,
 		handleSubmit,
 		setValue,
+		formState: { errors }
 	} = useForm();
 
 	const dispatch = useDispatch();
@@ -49,27 +68,55 @@ export default function AdminEditProduct() {
 
 	useEffect(() => {
 		dispatch(fetchProductByIdAsync(params.id));
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [dispatch, params.id]);
 
 	useEffect(() => {
 		if (product) {
 			setInitialValues();
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [product]);
 
-	
+
 
 
 	return (
-		product && (
+		productStatus === 'loading' || !product ? (
+			<div className='min-h-[100vh] flex items-center justify-center'>
+				<ThreeDots
+					visible={true}
+					height="80"
+					width="80"
+					color="#4F46E5"
+					radius="10"
+					ariaLabel="three-dots-loading"
+					wrapperStyle={{}}
+					wrapperClass=""
+				/>
+			</div>
+		) : (
 			<form
 				className='md:w-[60%] max-w-[1000px] py-8 mx-auto'
 				onSubmit={handleSubmit(data => {
 					const newProduct = { ...data };
 
-					const images = [data.image1, data.image2, data.image3, data.image4];
+					const images = [];
+
+					if (data.image1) {
+						images.push(data.image1);
+					}
+
+					if (data.image2) {
+						images.push(data.image2);
+					}
+
+					if (data.image3) {
+						images.push(data.image3);
+					}
+
+					if (data.image4) {
+						images.push(data.image4);
+					}
 
 					delete newProduct.image1;
 					delete newProduct.image2;
@@ -89,10 +136,6 @@ export default function AdminEditProduct() {
 				<div className="space-y-12 px-6  ">
 					<div className="border-b border-gray-900/10 pb-12">
 						<h2 className="text-base md:text-xl font-bold leading-7 text-gray-900">Edit product details</h2>
-						{/* <p className="mt-1 text-sm leading-6 text-gray-600">
-						This information will be displayed publicly so be careful what you share.
-					</p> */}
-
 						<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 							<div className="col-span-full">
 								<label htmlFor="title" className="block text-sm font-medium leading-6 text-gray-900">
@@ -109,6 +152,7 @@ export default function AdminEditProduct() {
 										/>
 									</div>
 								</div>
+								{errors.title && <p className='text-red-600 font-semibold'>{errors.title.message}</p>}
 							</div>
 
 							<div className="col-span-full">
@@ -124,6 +168,7 @@ export default function AdminEditProduct() {
 										defaultValue={''}
 									/>
 								</div>
+								{errors.description && <p className='text-red-600 font-semibold'>{errors.description.message}</p>}
 							</div>
 						</div>
 					</div>
@@ -155,6 +200,7 @@ export default function AdminEditProduct() {
 
 									</select>
 								</div>
+								{errors.category && <p className='text-red-600 font-semibold'>{errors.category.message}</p>}
 							</div>
 							<div className="sm:col-span-3">
 								<label htmlFor="brand" className="block text-sm font-medium leading-6 text-gray-900">
@@ -178,6 +224,7 @@ export default function AdminEditProduct() {
 										}
 									</select>
 								</div>
+								{errors.brand && <p className='text-red-600 font-semibold'>{errors.brand.message}</p>}
 							</div>
 							<div className="sm:col-span-2">
 								<label htmlFor="price" className="block text-sm font-medium leading-6 text-gray-900">
@@ -185,7 +232,7 @@ export default function AdminEditProduct() {
 								</label>
 								<div className="mt-2">
 									<input
-										type="number"
+										type="text"
 										{...register('price', {
 											required: 'Price is required',
 											min: 1,
@@ -196,6 +243,7 @@ export default function AdminEditProduct() {
 										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									/>
 								</div>
+								{errors.price && <p className='text-red-600 font-semibold'>{errors.price.message}</p>}
 							</div>
 
 							<div className="sm:col-span-2">
@@ -204,7 +252,7 @@ export default function AdminEditProduct() {
 								</label>
 								<div className="mt-2">
 									<input
-										type="number"
+										type="text"
 										{...register('discountPercentage', {
 											required: 'Discount is required',
 											min: 0,
@@ -216,6 +264,7 @@ export default function AdminEditProduct() {
 										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									/>
 								</div>
+								{errors.discountPercentage && <p className='text-red-600 font-semibold'>{errors.discountPercentage.message}</p>}
 							</div>
 
 							<div className="sm:col-span-2">
@@ -234,6 +283,7 @@ export default function AdminEditProduct() {
 										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									/>
 								</div>
+								{errors.stock && <p className='text-red-600 font-semibold'>{errors.stock.message}</p>}
 							</div>
 
 
@@ -251,6 +301,7 @@ export default function AdminEditProduct() {
 										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									/>
 								</div>
+								{errors.thumbnail && <p className='text-red-600 font-semibold'>{errors.thumbnail.message}</p>}
 							</div>
 							<div className="col-span-full">
 								<label htmlFor="image1" className="block text-sm font-medium leading-6 text-gray-900">
@@ -265,6 +316,7 @@ export default function AdminEditProduct() {
 										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									/>
 								</div>
+								{errors.image1 && <p className='text-red-600 font-semibold'>{errors.image1.message}</p>}
 							</div>
 							<div className="col-span-full">
 								<label htmlFor="image2" className="block text-sm font-medium leading-6 text-gray-900">
@@ -273,7 +325,7 @@ export default function AdminEditProduct() {
 								<div className="mt-2">
 									<input
 										type="text"
-										{...register('image2', { required: 'Image2 is required' })}
+										{...register('image2')}
 										id="image2"
 										autoComplete="image2"
 										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -287,7 +339,7 @@ export default function AdminEditProduct() {
 								<div className="mt-2">
 									<input
 										type="text"
-										{...register('image3', { required: 'Image3 is required' })}
+										{...register('image3')}
 										id="image3"
 										autoComplete="image3"
 										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -301,7 +353,7 @@ export default function AdminEditProduct() {
 								<div className="mt-2">
 									<input
 										type="text"
-										{...register('image4', { required: 'Image4 is required' })}
+										{...register('image4')}
 										id="image4"
 										autoComplete="image4"
 										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -323,11 +375,11 @@ export default function AdminEditProduct() {
 						Reset
 					</button>
 					<button
-						onClick={handleToggleDelete}
+						onClick={product.deleted? handleToggleDelete: () => setOpen(true)}
 						type='button'
-						className="w-[125px] rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+						className={`w-[125px] rounded-md ${product.deleted ? 'text-indigo-600 border border-indigo-600' : 'bg-red-600 text-white'} px-3 py-2 text-sm font-semibold shadow-sm ${product.deleted ? 'hover:bg-gray-100' : 'hover:bg-red-500'} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
 					>
-						{product.deleted && 'Undo '}Delete
+						{product.deleted ? 'Restore' : 'Delete'}
 					</button>
 
 					{/* <Link to='/admin'> */}
@@ -341,6 +393,16 @@ export default function AdminEditProduct() {
 
 
 				</div>
+				<Modal
+					open={open}
+					setOpen={setOpen}
+					title={`Delete ${product.title}`}
+					message='Are you sure? Do you want to delete this item?'
+					cancelOption='Cancel'
+					confirmOption='Delete'
+					cancelAction={() => setOpen(false)}
+					confirmAction={() => handleToggleDelete()}
+				/>
 			</form>
 		)
 	)

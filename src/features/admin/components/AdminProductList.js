@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { Grid } from 'react-loader-spinner'
+
+
 import {
 	fetchBrandsAsync,
 	fetchCategoriesAsync,
 	fetchProductsByFilterAsync,
 	selectAllProducts,
 	selectBrands,
+	selectProductsStatus,
 	selectCategories,
 	selectTotalItems
 } from '../../product/productSlice';
@@ -29,6 +33,9 @@ export default function ProductList() {
 	const totalItems = useSelector(selectTotalItems);
 	const categories = useSelector(selectCategories);
 	const brands = useSelector(selectBrands);
+
+	const productsStatus = useSelector(selectProductsStatus);
+
 
 	const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 	const [filter, setFilter] = useState({
@@ -98,7 +105,21 @@ export default function ProductList() {
 						filters={filters}
 					/>
 					<div className="lg:col-span-3">
-						<AdminProductGrid products={products} />
+						{productsStatus === 'loading' ? (
+							<div className='h-[100px] flex items-center justify-center'>
+								<Grid
+									visible={true}
+									height="80"
+									width="80"
+									color="#4F46E5"
+									ariaLabel="grid-loading"
+									radius="12.5"
+									wrapperStyle={{}}
+									wrapperClass="grid-wrapper"
+								/>
+							</div>) : (
+							<AdminProductGrid products={products} />
+						)}
 					</div>
 				</div>
 

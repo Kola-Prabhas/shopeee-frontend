@@ -80,7 +80,6 @@ export const cartSlice = createSlice({
 		.addCase(updateItemAsync.fulfilled, (state, action) => {
 			state.status = 'idle';
 
-			console.log('action.payload ', action.payload);
 			const index = state.items.findIndex(item => item.id === action.payload.id);
 			state.items[index] = action.payload;
 		})
@@ -104,5 +103,6 @@ export const cartSlice = createSlice({
 
 
 export const selectCartItems = (state) => state.cart.items;
+export const selectCartItemsStatus = (state) => state.cart.status;
 
 export default cartSlice.reducer;

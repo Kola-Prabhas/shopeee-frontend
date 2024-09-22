@@ -1,8 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
-import { fetchAllOrdersAsync, selectOrders, selectTotalOrders, updateOrderAsync } from "../../order/orderSlice";
+import { fetchAllOrdersAsync, selectOrders, selectOrdersStatus, selectTotalOrders, updateOrderAsync } from "../../order/orderSlice";
 import { useEffect, useState } from "react";
 import { PencilIcon, ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
-
+import { ThreeDots } from 'react-loader-spinner'
 import { ITEMS_PER_PAGE } from '../../../app/constants';
 import Pagination from "../../../components/Pagination";
 
@@ -14,6 +14,14 @@ function AdminOrders() {
 	const dispatch = useDispatch();
 	const orders = useSelector(selectOrders);
 	const totalOrders = useSelector(selectTotalOrders);
+
+	const ordersStatus = useSelector(selectOrdersStatus);
+
+	console.log('orders ', orders);
+
+	// const orders = []
+	// const ordersStatus = 'loading';
+
 
 	function handleEdit(order) {
 		if (editableOrderId === order.id) {
@@ -30,8 +38,6 @@ function AdminOrders() {
 			id: order.id,
 			status: e.target.value
 		};
-
-		console.log('update ', update);
 
 		dispatch(updateOrderAsync(update));
 		setEditableOrderId(-1);
@@ -84,51 +90,83 @@ function AdminOrders() {
 
 
 
-	return (
-		<div className="px-4 bg-gray-100 font-sans overflow-auto">
-			<div className="w-[1280px] mx-auto bg-white shadow-md rounded my-6">
-				<table className="min-w-max w-full table-auto">
+	return ordersStatus === 'loading' && orders.length === 0 ? (
+		<div className='min-h-[100vh] flex items-center justify-center'>
+			<ThreeDots
+				visible={true}
+				height="80"
+				width="80"
+				color="#4F46E5"
+				radius="10"
+				ariaLabel="three-dots-loading"
+				wrapperStyle={{}}
+				wrapperClass=""
+			/>
+		</div>
+	) : (orders.length > 0 ? (
+		<div className="px-4 bg-gray-100 font-sans">
+			<div className="bg-white shadow-md rounded my-6">
+				<table className="min-w-full table-auto">
 					<thead>
-						<tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-							<th className="py-3 px-6 text-left">
+						<tr className="bg-gray-200 text-gray-600 uppercase text-xs leading-normal">
+							<th className="py-3 px-1 text-left">
 								Order
 							</th>
-							<th className="py-3 px-6 text-left">
+							<th className="py-3 px-1 text-left">
 								Items
 							</th>
 							<th
-								className="py-3 px-6 text-center flex  gap-2"
+								className="py-3 px-1 text-center flex items-center gap-2 cursor-pointer"
 								onClick={() => handleSort('totalPrice')}
 							>
 								Total Amount
-								{sortOptions._order === 'asc' && <ArrowUpIcon className="w-4 h-4"></ArrowUpIcon>}
-								{sortOptions._order === 'desc' && <ArrowDownIcon className="w-4 h-4"></ArrowDownIcon>}
+								{sortOptions._order === 'desc' && sortOptions._sort === 'totalPrice' && <ArrowUpIcon className="w-4 h-4" />}
+								{sortOptions._order === 'asc' && sortOptions._sort === 'totalPrice' && <ArrowDownIcon className="w-4 h-4" />}
 							</th>
-							<th className="py-3 px-6 text-center">
+							<th className="py-3 px-1 text-center">
 								Shipping Address
 							</th>
-							<th className="py-3 px-6 text-center">
-								Status
+							<th className="py-3 px-1 text-center">
+								Order Status
 							</th>
-							<th className="py-3 px-6 text-center">
+							<th className="py-3 px-1 text-center">
+								Payment Method
+							</th>
+							<th
+								className="py-3 px-1 text-center flex gap-2 cursor-pointer"
+								onClick={() => handleSort('createdAt')}
+							>
+								Order Time
+								{sortOptions._order === 'desc' && sortOptions._sort === 'createdAt' && <ArrowUpIcon className="w-4 h-4" />}
+								{sortOptions._order === 'asc' && sortOptions._sort === 'createdAt' && <ArrowDownIcon className="w-4 h-4" />}
+							</th>
+							{/* <th
+								className="py-3 px-1 text-center border border-black flex"
+								onClick={() => handleSort('updatedAt')}
+							>
+								Last Updated
+								{sortOptions._order === 'desc' && <ArrowUpIcon className="w-4 h-4" />}
+								{sortOptions._order === 'asc' && <ArrowDownIcon className="w-4 h-4" />}
+							</th> */}
+							<th className="py-3 px-1 text-center">
 								Actions
 							</th>
 						</tr>
 					</thead>
-					<tbody className="text-gray-600 text-sm font-light">
+					<tbody className="text-gray-600 text-xs font-light">
 						{orders.map(order => {
 							const address = order.selectedAddress;
 
 							return (
 								<tr key={order.id} className="border-b border-gray-200 hover:bg-gray-100">
-									<td className="py-3 px-6 text-left whitespace-nowrap">
+									<td className="py-3 px-1 text-left whitespace-nowrap">
 										<div className="flex items-center">
 											<span className="font-medium">
 												#{order.id}
 											</span>
 										</div>
 									</td>
-									<td className="py-3 px-6 text-left">
+									<td className="py-3 px-1 text-left">
 										{order.items.map(item => {
 											return (
 												<div className="flex items-center my-2">
@@ -146,12 +184,12 @@ function AdminOrders() {
 											)
 										})}
 									</td>
-									<td className="py-3 px-6 text-center">
+									<td className="py-3 px-1 text-center">
 										<div className="flex items-center justify-center">
-											${order.totalPrice}
+											${order.totalPrice.toFixed(2)}
 										</div>
 									</td>
-									<td className="py-3 px-6 text-center space-y-1">
+									<td className="py-3 px-1 text-center space-y-1">
 										<div>{address.name} </div>
 										<div>{address.street}</div>
 										<div>{address.city}</div>
@@ -160,7 +198,7 @@ function AdminOrders() {
 										<div>{address.phone}</div>
 										<div>{address.email}</div>
 									</td>
-									<td className="py-3 px-6 text-center">
+									<td className="py-3 px-1 text-center">
 										{editableOrderId === order.id ? (
 											<select
 												className="border-gray-300 rounded-2xl"
@@ -177,14 +215,41 @@ function AdminOrders() {
 												{order.status}
 											</span>
 										)}
-
 									</td>
-									<td className="py-3 px-6 text-center">
-										<div className="flex item-center justify-center *:cursor-pointer">
-											<div className="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
-												<PencilIcon onClick={() => handleEdit(order)} className="size-[20px]"></PencilIcon>
-											</div>
+									<td className="py-3 px-1 text-center">
+										<div className="flex items-center justify-center">
+											{order.selectedPaymentMethod}
 										</div>
+									</td>
+									<td className="py-3 px-1 text-center">
+										<div className="flex items-center justify-center">
+											{new Date(order.createdAt).toLocaleString()}
+										</div>
+									</td>
+									{/* <td className="py-3 px-1 text-center">
+										<div className="flex items-center justify-center">
+											{new Date(order.updatedAt).toLocaleString()}
+										</div>
+									</td> */}
+									<td className="py-3 px-1 text-center">
+										{ordersStatus === 'loading' ? (
+											<ThreeDots
+												visible={true}
+												height="40"
+												width="40"
+												color="#4F46E5"
+												radius="8"
+												ariaLabel="three-dots-loading"
+												wrapperStyle={{}}
+												wrapperClass=""
+											/>
+										) : (
+											<div className="flex item-center justify-center *:cursor-pointer">
+												<div className="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
+													<PencilIcon onClick={() => handleEdit(order)} className="size-[20px]"></PencilIcon>
+												</div>
+											</div>
+										)}
 									</td>
 								</tr>
 							)
@@ -201,7 +266,11 @@ function AdminOrders() {
 				/>
 			</div>
 		</div>
-	);
+	) : (
+		<div className='min-h-[50vh] flex items-center justify-center'>
+			<p className="text-xl text-indigo-500 font-bold">No Orders Placed</p>
+		</div>
+	))
 }
 
 export default AdminOrders;

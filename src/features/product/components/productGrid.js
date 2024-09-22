@@ -7,7 +7,7 @@ export default function ProductGrid({ products }) {
 			<div className="ml-auto max-w-2xl lg:max-w-7xl">
 				<div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8 ">
 					{products?.map((product) => (
-						<Product product={product} />
+						<Product key={product.id}  product={product} />
 					))}
 				</div>
 			</div>

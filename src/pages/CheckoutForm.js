@@ -4,8 +4,10 @@ import {
 	useStripe,
 	useElements
 } from "@stripe/react-stripe-js";
-import { useSelector } from "react-redux";
-import { selectCurrentOrder } from "../features/order/orderSlice";
+
+import { useSelector, useDispatch } from "react-redux";
+import { resetCurrentOrder, selectCurrentOrder } from "../features/user/userSlice";
+
 
 export default function CheckoutForm() {
 	const stripe = useStripe();
@@ -15,6 +17,9 @@ export default function CheckoutForm() {
 
 	const [message, setMessage] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+
+	const dispatch = useDispatch();
+
 
 	useEffect(() => {
 		if (!stripe) {
@@ -47,6 +52,9 @@ export default function CheckoutForm() {
 		});
 	}, [stripe]);
 
+	
+	
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -62,7 +70,7 @@ export default function CheckoutForm() {
 			elements,
 			confirmParams: {
 				// Make sure to change this to your payment completion page
-				return_url: `http://localhost:8000/order-details/${orderId}`,
+				return_url: `/order-details/${orderId}`,
 			},
 		});
 

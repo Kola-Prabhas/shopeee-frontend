@@ -2,7 +2,8 @@ import { Fragment } from 'react';
 import { Disclosure } from '@headlessui/react'
 import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { useSelector } from 'react-redux';
-import { selectBrandsStatus, selectCategoriesStatus } from '../features/product/productSlice';
+import { selectBrandsStatus } from '../features/product/brandSlice';
+import { selectCategoriesStatus } from '../features/product/categorySlice';
 
 import { TailSpin } from 'react-loader-spinner'
 
@@ -11,12 +12,6 @@ import { TailSpin } from 'react-loader-spinner'
 export default function DesktopFilter({ filter, setFilter, filters }) {
 	const brandsStatus = useSelector(selectBrandsStatus);
 	const categoriesStatus = useSelector(selectCategoriesStatus);
-
-	// let brandsStatus = 'loading';
-	// let categoriesStatus = 'loading';
-
-
-
 
 	function handleFilter(e, section, option) {
 		const newFilter = { ...filter };

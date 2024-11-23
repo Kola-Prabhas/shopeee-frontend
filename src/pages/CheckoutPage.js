@@ -3,8 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCartItems } from '../features/cart/cartSlice';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { createOrderAsync, selectCurrentOrder, selectCurrentOrderStatus } from '../features/order/orderSlice';
-import { selectUserInfo, updateUserAsync } from '../features/user/userSlice';
+import {
+	selectUserInfo,
+	updateUserAsync,
+	createUserOrderAsync,
+	selectCurrentOrder,
+	selectCreateUserOrderStatus
+} from '../features/user/userSlice';
 
 import { ThreeDots } from 'react-loader-spinner'
 
@@ -19,8 +24,7 @@ function CheckoutPage() {
 	const order = useSelector(selectCurrentOrder);
 	const items = useSelector(selectCartItems);
 
-	const currentOrderStatus = useSelector(selectCurrentOrderStatus);
-
+	const createUserOrderStatus = useSelector(selectCreateUserOrderStatus);
 
 	const {
 		register,
@@ -38,7 +42,6 @@ function CheckoutPage() {
 
 
 	function handleAddressChange(index) {
-		console.log(user.addresses[index])
 		setSelectedAddress(user.addresses[index])
 	}
 
@@ -61,7 +64,7 @@ function CheckoutPage() {
 				status: 'pending'
 			}
 
-			dispatch(createOrderAsync(order));
+			dispatch(createUserOrderAsync(order));
 		}
 	}
 
@@ -81,9 +84,9 @@ function CheckoutPage() {
 					<form
 						noValidate
 						onSubmit={handleSubmit(data => {
+							console.log('data ', data);
 							dispatch(updateUserAsync({ ...user, addresses: [...user.addresses, data] }));
 							reset();
-
 						})}
 					>
 						<div className="border-b border-gray-900/10 pb-12">
@@ -209,7 +212,7 @@ function CheckoutPage() {
 
 						<div className="border-b border-gray-900/10 pb-12">
 							<h2 className="text-base font-semibold leading-7 text-gray-900">Addresses</h2>
-							{user?.addresses.length > 0 ? (
+							{user?.addresses?.length > 0 ? (
 								<p className="mt-1 text-sm leading-6 text-gray-600">
 									Choose from existing addresses
 								</p>
@@ -219,7 +222,7 @@ function CheckoutPage() {
 								</p>
 							)}
 							<ul className="divide-y divide-gray-100">
-								{user?.addresses.map((address, index) => (
+								{user?.addresses?.map((address, index) => (
 									<li key={index} className="flex justify-between gap-x-6 py-5">
 										<div className="flex min-w-0 gap-x-4">
 											<input
@@ -308,7 +311,7 @@ function CheckoutPage() {
 						/>
 						<p className="mt-0.5 mx-2 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 						<div className="mt-6 mx-auto max-w-[400px]">
-							{currentOrderStatus === 'loading' ? (
+							{createUserOrderStatus === 'loading' ? (
 								<div className='flex justify-center'>
 									<ThreeDots
 										visible={true}

@@ -1,4 +1,6 @@
-import { selectCategories, selectBrands, addProductAsync, selectProductStatus } from '../../product/productSlice';
+import { addProductAsync, selectProductStatus } from '../../product/productSlice';
+import { selectAllCategories } from '../../product/categorySlice';
+import { selectAllBrands } from '../../product/brandSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
@@ -7,8 +9,8 @@ import { ThreeDots } from 'react-loader-spinner'
 
 
 export default function AdminProductForm() {
-	const categories = useSelector(selectCategories);
-	const brands = useSelector(selectBrands);
+	const categories = useSelector(selectAllCategories);
+	const brands = useSelector(selectAllBrands);
 
 	const productStatus = useSelector(selectProductStatus);
  
@@ -19,10 +21,26 @@ export default function AdminProductForm() {
 		register,
 		handleSubmit,
 		reset,
+		setValue,
 		formState: { errors }
 	} = useForm();
 
 	const dispatch = useDispatch();
+
+	function resetFormValues() {
+		setValue('title', '');
+		setValue('description', '');
+		setValue('category', '');
+		setValue('brand', '');
+		setValue('price', '');
+		setValue('discountPercentage', '');
+		setValue('stock', '');
+		setValue('thumbnail', '');
+		setValue('image1', '')
+		setValue('image2', '')
+		setValue('image3', '')
+		setValue('image4', '')
+	}
 
 	return (
 		productStatus === 'loading' ? (
@@ -75,6 +93,7 @@ export default function AdminProductForm() {
 
 
 					dispatch(addProductAsync(newProduct));
+					resetFormValues();
 				})}
 			>
 				<div className="space-y-12 px-6">

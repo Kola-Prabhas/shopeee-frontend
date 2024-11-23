@@ -2,17 +2,22 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Grid } from 'react-loader-spinner'
+import toast from 'react-hot-toast';
+
+
+import {
+	fetchCategoriesAsync,
+	selectAllCategories,
+} from '../categorySlice';
+
 
 import {
 	fetchBrandsAsync,
-	fetchCategoriesAsync,
-	fetchProductsByFilterAsync,
-	selectAllProducts,
-	selectBrands,
-	selectCategories,
-	selectProductsStatus,
-	selectTotalItems
-} from '../productSlice';
+	selectAllBrands,
+} from '../brandSlice';
+
+import { useFetchProductsByFilterQuery } from '../../product/productQueryApi';
+
 
 import ProductGrid from './productGrid';
 import MobileFilter from '../../../components/MobileFilter';
@@ -28,12 +33,8 @@ import { sortOptions } from '../../../services/sortOptions';
 export default function ProductList() {
 	const dispatch = useDispatch();
 
-	const products = useSelector(selectAllProducts);
-	const totalItems = useSelector(selectTotalItems);
-	const categories = useSelector(selectCategories);
-	const brands = useSelector(selectBrands);
-
-	const productsStatus = useSelector(selectProductsStatus);
+	const categories = useSelector(selectAllCategories);
+	const brands = useSelector(selectAllBrands);
 
 	const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 	const [filter, setFilter] = useState({
@@ -58,13 +59,24 @@ export default function ProductList() {
 
 	const handlePage = (idx) => () => setPage(idx);
 
-	useEffect(() => {
-		const pagination = { _page: page, _per_page: ITEMS_PER_PAGE };
-		dispatch(fetchProductsByFilterAsync({ filter, pagination, sort }));
 
-	}, [dispatch, filter, sort, page]);
+	const {
+		data,
+		isLoading,
+		isFetching,
+		// error
+	} = useFetchProductsByFilterQuery({
+		filter,
+		pagination: { _page: page, _per_page: ITEMS_PER_PAGE },
+		sortOptions: sort,
+	});
 
 
+	const products = data?.products;
+	const totalItems = data?.totalItems;
+
+
+	// used to reset page to 1 when filter or sort changes
 	useEffect(() => {
 		setPage(1);
 	}, [filter, sort]);
@@ -75,6 +87,7 @@ export default function ProductList() {
 		dispatch(fetchCategoriesAsync());
 	}, [dispatch]);
 
+	
 
 	return (
 		<>
@@ -100,8 +113,11 @@ export default function ProductList() {
 							setFilter={setFilter}
 							filters={filters}
 						/>
-						<div className="lg:col-span-3">
-							{productsStatus === 'loading' ? (
+						<div className="relative lg:col-span-3">
+							{isFetching && !isLoading && (
+								<div className='absolute inset-0 z-10 bg-gray-200/15 cursor-not-allowed' />
+							)}
+							{isLoading ? (
 								<div className='h-[100px] flex items-center justify-center'>
 									<Grid
 										visible={true}
@@ -113,14 +129,19 @@ export default function ProductList() {
 										wrapperStyle={{}}
 										wrapperClass="grid-wrapper"
 									/>
-								</div>) : (
-								<ProductGrid products={products} />	
+								</div>
+							) : (
+								<ProductGrid products={products} />
 							)}
 						</div>
 					</div>
 
 					{totalItems > 10 && <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-						<Pagination page={page} setPage={setPage} handlePage={handlePage} totalItems={totalItems} />
+						<Pagination
+							page={page}
+							handlePage={handlePage}
+							totalItems={totalItems}
+						/>
 					</div>}
 				</main>
 			</div>

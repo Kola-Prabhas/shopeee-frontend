@@ -1,6 +1,14 @@
 import Product from './product';
 
 export default function ProductGrid({ products }) {
+	if (products?.length === 0) {
+		return (
+			<div className="min-h-[250px] flex items-center justify-center">
+				<h3 className="text-2xl font-semibold">No products found</h3>
+			</div>
+		);
+
+	}
 
 	return (
 		<div className="bg-white">

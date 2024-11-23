@@ -6,10 +6,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ThreeDots } from 'react-loader-spinner'
 
 import { fetchProductByIdAsync, selectProductById, selectProductStatus } from '../productSlice'
-import { addToCartAsync, selectCartItems, deleteItemFromCartAsync, } from '../../cart/cartSlice'
+import { addToCartAsync, selectCartItems, deleteItemFromCartAsync, selectCartItemsStatus, selectAddToCartStatus, } from '../../cart/cartSlice'
 import { selectUser } from '../../auth/authSlice';
-import { selectCartItemsStatus } from '../../cart/cartSlice';
-
 import CartQuantityChange from '../../cart/components/cartItemQuantityChange'
 
 
@@ -28,6 +26,7 @@ export default function ProductDetails() {
 	const items = useSelector(selectCartItems);
 	const productStatus = useSelector(selectProductStatus);
 	const cartItemsStatus = useSelector(selectCartItemsStatus);
+	const addToCartStatus = useSelector(selectAddToCartStatus)
 
 
 	const itemInCart = items.find(item => item.product?.id === product?.id);
@@ -145,7 +144,7 @@ export default function ProductDetails() {
 						</div>
 
 						{user.role !== 'admin' && <form className="mt-10">
-							{!itemInCart ? (
+							{!itemInCart && addToCartStatus !== 'loading' && (
 								<button
 									type="submit"
 									className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -153,47 +152,46 @@ export default function ProductDetails() {
 								>
 									Add to Cart
 								</button>
-							) : (
-								<div className='flex items-center justify-center'>
-									{cartItemsStatus === 'loading' ? (
-										<ThreeDots
-											visible={true}
-											height="50"
-											width="50"
-											color="#4F46E5"
-											radius="10"
-											ariaLabel="three-dots-loading"
-											wrapperStyle={{}}
-											wrapperClass=""
-										/>
-									) : (
-										<>
-											<Modal
-												open={open}
-												setOpen={setOpen}
-												title={`Remove ${product.title}!`}
-												message='Are you sure? Do you want to remove this item from cart?'
-												cancelOption='Cancel'
-												confirmOption='Remove'
-												// cancelAction={() => setItemId(-1)}
-												confirmAction={() => handleDelete(product.id)}
-											/>
-											<CartQuantityChange
-												setOpen={setOpen}
-												itemId={itemInCart.id}
-												quantity={itemInCart.quantity}
-												stock={product.stock}
-											/>
-											<Link
-												to='/cart'
-												className="w-full flex items-center justify-center rounded-md border border-indigo-600 text-indigo-600 px-8 py-3 text-base font-medium bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-											>
-												View Cart
-											</Link>
-										</>
-									)}
-								</div>
 							)}
+							{(cartItemsStatus === 'loading' || addToCartStatus === 'loading') && <div className='flex items-center justify-center'>
+								<ThreeDots
+									visible={true}
+									height="50"
+									width="50"
+									color="#4F46E5"
+									radius="10"
+									ariaLabel="three-dots-loading"
+									wrapperStyle={{}}
+									wrapperClass=""
+								/>
+							</div>}
+
+							{itemInCart && cartItemsStatus !== 'loading' && <div className='flex items-center justify-center'>
+								<>
+									<Modal
+										open={open}
+										setOpen={setOpen}
+										title={`Remove ${product.title}!`}
+										message='Are you sure? Do you want to remove this item from cart?'
+										cancelOption='Cancel'
+										confirmOption='Remove'
+										// cancelAction={() => setItemId(-1)}
+										confirmAction={() => handleDelete(product.id)}
+									/>
+									<CartQuantityChange
+										setOpen={setOpen}
+										itemId={itemInCart.id}
+										quantity={itemInCart.quantity}
+										stock={product.stock}
+									/>
+									<Link
+										to='/cart'
+										className="w-full flex items-center justify-center rounded-md border border-indigo-600 text-indigo-600 px-8 py-3 text-base font-medium bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+									>
+										View Cart
+									</Link>
+								</>
+							</div>}
 						</form>}
 					</div>
 

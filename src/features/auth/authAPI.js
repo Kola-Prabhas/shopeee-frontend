@@ -1,8 +1,9 @@
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
-export function createUser(user) {
-	return new Promise(async (resolve, reject) => {
-		const response = await fetch(baseUrl+'/auth/signup', {
+export async function createUser(user) {
+
+	try {
+		const response = await fetch(baseUrl + '/auth/signup', {
 			method: 'POST',
 			credentials: 'include', // Include cookies in the request
 			headers: {
@@ -12,14 +13,19 @@ export function createUser(user) {
 		});
 		const data = await response.json();
 
-		resolve({ data });
-	})
+		return { data };
+	} catch (e) {
+		console.log(e);
+		throw e;
+	}
+
 }
 
-export function loginUser(user) {
-	return new Promise(async (resolve, reject) => {
-		// const res = await fetch(baseUrl + '/auth/login', {
-		const res = await fetch('http://localhost:8000/auth/login', {
+export async function loginUser(user) {
+	console.log('baseUrl ', baseUrl);
+
+	try {
+		const res = await fetch(baseUrl + '/auth/login', {
 			method: 'POST',
 			credentials: 'include', // Include cookies in the request
 			headers: {
@@ -28,17 +34,14 @@ export function loginUser(user) {
 			body: JSON.stringify(user),
 		});
 
-		if (res.ok) {
-			const data = await res.json();
+		const data = await res.json();
 
-			console.log('login data ', data)
 
-			resolve({ data });
-		} else {
-			const data = await res.json();
-			reject({ data });
-		}		
-	})
+		return { data }
+	} catch (e) {
+		console.log(e);
+		throw e;
+	}
 }
 
 /* export function checkAuth() {
@@ -60,7 +63,7 @@ export function loginUser(user) {
 
 export async function logoutUser() {
 	try {
-		const res = await fetch('http://localhost:8000/auth/logout', {
+		const res = await fetch(baseUrl + '/auth/logout', {
 			method: 'POST',
 			credentials: 'include', // Include cookies in the request
 			headers: {
@@ -82,13 +85,13 @@ export async function logoutUser() {
 
 export async function resetPasswordRequest(email) {
 	try {
-		const res = await fetch('http://localhost:8000/auth/reset-password-request', {
+		const res = await fetch(baseUrl + '/auth/reset-password-request', {
 			method: 'POST',
 			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({email}),
+			body: JSON.stringify({ email }),
 		});
 
 		const data = await res.json();
@@ -97,20 +100,20 @@ export async function resetPasswordRequest(email) {
 	} catch (e) {
 		console.log('An error occurred while making reset password request ', e);
 
-		return {data: e}
+		return { data: e }
 	}
 }
 
 
-export async function resetPassword({ email, password, token }) {	
+export async function resetPassword({ email, password, token }) {
 	try {
-		const res = await fetch('http://localhost:8000/auth/reset-password', {
+		const res = await fetch(baseUrl + '/auth/reset-password', {
 			method: 'POST',
 			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({email, password, token}),
+			body: JSON.stringify({ email, password, token }),
 		});
 
 		const data = await res.json();

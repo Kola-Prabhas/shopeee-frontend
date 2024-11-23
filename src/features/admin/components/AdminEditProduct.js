@@ -1,11 +1,12 @@
 import {
-	selectCategories,
-	selectBrands,
 	updateProductAsync,
 	selectProductById,
 	fetchProductByIdAsync,
 	selectProductStatus
 } from '../../product/productSlice';
+import { selectAllCategories } from '../../product/categorySlice';
+import { selectAllBrands } from '../../product/brandSlice';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
@@ -19,8 +20,8 @@ import Modal from '../../../components/Modal';
 
 export default function AdminEditProduct() {
 	const [open, setOpen] = useState(false);
-	const categories = useSelector(selectCategories);
-	const brands = useSelector(selectBrands);
+	const categories = useSelector(selectAllCategories);
+	const brands = useSelector(selectAllBrands);
 	const product = useSelector(selectProductById);
 
 	const productStatus = useSelector(selectProductStatus);

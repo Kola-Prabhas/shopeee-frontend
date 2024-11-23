@@ -1,31 +1,22 @@
-export function createOrder(order) {
-	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/orders/', {
-			method: 'POST',
-			credentials: 'include', // Include cookies in the request
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(order)
-		});
-
-		const data = await res.json();
+const baseUrl = process.env.REACT_APP_BASE_URL;
 
 
-		const response = await fetch('http://localhost:8000/users/' + order.user, {
-			method: 'PATCH',
-			credentials: 'include', // Include cookies in the request
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(data)
-		})
 
-		await response.json();
+// export async function fetchUserOrders() {
+// 	try {
+// 		const res = await fetch(baseUrl + '/orders/own', {
+// 			credentials: 'include', // Include cookies in the request
+// 		});
+// 		const data = await res.json();
 
-		resolve({ data });
-	})
-}
+// 		return { data };
+// 	} catch (error) {
+// 		console.log('error ', error);
+
+// 		throw error;		
+// 	}
+// }
+
 
 
 export function fetchAllOrders({ pagination, sortOptions, admin }) {
@@ -45,13 +36,10 @@ export function fetchAllOrders({ pagination, sortOptions, admin }) {
 
 
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/orders?' + queryString, {
+		const res = await fetch(baseUrl + '/orders?' + queryString, {
 			credentials: 'include', // Include cookies in the request
 		});
 		const data = await res.json(); 
-
-		console.log('querystring ', queryString);
-		console.log('all orders', data);
 
 		const totalOrders = await res.headers.get('X-Total-Count');
 
@@ -63,7 +51,7 @@ export function fetchAllOrders({ pagination, sortOptions, admin }) {
 
 export function updateOrder(update) {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/orders/'+update.id, {
+		const res = await fetch(baseUrl + '/orders/'+update.id, {
 			method: 'PATCH',
 			credentials: 'include', // Include cookies in the request
 			headers: {
@@ -77,16 +65,3 @@ export function updateOrder(update) {
 	})
 }
 
-/* export function resetOrder(orderId) {
-	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/orders/'+orderId, {
-			method: 'DELETE',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		const data = await res.json();
-
-		resolve({ data });
-	})
-} */

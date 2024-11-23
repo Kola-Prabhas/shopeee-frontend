@@ -1,11 +1,14 @@
 import { useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline'
+
 import { selectCartItems, fetchItemsByUserIdAsync } from '../features/cart/cartSlice';
-import { fetchOrdersByUserIdAsync, fetchUserInfoAsync, selectUserInfo } from '../features/user/userSlice';
-import { selectUser } from '../features/auth/authSlice';
+import { fetchUserInfoAsync, selectUserInfo } from '../features/user/userSlice';
+// import { fetchUserOrdersAsync} from '../features/order/orderSlice';
+import { selectLoginStatus, selectUser } from '../features/auth/authSlice';
 
 
 // Links in the navbar
@@ -32,12 +35,11 @@ function classNames(...classes) {
 export default function Navbar({ children }) {
 	const userInfo = useSelector(selectUserInfo);
 	const user = useSelector(selectUser);
+	const loginStatus = useSelector(selectLoginStatus);
 	const items = useSelector(selectCartItems);
+	
 	const dispatch = useDispatch();
 
-	console.log('In navbar');
-
-	
 	useEffect(() => {
 		if (!userInfo && user) {
 			dispatch(fetchUserInfoAsync());
@@ -45,12 +47,11 @@ export default function Navbar({ children }) {
 
 		if (userInfo && userInfo.role !== 'admin') {
 			dispatch(fetchItemsByUserIdAsync());
+			console.log('Cart items fetching')
 		}
 
-		if (userInfo && userInfo.role !== 'admin' && userInfo.orders.length === 0) {
-			dispatch(fetchOrdersByUserIdAsync());
-		}
-	}, [dispatch, userInfo, user]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dispatch, userInfo]);
 
 
 	return (
@@ -72,8 +73,6 @@ export default function Navbar({ children }) {
 									<div className="hidden md:block">
 										<div className="ml-10 flex items-baseline space-x-4">
 											{navigation.map((item) => {
-												console.log('userInfo ', userInfo);
-												
 												return item[userInfo.role] && (
 													<Link
 														key={item.name}

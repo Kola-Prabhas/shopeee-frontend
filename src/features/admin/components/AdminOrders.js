@@ -133,24 +133,29 @@ function AdminOrders() {
 								Payment Method
 							</th>
 							<th
-								className="py-3 px-1 text-center flex gap-2 cursor-pointer"
+								className="py-3 px-1 text-center cursor-pointer"
 								onClick={() => handleSort('createdAt')}
 							>
-								Order Time
-								{sortOptions._order === 'desc' && sortOptions._sort === 'createdAt' && <ArrowUpIcon className="w-4 h-4" />}
-								{sortOptions._order === 'asc' && sortOptions._sort === 'createdAt' && <ArrowDownIcon className="w-4 h-4" />}
+								<div className='flex justify-center'>
+									<p>Order Time</p>
+									{sortOptions._order === 'desc' && sortOptions._sort === 'createdAt' && <ArrowUpIcon className="w-4 h-4" />}
+									{sortOptions._order === 'asc' && sortOptions._sort === 'createdAt' && <ArrowDownIcon className="w-4 h-4" />}
+								</div>
 							</th>
-							{/* <th
-								className="py-3 px-1 text-center border border-black flex"
+							<th
+								className="py-3 px-1 text-center cursor-pointer"
 								onClick={() => handleSort('updatedAt')}
 							>
-								Last Updated
-								{sortOptions._order === 'desc' && <ArrowUpIcon className="w-4 h-4" />}
-								{sortOptions._order === 'asc' && <ArrowDownIcon className="w-4 h-4" />}
-							</th> */}
+								<div className='flex justify-center'>
+									<p>Last Updated</p>
+									{sortOptions._order === 'desc' && sortOptions._sort === 'updatedAt' && <ArrowUpIcon className="w-4 h-4" />}
+									{sortOptions._order === 'asc' && sortOptions._sort === 'updatedAt' && <ArrowDownIcon className="w-4 h-4" />}
+								</div>
+							</th>
 							<th className="py-3 px-1 text-center">
 								Actions
 							</th>
+
 						</tr>
 					</thead>
 					<tbody className="text-gray-600 text-xs font-light">
@@ -226,11 +231,11 @@ function AdminOrders() {
 											{new Date(order.createdAt).toLocaleString()}
 										</div>
 									</td>
-									{/* <td className="py-3 px-1 text-center">
+									<td className="py-3 px-1 text-center">
 										<div className="flex items-center justify-center">
 											{new Date(order.updatedAt).toLocaleString()}
 										</div>
-									</td> */}
+									</td>
 									<td className="py-3 px-1 text-center">
 										{ordersStatus === 'loading' ? (
 											<ThreeDots

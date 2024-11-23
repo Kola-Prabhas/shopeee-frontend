@@ -1,22 +1,42 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createOrder, fetchAllOrders, updateOrder } from './orderAPI';
+import {
+	// createOrder,
+	fetchAllOrders,
+	// fetchUserOrders,
+	updateOrder
+} from './orderAPI';
 
 const initialState = {
 	orders: [],
-	currentOrder: null,
+	// currentOrder: null,
 	totalOrders: 0,
 	ordersStatus: 'idle',
-	currentOrderStatus: 'idle'
+	// currentOrderStatus: 'idle'
 };
 
 
-export const createOrderAsync = createAsyncThunk(
-  'order/createOrder',
-  async (order) => {
-    const response = await createOrder(order);
-    return response.data;
-  }
-);
+// export const createOrderAsync = createAsyncThunk(
+// 	'order/createOrder',
+// 	async (order) => {
+// 		const response = await createOrder(order);
+// 		console.log('response.data ', response.data)
+// 		return response.data;
+// 	}
+// );
+
+// export const fetchUserOrdersAsync = createAsyncThunk(
+// 	'order/fetchUserOrders',
+// 	async (_, {rejectWithValue}) => {
+
+// 		try {
+// 			const response = await fetchUserOrders();
+
+// 			return response.data;
+// 		} catch (error) {
+// 			return rejectWithValue(error);			
+// 		}
+// 	}
+// );
 
 export const fetchAllOrdersAsync = createAsyncThunk(
 	'order/fetchAllOrders',
@@ -36,53 +56,52 @@ export const updateOrderAsync = createAsyncThunk(
 );
 
 export const orderSlice = createSlice({
-  name: 'order',
-  initialState,
-	reducers: {
-		resetOrder: (state) => {
-			state.currentOrder = null;			
-	    }
-    },
- 
-  extraReducers: (builder) => {
-    builder
-		.addCase(createOrderAsync.pending, (state) => {
-		    state.currentOrderStatus = 'loading';
-		})
-		.addCase(createOrderAsync.fulfilled, (state, action) => {
-			state.currentOrderStatus = 'idle';
-			state.orders.push(action.payload);
-			state.currentOrder = action.payload;
-		})
-		.addCase(fetchAllOrdersAsync.pending, (state) => {
-			state.ordersStatus = 'loading';
-		})
-		.addCase(fetchAllOrdersAsync.fulfilled, (state, action) => {
-			state.ordersStatus = 'idle';
-			state.orders = action.payload.data;
-			state.totalOrders = action.payload.totalOrders;
-		})
-		.addCase(updateOrderAsync.pending, (state) => {
-			state.ordersStatus = 'loading';
-		})
-		.addCase(updateOrderAsync.fulfilled, (state, action) => {
-			state.ordersStatus = 'idle';
-			state.orders = state.orders.map(order => {
-				if (order.id === action.payload.id) {
-					return action.payload;
-				}
+	name: 'order',
+	initialState,
+	
+	extraReducers: (builder) => {
+		builder
+			// .addCase(fetchUserOrdersAsync.pending, (state) => {
+			// 	state.ordersStatus = 'loading';
+			// })
+			// .addCase(fetchUserOrdersAsync.fulfilled, (state, action) => {
+			// 	state.ordersStatus = 'idle';
+			// 	state.orders = action.payload;
+			// 	console.log('state.orders ', state.orders);
+			// })
 
-				return order;
-			});			
-		});
-  },
+
+			.addCase(fetchAllOrdersAsync.pending, (state) => {
+				state.ordersStatus = 'loading';
+			})
+			.addCase(fetchAllOrdersAsync.fulfilled, (state, action) => {
+				state.ordersStatus = 'idle';
+				state.orders = action.payload.data;
+				state.totalOrders = action.payload.totalOrders;
+			})
+
+
+			.addCase(updateOrderAsync.pending, (state) => {
+				state.ordersStatus = 'loading';
+			})
+			.addCase(updateOrderAsync.fulfilled, (state, action) => {
+				state.ordersStatus = 'idle';
+				state.orders = state.orders.map(order => {
+					if (order.id === action.payload.id) {
+						return action.payload;
+					}
+
+					return order;
+				});
+			});
+	},
 });
 
 
-export const selectCurrentOrder = (state) => state.order.currentOrder;
+// export const selectCurrentOrder = (state) => state.order.currentOrder;
 export const selectOrders = (state) => state.order.orders;
 export const selectTotalOrders = (state) => state.order.totalOrders;
-export const { resetOrder } = orderSlice.actions;
+// export const { resetOrder } = orderSlice.actions;
 
 export const selectOrdersStatus = (state) => state.order.ordersStatus
 export const selectCurrentOrderStatus = (state) => state.order.currentOrderStatus

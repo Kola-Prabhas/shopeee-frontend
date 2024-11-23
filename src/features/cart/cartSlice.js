@@ -1,18 +1,23 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { addToCart, deleteItem, fetchItemsByUserId, clearCart, updateItem } from './cartAPI';
 
+import toast from 'react-hot-toast';
+
+
 const initialState = {
-  items: [],
-  status: 'idle',
+	items: [],
+	status: 'idle',
+	addToCartStatus: 'idle',
+
 };
 
 
 export const addToCartAsync = createAsyncThunk(
-  'cart/addToCart',
-  async (item) => {
-    const response = await addToCart(item);
-    return response.data;
-  }
+	'cart/addToCart',
+	async (item) => {
+		const response = await addToCart(item);
+		return response.data;
+	}
 );
 
 
@@ -54,55 +59,67 @@ export const clearCartAsync = createAsyncThunk(
 
 
 export const cartSlice = createSlice({
-  name: 'cart',
-  initialState,
-  reducers: {},
- 
-  extraReducers: (builder) => {
-    builder
-		.addCase(addToCartAsync.pending, (state) => {
-			state.status = 'loading';
-		})
-		.addCase(addToCartAsync.fulfilled, (state, action) => {
-			state.status = 'idle';
-			state.items.push(action.payload);
-		})
-		.addCase(fetchItemsByUserIdAsync.pending, (state) => {
-			state.status = 'loading';
-		})
-		.addCase(fetchItemsByUserIdAsync.fulfilled, (state, action) => {
-			state.status = 'idle';
-			state.items = action.payload;
-		})
-	    .addCase(updateItemAsync.pending, (state) => {
-			state.status = 'loading';
-		})
-		.addCase(updateItemAsync.fulfilled, (state, action) => {
-			state.status = 'idle';
+	name: 'cart',
+	initialState,
+	reducers: {},
 
-			const index = state.items.findIndex(item => item.id === action.payload.id);
-			state.items[index] = action.payload;
-		})
-		.addCase(deleteItemFromCartAsync.pending, (state) => {
-			state.status = 'loading';
-		})
-		.addCase(deleteItemFromCartAsync.fulfilled, (state, action) => {
-			state.status = 'idle';
-			const index = state.items.findIndex(item => item.id === action.payload.itemId);
-			state.items.splice(index, 1);
-		})
-		.addCase(clearCartAsync.pending, (state) => {
-			state.status = 'loading';
-		})
-		.addCase(clearCartAsync.fulfilled, (state, action) => {
-			state.status = 'idle';
-			state.items = [];
-		})
-  },
+	extraReducers: (builder) => {
+		builder
+			.addCase(addToCartAsync.pending, (state) => {
+				state.addToCartStatus = 'loading';
+			})
+			.addCase(addToCartAsync.fulfilled, (state, action) => {
+				state.addToCartStatus = 'idle';
+				state.items.push(action.payload);
+				
+				const product = action.payload.product;
+				toast.success(`${product.title} added to cart🥳`);
+			})
+			.addCase(fetchItemsByUserIdAsync.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(fetchItemsByUserIdAsync.fulfilled, (state, action) => {
+				state.status = 'idle';
+				state.items = action.payload;
+			})
+			.addCase(updateItemAsync.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(updateItemAsync.fulfilled, (state, action) => {
+				state.status = 'idle';
+
+				const index = state.items.findIndex(item => item.id === action.payload.id);
+				state.items[index] = action.payload;
+
+				
+				const product = action.payload.product;
+				toast.success(`${product.title} quantity updated to ${action.payload.quantity}`);
+			})
+			.addCase(deleteItemFromCartAsync.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(deleteItemFromCartAsync.fulfilled, (state, action) => {
+				state.status = 'idle';
+				const index = state.items.findIndex(item => item.id === action.payload.id);
+				state.items.splice(index, 1);
+
+				const product = action.payload.product;
+				toast.success(`${product.title} removed from cart`);
+			})
+			.addCase(clearCartAsync.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(clearCartAsync.fulfilled, (state, action) => {
+				state.status = 'idle';
+				state.items = [];
+				toast.success('Cart cleared successfully')
+			})
+	},
 });
 
 
 export const selectCartItems = (state) => state.cart.items;
 export const selectCartItemsStatus = (state) => state.cart.status;
+export const selectAddToCartStatus = (state) => state.cart.addToCartStatus;
 
 export default cartSlice.reducer;

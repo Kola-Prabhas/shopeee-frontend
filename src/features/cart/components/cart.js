@@ -9,7 +9,9 @@ import { clearCartAsync, selectCartItems, selectCartItemsStatus } from '../cartS
 import CartItem from './cartItem';
 import CartTotalStats from './cartTotalStats';
 import Modal from '../../../components/Modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import { resetCurrentOrder } from "../../user/userSlice";
 
 
 export default function Cart() {
@@ -27,6 +29,13 @@ export default function Cart() {
 	function handleClearCart() {
 		dispatch(clearCartAsync(items));
 	}
+
+
+	// resetting the current order when user comes back from payment page
+	useEffect(() => {
+		return () => dispatch(resetCurrentOrder());
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 
 	return (
@@ -49,7 +58,7 @@ export default function Cart() {
 					<div className="relative border-t border-gray-200 px-4 py-6 sm:px-6">
 						<button
 							onClick={() => setOpen(true)}
-							className='absolute right-0 -mt-2 mb-4 px-2 py-1 rounded-md hover:bg-red-500 hover:text-white duration-500 active:scale-90 border border-red-200 text-red-500 text-sm font-medium'
+							className='absolute right-0 -mt-2 mb-4 px-2 py-1 rounded-md hover:bg-red-500 hover:text-white duration-250 border border-red-200 text-red-500 text-sm font-medium'
 						>
 							Clear Cart
 						</button>

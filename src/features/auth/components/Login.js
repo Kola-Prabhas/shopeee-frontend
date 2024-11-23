@@ -2,7 +2,7 @@ import { Link, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ThreeDots } from 'react-loader-spinner'
-import { loginUserAsync, selectLoginError, selectUser, selectAuthStatus, setLoginUser } from "../authSlice";
+import { loginUserAsync, selectLoginError, selectUser, selectLoginStatus, setLoginUser } from "../authSlice";
 
 
 const initialLoginDetails = {
@@ -16,9 +16,10 @@ export default function Login() {
 	const [emailError, setEmailError] = useState(false); // used to check whether the email is valid or not
 
 	const dispatch = useDispatch();
-	const loginError = useSelector(selectLoginError);
+	// const loginError = useSelector(selectLoginError);
+	const loginError = 'Sample Error';
 	const user = useSelector(selectUser);
-	const authStatus = useSelector(selectAuthStatus);
+	const loginStatus = useSelector(selectLoginStatus);
 
 	const disabled = loginDetails.email === '' || loginDetails.password === '' || emailError;
 
@@ -72,7 +73,7 @@ export default function Login() {
 
 
 	return (
-		authStatus === 'loading' ? (
+		loginStatus === 'loading' ? (
 			<div className='min-h-[100vh] flex items-center justify-center'>
 				<ThreeDots
 					visible={true}

@@ -1,9 +1,9 @@
-import './App.css';
-
 import {
 	createBrowserRouter,
 	RouterProvider,
 } from "react-router-dom";
+
+import { Toaster } from 'react-hot-toast';
 
 import AppLayout from './components/appLayout';
 
@@ -34,6 +34,7 @@ import AdminProductFormPage from './pages/AdminProductFormPage';
 import AdminEditProductPage from './pages/AdminEditProductPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import StripeCheckout from './pages/StripeCheckout';
+import UserProtected from "./features/auth/components/userProtected";
 
 
 const router = createBrowserRouter([
@@ -42,19 +43,15 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "/",
-				element: <Protected><HomePage /></Protected>,
+				element: <UserProtected><HomePage /></UserProtected>,
 			},
-			// {
-			// 	path: "/admin",
-			// 	element: <AdminProtected><AdminHome /></AdminProtected>,
-			// },
 			{
 				path: "/cart",
 				element: <Protected><CartPage /></Protected>,
 			},
 			{
 				path: "/checkout",
-				element: <CheckoutPage />,
+				element: <Protected><CheckoutPage /></Protected>,
 			},
 			{
 				path: "/stripe-checkout",
@@ -62,7 +59,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/product-details/:id",
-				element: <Protected><ProductDetailsPage /></Protected>,
+				element: <UserProtected><ProductDetailsPage /></UserProtected>,
 			},
 			{
 				path: "/admin/product-details/:id",
@@ -94,7 +91,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/logout",
-				element: <Protected><LogoutPage /></Protected>,
+				element: <UserProtected><LogoutPage /></UserProtected>,
 			},
 		]
 	},
@@ -116,7 +113,7 @@ const router = createBrowserRouter([
 	},
 	{
 		path: "*",
-		element: <PageNotFound></PageNotFound>,
+		element: <PageNotFound />,
 	}
 ]);
 
@@ -124,10 +121,15 @@ const router = createBrowserRouter([
 
 function App() {
 	return (
-		<div className="App">
+		<>
 			<RouterProvider router={router} />
-		</div>
-	);
+			<Toaster
+				toastOptions={{
+					duration: 3000,
+				}}
+			/>
+		</>
+	)
 }
 
 export default App;

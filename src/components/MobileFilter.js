@@ -4,7 +4,8 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { TailSpin } from 'react-loader-spinner'
 import { useSelector } from 'react-redux';
-import { selectBrandsStatus, selectCategoriesStatus } from '../features/product/productSlice';
+import { selectBrandsStatus } from '../features/product/brandSlice';
+import { selectCategoriesStatus } from '../features/product/categorySlice';
 
 export default function MobileFilter({
 	mobileFiltersOpen,

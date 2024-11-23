@@ -4,10 +4,15 @@ import { ITEMS_PER_PAGE, PAGINATION_SIBLING_COUNT } from '../app/constants';
 
 
 
-export default function Pagination({ page, setPage, handlePage, totalItems }) {
+export default function Pagination({ page, handlePage, totalItems }) {
 	const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
-	const pagination = useGetPagination({currentPage: page, pageSize: ITEMS_PER_PAGE, totalItems, siblingCount: PAGINATION_SIBLING_COUNT})
+	const pagination = useGetPagination({
+		currentPage: page,
+		pageSize: ITEMS_PER_PAGE,
+		totalItems,
+		siblingCount: PAGINATION_SIBLING_COUNT
+	})
 
 	function itemsShown() {
 		if (page !== Math.ceil(totalItems / ITEMS_PER_PAGE)) {

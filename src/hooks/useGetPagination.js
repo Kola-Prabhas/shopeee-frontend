@@ -23,15 +23,15 @@ function useGetPagination({
 		const showRightDots = rightSiblingIndex < totalPages - siblingCount;
 
 		if (showLeftDots && !showRightDots) {
-			const leftElement = totalPages - (2*siblingCount + 3) + 1
-			const range = Array.from({ length: 2*siblingCount + 3 })
+			const leftElement = totalPages - (2 * siblingCount + 3) + 1
+			const range = Array.from({ length: 2 * siblingCount + 3 })
 				.map((_, idx) => idx + leftElement);
 
 			return [1, '...', ...range];
 		}
 
 		if (!showLeftDots && showRightDots) {
-			const range = Array.from({ length: 2*siblingCount + 3 })
+			const range = Array.from({ length: 2 * siblingCount + 3 })
 				.map((_, idx) => idx + 1);
 
 			return [...range, '...', totalPages]

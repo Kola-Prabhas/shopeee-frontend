@@ -18,7 +18,10 @@ const initialState = {
 	mailSent: false,
 	mailSentStatus: 'idle',
 	passwordResetStatus: 'idle',
-	passwordReset: false
+	passwordReset: false,
+
+	loginStatus: 'idle',
+	signUpStatus: 'idle'
 };
 
 
@@ -105,26 +108,26 @@ export const authSlice = createSlice({
 	extraReducers: (builder) => {
 		builder
 			.addCase(createUserAsync.pending, (state) => {
-				state.status = 'loading';
+				state.signUpStatus = 'loading';
 			})
 			.addCase(createUserAsync.fulfilled, (state, action) => {
-				state.status = 'idle';
+				state.signUpStatus = 'idle';
 				state.loggedInUser = action.payload;
 			})
 			.addCase(createUserAsync.rejected, (state, action) => {
-				state.status = 'idle';
+				state.signUpStatus = 'idle';
 				state.signUpError = action.error;
 			})
 
 			.addCase(loginUserAsync.pending, (state) => {
-				state.status = 'loading';
+				state.loginStatus = 'loading';
 			})
 			.addCase(loginUserAsync.fulfilled, (state, action) => {
-				state.status = 'idle';
+				state.loginStatus = 'idle';
 				state.loggedInUser = action.payload;
 			})
 			.addCase(loginUserAsync.rejected, (state, action) => {
-				state.status = 'idle';
+				state.loginStatus = 'idle';
 				state.loginError = action.payload;
 			})
 			.addCase(logoutUserAsync.pending, (state) => {
@@ -132,8 +135,6 @@ export const authSlice = createSlice({
 			})
 			.addCase(logoutUserAsync.fulfilled, (state) => {
 				state.status = 'idle';
-
-				console.log('This code executed');
 				state.loggedInUser = null;
 			})
 			.addCase(resetPasswordRequestAsync.pending, (state) => {
@@ -169,15 +170,17 @@ export const authSlice = createSlice({
 export const { setLoginUser } = authSlice.actions;
 
 export const selectUser = (state) => state.auth.loggedInUser;
-export const selectLoginError = (state) => state.auth.loginError.message;
+// export const selectLoginError = (state) => state.auth.loginError.message;
 export const selectSignUpError = (state) => state.auth.signUpError.message;
 export const selectUserChecked = (state) => state.auth.userChecked;
 export const selectMailSent = (state) => state.auth.mailSent;
 export const selectPasswordReset = (state) => state.auth.passwordReset;
 
-export const selectAuthStatus = (state) => state.auth.status;
+// export const selectAuthStatus = (state) => state.auth.status;
 export const selectMailSentStatus = (state) => state.auth.mailSentStatus;
 export const selectPasswordResetStatus = (state) => state.auth.passwordResetStatus;
+export const selectLoginStatus = (state) => state.auth.loginStatus;
+export const selectSignUpStatus = (state) => state.auth.signUpStatus;
 
 
 export default authSlice.reducer;

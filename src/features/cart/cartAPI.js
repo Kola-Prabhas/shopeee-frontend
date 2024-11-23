@@ -1,8 +1,8 @@
-const baseUrl = process.env.BASE_URL;
+const baseUrl = process.env.REACT_APP_BASE_URL;
 
 export function addToCart(item) {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/cart', {
+		const res = await fetch(baseUrl + '/cart', {
 			method: 'POST',
 			credentials: 'include', // Include cookies in the request
 			headers: {
@@ -20,7 +20,7 @@ export function addToCart(item) {
 
 export function fetchItemsByUserId() {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/cart', {
+		const res = await fetch(baseUrl + '/cart', {
 			credentials: 'include', // Include cookies in the request
 		});
 		const data = await res.json();
@@ -33,7 +33,7 @@ export function fetchItemsByUserId() {
 
 export function updateItem(item) {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/cart/' + item.id, {
+		const res = await fetch(baseUrl + '/cart/' + item.id, {
 			method: 'PATCH',
 			credentials: 'include', // Include cookies in the request
 			headers: {
@@ -43,8 +43,6 @@ export function updateItem(item) {
 		});
 		const data = await res.json();
 
-		console.log(data);
-
 
 		resolve({ data });
 	})
@@ -53,7 +51,7 @@ export function updateItem(item) {
 
 export function deleteItem(itemId) {
 	return new Promise(async resolve => {
-		const res = await fetch('http://localhost:8000/cart/' + itemId, {
+		const res = await fetch(baseUrl + '/cart/' + itemId, {
 			method: 'DELETE',
 			credentials: 'include', // Include cookies in the request
 			headers: {
@@ -61,14 +59,9 @@ export function deleteItem(itemId) {
 			},
 		});
 
-		await res.json();
+		const data = await res.json();
 
-
-		resolve({
-			data: {
-				itemId
-			}
-		});
+		resolve({data});
 	})
 }
 
@@ -80,11 +73,9 @@ export async function clearCart(cartItems) {
 		cartItemIds.push(item.id)
 	}
 
-	console.log('cartItems ', cartItems)
-	console.log('cartItemIds ', cartItemIds)
 
 	try {
-		const res = await fetch('http://localhost:8000/cart/', {
+		const res = await fetch(baseUrl + '/cart/', {
 			method: 'DELETE',
 			credentials: 'include', // Include cookies in the request
 			headers: {

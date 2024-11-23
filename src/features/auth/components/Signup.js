@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { ThreeDots } from 'react-loader-spinner'
-import { createUserAsync, selectUser, selectSignUpError, selectAuthStatus } from "../authSlice";
+import { createUserAsync, selectUser, selectSignUpError, selectSignUpStatus } from "../authSlice";
 import { useDispatch, useSelector } from 'react-redux';
 
 const initialSignupDetails = {
@@ -21,7 +21,7 @@ export default function SignUp() {
 	const dispatch = useDispatch();
 	const user = useSelector(selectUser);
 	const signUpError = useSelector(selectSignUpError);
-	const authStatus = useSelector(selectAuthStatus);
+	const signUpStatus = useSelector(selectSignUpStatus);
 
 
 
@@ -92,7 +92,7 @@ export default function SignUp() {
 
 
 	return (
-		authStatus === 'loading' ? (
+		signUpStatus === 'loading' ? (
 			<div className='min-h-[100vh] flex items-center justify-center'>
 				<ThreeDots
 					visible={true}

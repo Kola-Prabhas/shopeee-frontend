@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteItemFromCartAsync } from '../cartSlice'
 import CartQuantityChange from "./cartItemQuantityChange";
 import { ThreeDots } from 'react-loader-spinner'
-import { selectCartItemsStatus } from '../../cart/cartSlice';
+// import { selectCartItemsStatus } from '../../cart/cartSlice';
 
 import Modal from '../../../components/Modal';
 import { useState } from 'react';
@@ -14,12 +14,11 @@ function CartItem({ item }) {
 
 	const [open, setOpen] = useState(false);
 
-	const cartItemsStatus = useSelector(selectCartItemsStatus);
+	// const cartItemsStatus = useSelector(selectCartItemsStatus);
 
 
 	function handleDelete(itemId) {
 		dispatch(deleteItemFromCartAsync(itemId));
-
 	}
 
 
@@ -46,7 +45,7 @@ function CartItem({ item }) {
 					</div>
 				</div>
 				<div className={`flex flex-1 items-center justify-between text-sm`}>
-					{cartItemsStatus === 'loading' ? (
+					{/* {cartItemsStatus === 'loading' ? (
 						<div className='ml-10'>
 							<ThreeDots
 								visible={true}
@@ -60,7 +59,7 @@ function CartItem({ item }) {
 							/>
 						</div>
 					) : (
-						<>
+						<> */}
 							<Modal
 								open={open}
 								setOpen={setOpen}
@@ -87,7 +86,7 @@ function CartItem({ item }) {
 									Remove
 								</button>
 							</div>
-						</>)}
+						{/* </>)} */}
 				</div>
 			</div>
 		</li>

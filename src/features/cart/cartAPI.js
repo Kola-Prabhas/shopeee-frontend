@@ -49,8 +49,9 @@ export function updateItem(item) {
 }
 
 
-export function deleteItem(itemId) {
-	return new Promise(async resolve => {
+export async function deleteItem(itemId) {
+	console.log('delete item called')
+	try {
 		const res = await fetch(baseUrl + '/cart/' + itemId, {
 			method: 'DELETE',
 			credentials: 'include', // Include cookies in the request
@@ -58,11 +59,15 @@ export function deleteItem(itemId) {
 				'Content-Type': 'application/json',
 			},
 		});
-
+	
 		const data = await res.json();
+	
+		return {data};
+	} catch (error) {
+		console.log('error in deleting cart', error);
+		throw error;		
+	}
 
-		resolve({data});
-	})
 }
 
 

@@ -4,7 +4,12 @@ import { Link } from 'react-router-dom';
 
 import { ThreeDots } from 'react-loader-spinner'
 
-import { clearCartAsync, selectCartItems, selectCartItemsStatus } from '../cartSlice';
+import {
+	clearCartAsync,
+	selectCartItems,
+	selectDeletingCartItems,
+	selectCartItemsStatus
+} from '../cartSlice';
 
 import CartItem from './cartItem';
 import CartTotalStats from './cartTotalStats';
@@ -17,6 +22,8 @@ import { resetCurrentOrder } from "../../user/userSlice";
 export default function Cart() {
 	const [open, setOpen] = useState(false);
 	const items = useSelector(selectCartItems);
+	const deletingCartItems = useSelector(selectDeletingCartItems)
+
 	const cartItemsStatus = useSelector(selectCartItemsStatus);
 
 	const dispatch = useDispatch();
@@ -87,7 +94,7 @@ export default function Cart() {
 							totalPrice={totalPrice}
 							totalDiscountPrice={totalDiscountPrice}
 						/>
-						<p className="mt-0.5 mx-2 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+						{/* <p className="mt-0.5 mx-2 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p> */}
 						<Link to='/checkout'>
 							<div className="mt-6 mx-auto max-w-[400px]">
 								<span className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">

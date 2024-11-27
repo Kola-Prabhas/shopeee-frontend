@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 
 const initialState = {
 	items: [],
+	deletingCartItems:[], // cart items which are going to be removed	
 	status: 'idle',
 	addToCartStatus: 'idle',
 
@@ -42,8 +43,14 @@ export const updateItemAsync = createAsyncThunk(
 export const deleteItemFromCartAsync = createAsyncThunk(
 	'cart/deleteItemFromCart',
 	async (itemId) => {
-		const response = await deleteItem(itemId);
-		return response.data;
+		console.log('itemId ', itemId)
+		try {
+			const response = await deleteItem(itemId);
+			return response.data;
+		} catch (error) {
+			console.log('error ', error);
+			throw error;			
+		}
 	}
 );
 
@@ -75,6 +82,8 @@ export const cartSlice = createSlice({
 				const product = action.payload.product;
 				toast.success(`${product.title} added to cart🥳`);
 			})
+
+
 			.addCase(fetchItemsByUserIdAsync.pending, (state) => {
 				state.status = 'loading';
 			})
@@ -82,6 +91,8 @@ export const cartSlice = createSlice({
 				state.status = 'idle';
 				state.items = action.payload;
 			})
+
+
 			.addCase(updateItemAsync.pending, (state) => {
 				state.status = 'loading';
 			})
@@ -95,17 +106,25 @@ export const cartSlice = createSlice({
 				const product = action.payload.product;
 				toast.success(`${product.title} quantity updated to ${action.payload.quantity}`);
 			})
-			.addCase(deleteItemFromCartAsync.pending, (state) => {
-				state.status = 'loading';
+
+
+			.addCase(deleteItemFromCartAsync.pending, (state, action) => {
+				const itemId = action.meta.arg;
+				state.deletingCartItems.push(itemId)
 			})
 			.addCase(deleteItemFromCartAsync.fulfilled, (state, action) => {
-				state.status = 'idle';
 				const index = state.items.findIndex(item => item.id === action.payload.id);
 				state.items.splice(index, 1);
 
 				const product = action.payload.product;
 				toast.success(`${product.title} removed from cart`);
 			})
+			.addCase(deleteItemFromCartAsync.rejected, (state, action) => {
+				state.deletingCartItems =
+					state.deletingCartItems.filter(item => item.id !== action.payload.id)
+			})
+
+
 			.addCase(clearCartAsync.pending, (state) => {
 				state.status = 'loading';
 			})
@@ -119,6 +138,7 @@ export const cartSlice = createSlice({
 
 
 export const selectCartItems = (state) => state.cart.items;
+export const selectDeletingCartItems = (state) => state.cart.deletingCartItems;
 export const selectCartItemsStatus = (state) => state.cart.status;
 export const selectAddToCartStatus = (state) => state.cart.addToCartStatus;
 

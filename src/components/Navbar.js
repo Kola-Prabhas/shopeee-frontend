@@ -47,7 +47,6 @@ export default function Navbar({ children }) {
 
 		if (userInfo && userInfo.role !== 'admin') {
 			dispatch(fetchItemsByUserIdAsync());
-			console.log('Cart items fetching')
 		}
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps

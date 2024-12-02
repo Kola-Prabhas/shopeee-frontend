@@ -1,7 +1,7 @@
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
-export function addToCart(item) {
-	return new Promise(async resolve => {
+export async function addToCart(item) {
+	try {
 		const res = await fetch(baseUrl + '/cart', {
 			method: 'POST',
 			credentials: 'include', // Include cookies in the request
@@ -10,29 +10,42 @@ export function addToCart(item) {
 			},
 			body: JSON.stringify(item)
 		});
+
+		if (!res.ok) {
+			const errorData = await res.json();
+			throw new Error(errorData?.message || 'Failed to add item to cart!');
+		}
+
 		const data = await res.json();
 
-
-		resolve({ data });
-	})
+		return data.data;
+	} catch (e) {
+		throw e;
+	}
 }
 
 
-export function fetchItemsByUserId() {
-	return new Promise(async resolve => {
+export async function fetchItemsByUserId() {
+	try {
 		const res = await fetch(baseUrl + '/cart', {
 			credentials: 'include', // Include cookies in the request
 		});
+
+		if (!res.ok) { 
+			const errorData = await res.json();
+			throw new Error(errorData.message);
+		}
+
 		const data = await res.json();
-
-
-		resolve({ data });
-	})
+		return data;
+	} catch (e) {
+		throw e;
+	}
 }
 
 
-export function updateItem(item) {
-	return new Promise(async resolve => {
+export async function updateItem(item) {
+	try {
 		const res = await fetch(baseUrl + '/cart/' + item.id, {
 			method: 'PATCH',
 			credentials: 'include', // Include cookies in the request
@@ -41,16 +54,21 @@ export function updateItem(item) {
 			},
 			body: JSON.stringify(item)
 		});
+
+		if (!res.ok) {
+			const errorData = await res.json();
+			throw new Error(errorData.message);
+		}
+
 		const data = await res.json();
-
-
-		resolve({ data });
-	})
+		return data.data;
+	} catch (e) {
+		throw e;
+	}
 }
 
 
 export async function deleteItem(itemId) {
-	console.log('delete item called')
 	try {
 		const res = await fetch(baseUrl + '/cart/' + itemId, {
 			method: 'DELETE',
@@ -59,15 +77,17 @@ export async function deleteItem(itemId) {
 				'Content-Type': 'application/json',
 			},
 		});
-	
-		const data = await res.json();
-	
-		return {data};
-	} catch (error) {
-		console.log('error in deleting cart', error);
-		throw error;		
-	}
 
+		if (!res.ok) {
+			const errorData = await res.json();
+			throw new Error(errorData.message);
+		}
+
+		const data = await res.json();
+		return data.data;
+	} catch (error) {
+		throw error;
+	}
 }
 
 
@@ -91,9 +111,8 @@ export async function clearCart(cartItems) {
 
 		const data = await res.json();
 
-		return { data };
+		return data;
 	} catch (e) {
-		console.log(e);
 		throw e;
 	}
 }

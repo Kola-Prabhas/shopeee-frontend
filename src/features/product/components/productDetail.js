@@ -1,36 +1,55 @@
-import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { StarIcon } from '@heroicons/react/20/solid'
-import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { StarIcon } from '@heroicons/react/20/solid';
+import { useDispatch, useSelector } from 'react-redux';
+import { ThreeDots } from 'react-loader-spinner';
 
-import { ThreeDots } from 'react-loader-spinner'
+import {
+	fetchProductByIdAsync,
+	selectProductById,
+	selectProductStatus
+} from '../productSlice';
 
-import { fetchProductByIdAsync, selectProductById, selectProductStatus } from '../productSlice'
-import { addToCartAsync, selectCartItems, deleteItemFromCartAsync, selectCartItemsStatus, selectAddToCartStatus, } from '../../cart/cartSlice'
+import {
+	addToCartAsync,
+	selectCartItems,
+	deleteItemFromCartAsync,
+	selectAddingCartItems,
+	selectUpdatingCartItems,
+	selectDeletingCartItems
+} from '../../cart/cartSlice';
+
 import { selectUser } from '../../auth/authSlice';
-import CartQuantityChange from '../../cart/components/cartItemQuantityChange'
-
+import CartQuantityChange from '../../cart/components/cartItemQuantityChange';
 
 import Modal from '../../../components/Modal';
-
 
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
 }
 
+
 export default function ProductDetails() {
 	const [open, setOpen] = useState(false);
+
 	const user = useSelector(selectUser);
 	const product = useSelector(selectProductById);
-	const items = useSelector(selectCartItems);
 	const productStatus = useSelector(selectProductStatus);
-	const cartItemsStatus = useSelector(selectCartItemsStatus);
-	const addToCartStatus = useSelector(selectAddToCartStatus)
+
+	const items = useSelector(selectCartItems);
+	const addingCartItems = useSelector(selectAddingCartItems);
+	const updatingCartItems = useSelector(selectUpdatingCartItems);
+	const deletingCartItems = useSelector(selectDeletingCartItems);
 
 
 	const itemInCart = items.find(item => item.product?.id === product?.id);
 
+	const isAdding = addingCartItems.includes(product?.id)
+	const isUpdating = updatingCartItems.includes(itemInCart?.id);
+	const isDeleting = deletingCartItems.includes(itemInCart?.id);
+
+	const isProcessing = isAdding || isUpdating || isDeleting;
 
 	const dispatch = useDispatch();
 	const params = useParams();
@@ -56,8 +75,6 @@ export default function ProductDetails() {
 	function handleDelete(itemId) {
 		dispatch(deleteItemFromCartAsync(itemId));
 	}
-
-
 
 
 	return (
@@ -144,7 +161,7 @@ export default function ProductDetails() {
 						</div>
 
 						{user.role !== 'admin' && <form className="mt-10">
-							{!itemInCart && addToCartStatus !== 'loading' && (
+							{!itemInCart && !isProcessing && (
 								<button
 									type="submit"
 									className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -153,7 +170,8 @@ export default function ProductDetails() {
 									Add to Cart
 								</button>
 							)}
-							{(cartItemsStatus === 'loading' || addToCartStatus === 'loading') && <div className='flex items-center justify-center'>
+
+							{isProcessing && <div className='flex items-center justify-center'>
 								<ThreeDots
 									visible={true}
 									height="50"
@@ -166,7 +184,7 @@ export default function ProductDetails() {
 								/>
 							</div>}
 
-							{itemInCart && cartItemsStatus !== 'loading' && <div className='flex items-center justify-center'>
+							{itemInCart && !isProcessing && <div className='flex items-center justify-center'>
 								<>
 									<Modal
 										open={open}
@@ -176,7 +194,7 @@ export default function ProductDetails() {
 										cancelOption='Cancel'
 										confirmOption='Remove'
 										// cancelAction={() => setItemId(-1)}
-										confirmAction={() => handleDelete(product.id)}
+										confirmAction={() => handleDelete(itemInCart.id)}
 									/>
 									<CartQuantityChange
 										setOpen={setOpen}

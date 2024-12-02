@@ -1,4 +1,3 @@
-// import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -7,6 +6,7 @@ import { ThreeDots } from 'react-loader-spinner'
 import {
 	clearCartAsync,
 	selectCartItems,
+	selectUpdatingCartItems,
 	selectDeletingCartItems,
 	selectCartItemsStatus
 } from '../cartSlice';
@@ -22,16 +22,22 @@ import { resetCurrentOrder } from "../../user/userSlice";
 export default function Cart() {
 	const [open, setOpen] = useState(false);
 	const items = useSelector(selectCartItems);
-	const deletingCartItems = useSelector(selectDeletingCartItems)
+	const updatingCartItems = useSelector(selectUpdatingCartItems);
+	const deletingCartItems = useSelector(selectDeletingCartItems);
 
 	const cartItemsStatus = useSelector(selectCartItemsStatus);
 
 	const dispatch = useDispatch();
 
-
 	const totalItems = items.length;
-	const totalPrice = items.reduce((total, current) => total + current.product.price * current.quantity, 0);
-	const totalDiscountPrice = items.reduce((total, current) => total + current.product.discountPrice.toFixed(2) * current.quantity, 0);
+	const totalPrice = items.reduce(
+		(total, current) => total + current.product.price * current.quantity,
+		0
+	);
+	const totalDiscountPrice = items.reduce(
+		(total, current) => total + current.product.discountPrice.toFixed(2) * current.quantity,
+		0
+	);
 
 	function handleClearCart() {
 		dispatch(clearCartAsync(items));
@@ -41,7 +47,7 @@ export default function Cart() {
 	// resetting the current order when user comes back from payment page
 	useEffect(() => {
 		return () => dispatch(resetCurrentOrder());
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 
@@ -82,7 +88,14 @@ export default function Cart() {
 						<div className="flow-root mt-10">
 							<ul className="-my-6 divide-y divide-gray-200">
 								{items?.map((item) => {
-									return <CartItem key={item.product.id} item={item} />
+									return (
+										<CartItem
+											key={item.product.id}
+											item={item}
+											isCurrentlyUpdating={updatingCartItems.includes(item.id)}
+											isCurrentlyDeleting={deletingCartItems.includes(item.id)}
+										/>
+									)
 								})}
 							</ul>
 						</div>
@@ -94,7 +107,6 @@ export default function Cart() {
 							totalPrice={totalPrice}
 							totalDiscountPrice={totalDiscountPrice}
 						/>
-						{/* <p className="mt-0.5 mx-2 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p> */}
 						<Link to='/checkout'>
 							<div className="mt-6 mx-auto max-w-[400px]">
 								<span className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">

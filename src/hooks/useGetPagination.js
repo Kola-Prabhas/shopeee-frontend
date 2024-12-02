@@ -19,8 +19,10 @@ function useGetPagination({
 		const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
 		const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPages);
 
-		const showLeftDots = leftSiblingIndex > siblingCount;
-		const showRightDots = rightSiblingIndex < totalPages - siblingCount;
+		// const showLeftDots = leftSiblingIndex > siblingCount;
+		const showLeftDots = leftSiblingIndex > 2;
+		// const showRightDots = rightSiblingIndex < totalPages - siblingCount;
+		const showRightDots = rightSiblingIndex < totalPages - 1;
 
 		if (showLeftDots && !showRightDots) {
 			const leftElement = totalPages - (2 * siblingCount + 3) + 1

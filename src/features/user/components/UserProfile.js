@@ -2,14 +2,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { useForm } from 'react-hook-form';
 import { selectUserInfo, updateUserAsync } from "../userSlice";
+import AddressForm from "./AddressForm";
 
-function UserProfile() {
+function Profile() {
 	const [editIndex, setEditIndex] = useState(-1);
 	const [addAddress, setAddAddress] = useState(false);
 	const userInfo = useSelector(selectUserInfo);
 	const dispatch = useDispatch();
 
-	console.log('userInfo ', userInfo);
 
 	const {
 		register,
@@ -28,7 +28,7 @@ function UserProfile() {
 
 		updateUser.addresses.splice(index, 1);
 
-		dispatch(updateUserAsync(updateUser));		
+		dispatch(updateUserAsync(updateUser));
 	}
 
 
@@ -67,7 +67,7 @@ function UserProfile() {
 							>
 								Add Address
 							</button>
-					   )
+						)
 					}
 				</div>
 				{
@@ -80,7 +80,7 @@ function UserProfile() {
 										onSubmit={handleSubmit(data => {
 											const update = {
 												...userInfo,
-												addresses: [...userInfo.addresses, data]										
+												addresses: [...userInfo.addresses, data]
 											};
 
 											toggleAddAddress()
@@ -218,7 +218,7 @@ function UserProfile() {
 							</div>
 						</div>
 					)
-					
+
 				}
 				{
 					userInfo.addresses.map((address, index) => {
@@ -404,15 +404,148 @@ function UserProfile() {
 									>
 										Edit
 									</button>
-								</div>	
+								</div>
 							</div>
 						);
 					})
 				}
-				
+
 			</div>
 		</>
 	);
 }
+
+
+function UserProfile() {
+	const [editIndex, setEditIndex] = useState(-1);
+	const [addAddress, setAddAddress] = useState(false);
+	const userInfo = useSelector(selectUserInfo);
+	const dispatch = useDispatch();
+
+
+
+	function handleDelete(index) {
+		const updatedUser = {
+			id: userInfo.id,
+			addresses: [
+				...userInfo.addresses
+			]
+		};
+
+		updatedUser.addresses.splice(index, 1);
+
+		dispatch(updateUserAsync(updatedUser));
+	}
+
+	function handleAddAddress(address) {
+		const updatedUserAddresses = {
+			id: userInfo.id,
+			addresses: [
+				...userInfo.addresses,
+				address,
+			]
+		};
+
+		dispatch(updateUserAsync(updatedUserAddresses));
+	}
+
+
+	function handleEdit(index) {
+		setEditIndex(index);
+		const address = userInfo.addresses[index];
+
+		// setValue('name', address.name);
+		// setValue('email', address.email);
+		// setValue('phone', address.phone);
+		// setValue('street', address.street);
+		// setValue('pinCode', address.pinCode);
+		// setValue('city', address.city);
+		// setValue('state', address.state);
+	}
+
+	function toggleAddAddress() {
+		setAddAddress(!addAddress);
+	}
+
+
+	return (
+		<div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
+			<h1 className="text-2xl sm:text-3xl font-bold mt-4 mb-8">My Profile</h1>
+			<div className='flex items-center gap-4  mb-10'>
+				<div className='size-24 rounded-[50%] overflow-hidden'>
+					<img
+						src='/profile-photo.jpg'
+						alt='profile'
+						className='size-full object-cover'
+					/>
+				</div>
+				<div>
+					<h2 className="text-xl font-medium">{userInfo.name}</h2>
+					<h2 className="font-semibold text-gray-600">{userInfo.email}</h2>
+					<h2 className="font-semibold text-gray-600">9182252115</h2>
+				</div>
+			</div>
+
+			<div className='max-w-[800px]'>
+				{addAddress ? (
+					<AddressForm
+						submitAction={handleAddAddress}
+						cancelAction={toggleAddAddress}
+					/>
+				) : (
+					<button
+						onClick={toggleAddAddress}
+						className='block text-sm ml-auto bg-indigo-600 text-white px-4 py-2 rounded-[4px]'
+					>
+						Add Address
+					</button>
+				)}
+			</div>
+
+
+			{userInfo.addresses?.map((address, index) => {
+				return (
+					<div
+						key={index}
+						className='relative max-w-[800px] my-4 px-4 py-2 border border-gray-400 rounded-lg'
+					>
+						<h2 className='text-xl font-semibold mb-6'>Address</h2>
+						<div className='absolute right-2 top-[10px] flex items-center gap-[10px]'>
+							<button>
+								<img src='/edit.svg' alt="Edit" />
+							</button>
+							<button
+								onClick={() => handleDelete(index)}
+							>
+								<img src='/trash.svg' alt="Delete" />
+							</button>
+						</div>
+
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 sm:gap-y-6 *:space-y-[2px]">
+							<div>
+								<p className="text-gray-700 font-medium">State</p>
+								<p className="font-semibold text-gray-900">{address.state}</p>
+							</div>
+							<div>
+								<p className="text-gray-700 font-medium">City</p>
+								<p className="font-semibold text-gray-900">{address.city}</p>
+							</div>
+							<div>
+								<p className="text-gray-700 font-medium">Street</p>
+								<p className="font-semibold text-gray-900">{address.street}</p>
+							</div>
+							<div>
+								<p className="text-gray-700 font-medium">Pincode</p>
+								<p className="font-semibold text-gray-900">{address.pinCode}</p>
+							</div>
+						</div>
+					</div>
+				)
+			})}
+		</div>
+	);
+}
+
+
 
 export default UserProfile;

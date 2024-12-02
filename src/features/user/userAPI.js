@@ -58,30 +58,31 @@ export function fetchUserInfo() {
 }
 
 
-export function updateUser(update) {
-	return new Promise(async (resolve, reject) => {
+export async function updateUser(user) {
+	console.log('user ', user);
 
-		const res = await fetch(baseUrl + '/users/' + update.id, {
+	try {
+		const res = await fetch(baseUrl + '/users/' + user.id, {
 			method: 'PATCH',
 			credentials: 'include', // Include cookies in the request
-			// headers: {
-			// 	'Content-Type': 'application/json',
-			// },
-			body: update,
-
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(user)
 		});
 
-		if (res.ok) {
-			const data = await res.json();
+		if (!res.ok) {
+			const errorData = await res.json();
 
-			console.log('data ok ', data);
-	
-			resolve({ data });
-		} else {
-			const data = await res.json();
-
-			console.log('data no ok ', data);
-			reject({data})
+			throw new Error(errorData.message);
 		}
-	})
+
+		const data = await res.json();
+
+		console.log('data ', data);
+
+		return { data };
+	} catch (e) {
+		throw e;
+	}
 }

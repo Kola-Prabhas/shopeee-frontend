@@ -9,6 +9,8 @@ function CartQuantityChange({setOpen, itemId, quantity, stock }) {
 
 
 	function handleQuantityChange(quantity, itemId) {
+		console.log('itemId ', itemId);
+
 		dispatch(updateItemAsync({
 			id: itemId,
 			quantity: quantity

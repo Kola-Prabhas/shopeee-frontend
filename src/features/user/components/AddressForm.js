@@ -1,12 +1,18 @@
 import { useForm } from 'react-hook-form';
 
-// -1 indicated adding new address
-export default function AddressForm({submitAction, cancelAction }) {
+
+export default function AddressForm({
+	submitAction,
+	cancelAction,
+	address
+}) {
+	const defaultValues = address;
+
 	const {
 		register,
 		formState: { errors },
 		handleSubmit
-	} = useForm();
+	} = useForm({defaultValues});
 
 
 
@@ -16,11 +22,9 @@ export default function AddressForm({submitAction, cancelAction }) {
 				submitAction(address)
 				cancelAction();
 			})}
+			className='max-w-[800px] border border-gray-400 p-4 rounded-md my-2'
 		>
-			<div
-
-				className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 sm:gap-y-6 *:space-y-[4px] *:flex *:flex-col"
-			>
+			<div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 sm:gap-y-6 *:space-y-[4px] *:flex *:flex-col">
 				<div>
 					<label
 						htmlFor='state'
@@ -32,8 +36,9 @@ export default function AddressForm({submitAction, cancelAction }) {
 						type='text'
 						id='state'
 						{...register('state', { required: 'State is Required!' })}
-						className="rounded-[4px] border-gray-700 font-semibold focus:ring-0"
+						className="rounded-[4px] border-gray-400 font-semibold focus:ring-0"
 					/>
+					{errors.state && <p className='text-xs font-semibold text-red-600'>{errors.state.message}</p>}
 				</div>
 				<div>
 					<label
@@ -46,8 +51,9 @@ export default function AddressForm({submitAction, cancelAction }) {
 						type='text'
 						id='city'
 						{...register('city', { required: 'City is Required!' })}
-						className="rounded-[4px] border-gray-700 font-semibold focus:ring-0"
+						className="rounded-[4px] border-gray-400 font-semibold focus:ring-0"
 					/>
+					{errors.city && <p className='text-xs font-semibold text-red-600'>{errors.city.message}</p>}
 				</div>
 				<div>
 					<label
@@ -60,8 +66,9 @@ export default function AddressForm({submitAction, cancelAction }) {
 						type='text'
 						id='street'
 						{...register('street', { required: 'Street is required!' })}
-						className="rounded-[4px] border-gray-700 font-semibold focus:ring-0"
+						className="rounded-[4px] border-gray-400 font-semibold focus:ring-0"
 					/>
+					{errors.street && <p className='text-xs font-semibold text-red-600'>{errors.street.message}</p>}
 				</div>
 				<div>
 					<label
@@ -74,8 +81,9 @@ export default function AddressForm({submitAction, cancelAction }) {
 						type='text'
 						id='pinCode'
 						{...register('pinCode', { required: 'Pincode is required!' })}
-						className="rounded-[4px] border-gray-700 font-semibold focus:ring-0"
+						className="rounded-[4px] border-gray-400 font-semibold focus:ring-0"
 					/>
+					{errors.pinCode && <p className='text-xs font-semibold text-red-600'>{errors.pinCode.message}</p>}
 				</div>
 			</div>
 

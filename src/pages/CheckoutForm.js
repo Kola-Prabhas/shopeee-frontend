@@ -6,13 +6,14 @@ import {
 } from "@stripe/react-stripe-js";
 
 import { useSelector, useDispatch } from "react-redux";
-import { resetCurrentOrder, selectCurrentOrder } from "../features/user/userSlice";
+// import { resetCurrentOrder, selectCurrentOrder } from "../features/order/orderSlice";
 
 
 export default function CheckoutForm() {
 	const stripe = useStripe();
 	const elements = useElements();
-	const currentOrder = useSelector(selectCurrentOrder);
+	// const currentOrder = useSelector(selectCurrentOrder);
+	const currentOrder = {};
 	const orderId = currentOrder.id;
 
 	const [message, setMessage] = useState(null);

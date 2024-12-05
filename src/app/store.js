@@ -6,9 +6,10 @@ import authReducer from '../features/auth/authSlice';
 import cartReducer from '../features/cart/cartSlice';
 import orderReducer from '../features/order/orderSlice';
 import userReducer from '../features/user/userSlice';
+import addressReducer from '../features/user/addressSlice';
 
 import { productApi } from '../features/product/productQueryApi';
-import {orderApi} from '../features/order/orderQueryApi';
+// import {orderApi} from '../features/order/orderQueryApi';
 
 
 
@@ -21,12 +22,13 @@ export const store = configureStore({
 		auth: authReducer,
 		cart: cartReducer,
 		order: orderReducer,
-		[orderApi.reducerPath]: orderApi.reducer,
+		// [orderApi.reducerPath]: orderApi.reducer,
 		user: userReducer,
+		address: addressReducer,
 	},
 
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware()
 			.concat(productApi.middleware)
-			.concat(orderApi.middleware),
+			// .concat(orderApi.middleware),
 });

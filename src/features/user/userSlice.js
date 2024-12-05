@@ -1,35 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchOrdersByUserId, fetchUserInfo, updateUser, createUserOrder } from './userAPI';
+import { fetchUserInfo, updateUser} from './userAPI';
 
 const initialState = {
 	status: 'idle',
 	userInfo: null,
-	currentOrder: null,
-
-
-	createUserOrderStatus: 'idle',
-	userOrdersStatus: 'idle',
-	// currentOrderStatus: 'idle'
 };
-
-
-// export const fetchOrdersByUserIdAsync = createAsyncThunk(
-// 	'user/fetchOrdersByUserId',
-// 	async () => {
-// 		const response = await fetchOrdersByUserId();
-// 		return response.data;
-// 	}
-// );
-
-
-export const createUserOrderAsync = createAsyncThunk(
-	'order/createUserOrder',
-	async (order) => {
-		const response = await createUserOrder(order);
-		console.log('response.data ', response.data)
-		return response.data;
-	}
-);
 
 
 
@@ -64,23 +39,6 @@ export const userSlice = createSlice({
 
 	extraReducers: (builder) => {
 		builder
-			// .addCase(fetchOrdersByUserIdAsync.pending, (state) => {
-			// 	state.status = 'loading';
-			// })
-			// .addCase(fetchOrdersByUserIdAsync.fulfilled, (state, action) => {
-			// 	state.status = 'idle';
-			// 	if (action.payload.length > 0) {
-			// 		state.userInfo.orders = action.payload;
-			// 	}
-			// })
-			.addCase(createUserOrderAsync.pending, (state) => {
-				state.createUserOrderStatus = 'loading';
-			})
-			.addCase(createUserOrderAsync.fulfilled, (state, action) => {
-				state.createUserOrderStatus = 'idle';
-				state.userInfo.orders.push(action.payload);
-				state.currentOrder = action.payload;
-			})
 			.addCase(fetchUserInfoAsync.pending, (state) => {
 				state.status = 'loading';
 			})
@@ -99,10 +57,9 @@ export const userSlice = createSlice({
 });
 
 
-export const { resetUser, resetCurrentOrder } = userSlice.actions;
-// export const selectUserOrders = (state) => state.user.userInfo.orders;
+export const { resetUser } = userSlice.actions;
+
 export const selectUserInfo = (state) => state.user.userInfo;
 export const selectCurrentOrder = (state) => state.user.currentOrder;
-export const selectCreateUserOrderStatus = (state) => state.user.createUserOrderStatus;
 
 export default userSlice.reducer;

@@ -16,7 +16,7 @@ import CartTotalStats from './cartTotalStats';
 import Modal from '../../../components/Modal';
 import { useEffect, useState } from 'react';
 
-import { resetCurrentOrder } from "../../user/userSlice";
+import { resetCurrentOrder } from "../../order/orderSlice";
 
 
 export default function Cart() {
@@ -24,6 +24,8 @@ export default function Cart() {
 	const items = useSelector(selectCartItems);
 	const updatingCartItems = useSelector(selectUpdatingCartItems);
 	const deletingCartItems = useSelector(selectDeletingCartItems);
+
+	console.log('cart ', items);
 
 	const cartItemsStatus = useSelector(selectCartItemsStatus);
 

@@ -1,17 +1,36 @@
-import { useGetUserOrdersQuery } from '../orderQueryApi';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Order from './Order';
+import {
+	selectOrders,
+	selectOrdersStatus,
+	fetchUserOrdersAsync
+} from '../orderSlice';
+import { selectUserInfo } from '../../user/userSlice';
 
 import { ThreeDots } from 'react-loader-spinner'
 
 
 export default function UserOrders() {
-	const { data: orders, isLoading } = useGetUserOrdersQuery();
+	const dispatch = useDispatch()
+	const user = useSelector(selectUserInfo)
+	const orders = useSelector(selectOrders);
+	const ordersStatus = useSelector(selectOrdersStatus);
+
+
+
+	useEffect(() => {
+		if (!orders || orders?.length === 0) {
+			dispatch(fetchUserOrdersAsync(user.id))
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 
 	return (
 		<>
 			<h1 className="text-4xl my-4 font-bold tracking-tight text-gray-800 text-center">My Orders</h1>
-			{isLoading? (
+			{ordersStatus === 'loading'? (
 				<div className='min-h-[100vh] mt-[-100px] flex items-center justify-center'>
 					<ThreeDots
 						visible={true}

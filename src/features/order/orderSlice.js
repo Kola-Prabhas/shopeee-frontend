@@ -1,42 +1,25 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
-	// createOrder,
+	createOrder,
 	fetchAllOrders,
-	// fetchUserOrders,
+	fetchUserOrders,
 	updateOrder
 } from './orderAPI';
-
-const initialState = {
-	orders: [],
-	// currentOrder: null,
-	totalOrders: 0,
-	ordersStatus: 'idle',
-	// currentOrderStatus: 'idle'
-};
+import toast from 'react-hot-toast';
 
 
-// export const createOrderAsync = createAsyncThunk(
-// 	'order/createOrder',
-// 	async (order) => {
-// 		const response = await createOrder(order);
-// 		console.log('response.data ', response.data)
-// 		return response.data;
-// 	}
-// );
+export const createOrderAsync = createAsyncThunk(
+	'order/createOrder',
+	async (order, { rejectWithValue }) => {
+		try {
+			const response = await createOrder(order);
+			return response.order;
+		} catch (e) {
+			rejectWithValue(e.message);
+		}
+	}
+);
 
-// export const fetchUserOrdersAsync = createAsyncThunk(
-// 	'order/fetchUserOrders',
-// 	async (_, {rejectWithValue}) => {
-
-// 		try {
-// 			const response = await fetchUserOrders();
-
-// 			return response.data;
-// 		} catch (error) {
-// 			return rejectWithValue(error);			
-// 		}
-// 	}
-// );
 
 export const fetchAllOrdersAsync = createAsyncThunk(
 	'order/fetchAllOrders',
@@ -44,6 +27,19 @@ export const fetchAllOrdersAsync = createAsyncThunk(
 		const response = await fetchAllOrders({ pagination, sortOptions, admin });
 
 		return response.data;
+	}
+);
+
+
+export const fetchUserOrdersAsync = createAsyncThunk(
+	'order/fetchUserOrders',
+	async ({ userId }, { rejectWithValue }) => {
+		try {
+			const response = await fetchUserOrders({ userId });
+			return response;
+		} catch (e) {
+			return rejectWithValue(e.message);
+		}
 	}
 );
 
@@ -55,31 +51,65 @@ export const updateOrderAsync = createAsyncThunk(
 	}
 );
 
+
+const initialState = {
+	status: 'idle',
+	orders: [],
+	currentOrder: null,
+	totalOrders: 0,
+	// currentOrderStatus: 'idle'
+};
+
 export const orderSlice = createSlice({
 	name: 'order',
 	initialState,
-	
+	reducers: {
+		resetCurrentOrder: state => {
+			state.currentOrder = null;
+		}
+	},
+
 	extraReducers: (builder) => {
 		builder
-			// .addCase(fetchUserOrdersAsync.pending, (state) => {
-			// 	state.ordersStatus = 'loading';
-			// })
-			// .addCase(fetchUserOrdersAsync.fulfilled, (state, action) => {
-			// 	state.ordersStatus = 'idle';
-			// 	state.orders = action.payload;
-			// 	console.log('state.orders ', state.orders);
-			// })
-
-
 			.addCase(fetchAllOrdersAsync.pending, (state) => {
-				state.ordersStatus = 'loading';
+				state.status = 'loading';
 			})
 			.addCase(fetchAllOrdersAsync.fulfilled, (state, action) => {
-				state.ordersStatus = 'idle';
+				state.status = 'idle';
 				state.orders = action.payload.data;
 				state.totalOrders = action.payload.totalOrders;
 			})
 
+			.addCase(fetchUserOrdersAsync.pending, (state) => {
+				state.status = 'loading';
+			})
+			.addCase(fetchUserOrdersAsync.fulfilled, (state, action) => {
+				state.status = 'idle';
+				
+				const orders = action.payload.orders;
+				const totalOrders = action.payload.totalOrders;
+				state.orders = orders;
+				state.totalOrders = totalOrders;
+			})
+			.addCase(fetchUserOrdersAsync.rejected, (state, action) => {
+				state.status = 'idle';
+
+				const error = action.payload;
+				toast.error(error || 'Failed to fetch user orders');
+			})
+
+			// .addCase(createOrderAsync.pending, (state) => {
+			// })
+			.addCase(createOrderAsync.fulfilled, (state, action) => {
+				const order = action.payload;
+
+				state.orders.unshift(order);
+			})
+			.addCase(createOrderAsync.rejected, (state, action) => {
+				const error = action.payload;
+
+				toast.error(error || 'Failed to create order');
+			})
 
 			.addCase(updateOrderAsync.pending, (state) => {
 				state.ordersStatus = 'loading';
@@ -98,12 +128,11 @@ export const orderSlice = createSlice({
 });
 
 
-// export const selectCurrentOrder = (state) => state.order.currentOrder;
+export const { resetCurrentOrder } = orderSlice.actions;
 export const selectOrders = (state) => state.order.orders;
 export const selectTotalOrders = (state) => state.order.totalOrders;
-// export const { resetOrder } = orderSlice.actions;
 
-export const selectOrdersStatus = (state) => state.order.ordersStatus
+export const selectOrdersStatus = (state) => state.order.status
 export const selectCurrentOrderStatus = (state) => state.order.currentOrderStatus
 
 export default orderSlice.reducer;

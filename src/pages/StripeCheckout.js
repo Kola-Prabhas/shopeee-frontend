@@ -5,7 +5,12 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import "../Stripe.css";
 import { useSelector} from "react-redux";
-import { selectCurrentOrder } from "../features/user/userSlice";
+import { selectCurrentOrder } from "../features/order/orderSlice";
+
+import { ThreeDots } from 'react-loader-spinner';
+
+
+const baseUrl = process.env.REACT_APP_BASE_URL;
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
@@ -14,13 +19,15 @@ const stripePromise = loadStripe("pk_test_51PfYgfCP52ANZ4velwZeiqbZBWg6pNcmaiXtR
 
 export default function StripeCheckout() {
 	const [clientSecret, setClientSecret] = useState("");
+	const [clientSecretLoading, setClientSecretLoading] = useState(true);
 	const currentOrder = useSelector(selectCurrentOrder);
 
 	const totalAmount = currentOrder.totalPrice;
 
 	useEffect(() => {
+		setClientSecretLoading(true);
 		// Create PaymentIntent as soon as the page loads
-		fetch("/create-payment-intent", {
+		fetch(baseUrl + "/create-payment-intent", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ totalAmount: +totalAmount.toFixed(2) }),
@@ -31,7 +38,9 @@ export default function StripeCheckout() {
 			}
 		})
 			.then((res) => res.json())
-			.then((data) => setClientSecret(data.clientSecret));
+			.then((data) => setClientSecret(data.clientSecret))
+			.finally(() => setClientSecretLoading(false));
+		
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -44,8 +53,22 @@ export default function StripeCheckout() {
 	};
 
 	return (
-		<div className="Stripe">
-			{clientSecret && (
+		<div className="Stripe my-10 flex items-center justify-center">
+			{clientSecretLoading && (
+				<div className='min-h-[80vh] flex items-center justify-center'>
+					<ThreeDots
+						visible={true}
+						height="80"
+						width="80"
+						color="#4F46E5"
+						radius="10"
+						ariaLabel="three-dots-loading"
+						wrapperStyle={{}}
+						wrapperClass=""
+					/>
+				</div>
+			)}
+			{clientSecret && !clientSecretLoading && (
 				<Elements options={options} stripe={stripePromise}>
 					<CheckoutForm />
 				</Elements>

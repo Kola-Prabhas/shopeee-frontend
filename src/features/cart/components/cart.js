@@ -25,8 +25,6 @@ export default function Cart() {
 	const updatingCartItems = useSelector(selectUpdatingCartItems);
 	const deletingCartItems = useSelector(selectDeletingCartItems);
 
-	console.log('cart ', items);
-
 	const cartItemsStatus = useSelector(selectCartItemsStatus);
 
 	const dispatch = useDispatch();

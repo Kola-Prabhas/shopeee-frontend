@@ -67,7 +67,6 @@ export async function fetchUserOrders({
 
 
 export async function createOrder(order) {
-	console.log('order ', order);
 	try {
 		const res = await fetch(baseUrl + '/orders/', {
 			method: 'POST',
@@ -101,15 +100,15 @@ export async function createOrder(order) {
 }
 
 
-export function updateOrder(update) {
+export function updateOrder(order) {
 	return new Promise(async resolve => {
-		const res = await fetch(baseUrl + '/orders/' + update.id, {
+		const res = await fetch(baseUrl + '/orders/' + order.id, {
 			method: 'PATCH',
 			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(update)
+			body: JSON.stringify(order)
 		});
 		const data = await res.json();
 

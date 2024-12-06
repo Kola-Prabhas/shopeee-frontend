@@ -6,14 +6,17 @@ import {
 } from "@stripe/react-stripe-js";
 
 import { useSelector, useDispatch } from "react-redux";
-// import { resetCurrentOrder, selectCurrentOrder } from "../features/order/orderSlice";
+import {
+	selectCurrentOrder,
+	resetCurrentOrder,
+	updateOrderAsync
+} from "../features/order/orderSlice";
 
 
 export default function CheckoutForm() {
 	const stripe = useStripe();
 	const elements = useElements();
-	// const currentOrder = useSelector(selectCurrentOrder);
-	const currentOrder = {};
+	const currentOrder = useSelector(selectCurrentOrder);
 	const orderId = currentOrder.id;
 
 	const [message, setMessage] = useState(null);
@@ -67,24 +70,28 @@ export default function CheckoutForm() {
 
 		setIsLoading(true);
 
+		dispatch(updateOrderAsync({ id: orderId, paymentStatus: "paid" }));
+
 		const { error } = await stripe.confirmPayment({
 			elements,
 			confirmParams: {
 				// Make sure to change this to your payment completion page
-				return_url: `/order-details/${orderId}`,
+				return_url: `http://localhost:3000/order-details/${orderId}`,
 			},
 		});
 
+		dispatch(updateOrderAsync({ id: orderId, paymentStatus: "unpaid" }));
 		// This point will only be reached if there is an immediate error when
 		// confirming the payment. Otherwise, your customer will be redirected to
 		// your `return_url`. For some payment methods like iDEAL, your customer will
 		// be redirected to an intermediate site first to authorize the payment, then
 		// redirected to the `return_url`.
+		
 		if (error.type === "card_error" || error.type === "validation_error") {
 			setMessage(error.message);
 		} else {
 			setMessage("An unexpected error occurred.");
-		}
+		} 
 
 		setIsLoading(false);
 	};
@@ -95,7 +102,6 @@ export default function CheckoutForm() {
 
 	return (
 		<form id="payment-form" onSubmit={handleSubmit}>
-
 			<PaymentElement id="payment-element" options={paymentElementOptions} />
 			<button disabled={isLoading || !stripe || !elements} id="submit">
 				<span id="button-text">

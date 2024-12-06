@@ -5,14 +5,20 @@ import {
 	fetchUserOrders,
 	updateOrder
 } from './orderAPI';
+
+import { clearCartAsync } from '../cart/cartSlice';
 import toast from 'react-hot-toast';
 
 
 export const createOrderAsync = createAsyncThunk(
 	'order/createOrder',
-	async (order, { rejectWithValue }) => {
+	async (order, { rejectWithValue, dispatch }) => {
 		try {
 			const response = await createOrder(order);
+			
+			const cartItems = order.items;
+			dispatch(clearCartAsync(cartItems));
+
 			return response.order;
 		} catch (e) {
 			rejectWithValue(e.message);
@@ -45,8 +51,8 @@ export const fetchUserOrdersAsync = createAsyncThunk(
 
 export const updateOrderAsync = createAsyncThunk(
 	'order/updateOrder',
-	async (update) => {
-		const response = await updateOrder(update);
+	async (order) => {
+		const response = await updateOrder(order);
 		return response.data;
 	}
 );
@@ -57,7 +63,7 @@ const initialState = {
 	orders: [],
 	currentOrder: null,
 	totalOrders: 0,
-	// currentOrderStatus: 'idle'
+	currentOrderStatus: 'idle'
 };
 
 export const orderSlice = createSlice({
@@ -98,14 +104,18 @@ export const orderSlice = createSlice({
 				toast.error(error || 'Failed to fetch user orders');
 			})
 
-			// .addCase(createOrderAsync.pending, (state) => {
-			// })
+			.addCase(createOrderAsync.pending, (state) => {
+				state.currentOrderStatus = 'loading';
+			})
 			.addCase(createOrderAsync.fulfilled, (state, action) => {
+				state.currentOrderStatus = 'idle';
 				const order = action.payload;
 
 				state.orders.unshift(order);
+				state.currentOrder = order;
 			})
 			.addCase(createOrderAsync.rejected, (state, action) => {
+				state.currentOrderStatus = 'idle';
 				const error = action.payload;
 
 				toast.error(error || 'Failed to create order');
@@ -130,6 +140,7 @@ export const orderSlice = createSlice({
 
 export const { resetCurrentOrder } = orderSlice.actions;
 export const selectOrders = (state) => state.order.orders;
+export const selectCurrentOrder = (state) => state.order.currentOrder;
 export const selectTotalOrders = (state) => state.order.totalOrders;
 
 export const selectOrdersStatus = (state) => state.order.status

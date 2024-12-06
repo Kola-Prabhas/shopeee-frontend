@@ -7,6 +7,7 @@ function capitalize(string) {
 
 
 export default function Order({ order }) {
+	console.log(order)
 	return (
 		<div className="mx-auto my-12 max-w-5xl px-4 py-8 sm:px-6 lg:px-8 bg-[#f9f9f9]">
 			<h3 className="text-md sm:text-2xl mb-1 font-bold text-[#333333]">Order ID: #{order.id}</h3>

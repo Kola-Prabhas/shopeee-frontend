@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCartItems } from '../../cart/cartSlice';
 import { selectUserInfo } from '../../user/userSlice';
 import {
 	createOrderAsync,
-// 	selectCurrentOrder,
-// 	selectCreateUserOrderStatus
+	selectCurrentOrder,
+	selectCurrentOrderStatus
 } from '../../order/orderSlice';
 
 import {
@@ -30,20 +30,31 @@ export default function Checkout() {
 	const [showAddressForm, setShowAddressForm] = useState(false);
 	const [selectedAddress, setSelectedAddress] = useState(null);
 
+	const navigate = useNavigate();
+
 	const dispatch = useDispatch();
 	const user = useSelector(selectUserInfo);
 	const userAddresses = useSelector(selectUserAddresses);
 	const userAddressesStatus = useSelector(selectUserAddressesStatus);
+
+
 	// const order = useSelector(selectCurrentOrder);
-	const order = {};
+	// const order = {}; // TODO: Replace with actual order
 	const items = useSelector(selectCartItems);
 
-	// const createUserOrderStatus = useSelector(selectCreateUserOrderStatus);
-	const createUserOrderStatus = 'idle';
+	const currentOrderStatus = useSelector(selectCurrentOrderStatus);
+	const currentOrder = useSelector(selectCurrentOrder);
+	// const createUserOrderStatus = 'idle';
 
 	const totalItems = items.length;
-	const totalPrice = items.reduce((total, current) => total + current.product.price * current.quantity, 0);
-	const totalDiscountPrice = items.reduce((total, current) => total + current.product.discountPrice.toFixed(2) * current.quantity, 0)
+	const totalPrice = items.reduce(
+		(total, current) => total + current.product.price * current.quantity,
+		0
+	);
+	const totalDiscountPrice = items.reduce(
+		(total, current) => total + current.product.discountPrice * current.quantity,
+		0
+	);
 
 
 	function handleAddressChange(index) {
@@ -59,18 +70,17 @@ export default function Checkout() {
 			const order = {
 				items,
 				totalItems,
-				totalPrice,
-				totalDiscountPrice,
+				totalPrice: totalPrice.toFixed(2),
+				totalDiscountPrice: totalDiscountPrice.toFixed(2),
 				user: user.id,
-				selectedAddress: {
-					...selectedAddress,
-					email: user.email
-				},
+				email: user.email,
+				selectedAddress: selectedAddress.id,
 				status: 'pending',
 				paymentStatus: 'unpaid'
 			}
 
 			dispatch(createOrderAsync(order));
+
 		} else {
 			toast.error('Please select an address to place order');
 		}
@@ -85,16 +95,18 @@ export default function Checkout() {
 	}, [dispatch])
 
 
+	if (user?.role === 'admin') {
+		navigate('/', { replace: true });
+	}
+
+	if (currentOrder && currentOrderStatus === 'idle') {
+
+		console.log('this code executed')
+		navigate(`/stripe-checkout`, { replace: true })
+	}
+
 	return (
 		<div className="mx-auto w-[95%] max-w-[1500px]">
-			{user?.role === 'admin' && <Navigate to='/' replace={true} />}
-
-			{items.length === 0 && <Navigate to='/' replace={true} />}
-
-			{order && order.selectedPaymentMethod === 'card' && <Navigate to={`/stripe-checkout`} replace={true} />}
-
-			{order && order.selectedPaymentMethod === 'cash' && <Navigate to={`/order-details/${order.id}`} replace={true} />}
-
 			<div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-4">
 				<div className="col-span-2">
 					<div>
@@ -218,7 +230,11 @@ export default function Checkout() {
 						))}
 					</div>
 
-					<div className="border-t border-gray-200 px-4 py-6 sm:px-6">
+					{items.length === 0 && <h3 className="md:mt-20 max-md:mb-8 sm:text-xl font-semibold tracking-tight text-indigo-500 text-center">
+						Your cart is empty. Add items to cart to place order
+					</h3>}
+
+					{items.length > 0 && <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
 						<CartTotalStats
 							totalItems={totalItems}
 							totalPrice={totalPrice}
@@ -226,7 +242,7 @@ export default function Checkout() {
 						/>
 						<p className="mt-0.5 mx-2 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 						<div className="mt-6 mx-auto max-w-[400px]">
-							{createUserOrderStatus === 'loading' ? (
+							{currentOrderStatus === 'loading' ? (
 								<div className='flex justify-center'>
 									<ThreeDots
 										visible={true}
@@ -262,7 +278,7 @@ export default function Checkout() {
 								</Link>
 							</p>
 						</div>
-					</div>
+					</div>}
 				</div>
 			</div>
 		</div>

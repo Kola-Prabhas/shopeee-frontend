@@ -4,16 +4,6 @@ import { addToCart, deleteItem, fetchItemsByUserId, clearCart, updateItem } from
 import toast from 'react-hot-toast';
 
 
-const initialState = {
-	status: 'idle',
-	items: [],
-
-	addingCartItems: [], // items which are going to be added to cart
-	updatingCartItems: [], // items which are going to be updated
-	deletingCartItems: [], // cart items which are going to be removed
-};
-
-
 export const addToCartAsync = createAsyncThunk(
 	'cart/addToCart',
 	async (item, { rejectWithValue }) => {
@@ -82,6 +72,15 @@ export const clearCartAsync = createAsyncThunk(
 		}
 	}
 );
+
+const initialState = {
+	status: 'idle',
+	items: [],
+
+	addingCartItems: [], // items which are going to be added to cart
+	updatingCartItems: [], // items which are going to be updated
+	deletingCartItems: [], // cart items which are going to be removed
+};
 
 
 
@@ -192,7 +191,7 @@ export const cartSlice = createSlice({
 			.addCase(clearCartAsync.pending, (state) => {
 				state.status = 'loading';
 			})
-			.addCase(clearCartAsync.fulfilled, (state, action) => {
+			.addCase(clearCartAsync.fulfilled, (state) => {
 				state.status = 'idle';
 				state.items = [];
 				toast.success('Cart cleared successfully')

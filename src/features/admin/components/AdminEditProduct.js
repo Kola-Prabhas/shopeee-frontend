@@ -7,16 +7,16 @@ import {
 } from '../../product/productSlice';
 import { fetchCategoriesAsync, selectAllCategories } from '../../product/categorySlice';
 import { fetchBrandsAsync, selectAllBrands } from '../../product/brandSlice';
-
+import { productApi } from '../../product/productQueryAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { ThreeDots } from 'react-loader-spinner';
-
 import Modal from '../../../components/Modal';
 
+
+import { ThreeDots } from 'react-loader-spinner';
 import toast from 'react-hot-toast';
 
 
@@ -26,12 +26,10 @@ export default function AdminEditProduct() {
 	const categories = useSelector(selectAllCategories);
 	const brands = useSelector(selectAllBrands);
 	const product = useSelector(selectProductById);
-
 	const productStatus = useSelector(selectProductStatus);
 	const updateProductStatus = useSelector(selectUpdateProductStatus);
 
 	const params = useParams();
-
 
 
 	const {
@@ -109,8 +107,8 @@ export default function AdminEditProduct() {
 
 		dispatch(updateProductAsync(newProduct))
 			.unwrap()
-			.then((data) => {
-				toast.success('Product updated successfully')
+			.then(() => {
+				toast.success('Product updated successfully');
 			})
 			.catch((error) => {
 				const message = error.message;
@@ -130,7 +128,7 @@ export default function AdminEditProduct() {
 		if (!categories || categories.length === 0) {
 			dispatch(fetchCategoriesAsync())
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch, params.id]);
 
 	useEffect(() => {
@@ -166,43 +164,41 @@ export default function AdminEditProduct() {
 			onSubmit={handleSubmit(onSubmit)}
 		>
 			{updateProductStatus === 'loading' && <div className='absolute inset-0 bg-gray-100/10 z-10 cursor-not-allowed' />}
-			<div className="space-y-12 px-6 ">
-				<div className="border-b border-gray-900/10 pb-12">
-					<h2 className="text-base md:text-xl font-bold leading-7 text-gray-900">Edit product details</h2>
-					<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-						<div className="col-span-full">
-							<label htmlFor="title" className="block text-sm font-medium leading-6 text-gray-900">
-								Product Name
-							</label>
-							<div className="mt-2">
-								<div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-									<input
-										type="text"
-										{...register('title', { required: 'Name is required' })}
-										id="title"
-										autoComplete="title"
-										className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-									/>
-								</div>
-							</div>
-							{errors.title && <p className='text-red-600 font-semibold'>{errors.title.message}</p>}
-						</div>
-
-						<div className="col-span-full">
-							<label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
-								Description
-							</label>
-							<div className="mt-2">
-								<textarea
-									id="description"
-									{...register('description', { required: 'Description is required' })}
-									rows={3}
-									className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-									defaultValue={''}
+			<div className="space-y-12 px-6">
+				<h2 className="text-base md:text-xl font-bold leading-7 text-gray-900">Edit product details</h2>
+				<div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+					<div className="col-span-full">
+						<label htmlFor="title" className="block text-sm font-medium leading-6 text-gray-900">
+							Product Name
+						</label>
+						<div className="mt-2">
+							<div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+								<input
+									type="text"
+									{...register('title', { required: 'Name is required' })}
+									id="title"
+									autoComplete="title"
+									className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
 								/>
 							</div>
-							{errors.description && <p className='text-red-600 font-semibold'>{errors.description.message}</p>}
 						</div>
+						{errors.title && <p className='text-red-600 font-semibold'>{errors.title.message}</p>}
+					</div>
+
+					<div className="col-span-full">
+						<label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+							Description
+						</label>
+						<div className="mt-2">
+							<textarea
+								id="description"
+								{...register('description', { required: 'Description is required' })}
+								rows={3}
+								className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+								defaultValue={''}
+							/>
+						</div>
+						{errors.description && <p className='text-red-600 font-semibold'>{errors.description.message}</p>}
 					</div>
 				</div>
 
@@ -213,50 +209,46 @@ export default function AdminEditProduct() {
 							<label htmlFor="category" className="block text-sm font-medium leading-6 text-gray-900">
 								Category
 							</label>
-							<div className="mt-2">
-								<select
-									id="category"
-									{...register('category', {
-										required: 'Category is required',
-										validate: value => value !== 'none'
-									})}
-									autoComplete="category"
-									className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-								>
-									<option value='none'>-- select category --</option>
+							<select
+								id="category"
+								{...register('category', {
+									required: 'Category is required',
+									validate: value => value !== 'none'
+								})}
+								autoComplete="category"
+								className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							>
+								<option value='none'>-- select category --</option>
 
-									{
-										categories.map(item => {
-											return <option key={item.id} value={item.value}>{item.label}</option>
-										})
-									}
+								{
+									categories.map(item => {
+										return <option key={item.id} value={item.value}>{item.label}</option>
+									})
+								}
 
-								</select>
-							</div>
+							</select>
 							{errors.category && <p className='text-red-600 font-semibold'>{errors.category.message}</p>}
 						</div>
 						<div className="sm:col-span-3">
 							<label htmlFor="brand" className="block text-sm font-medium leading-6 text-gray-900">
 								Brand
 							</label>
-							<div className="mt-2">
-								<select
-									id="brand"
-									{...register('brand', {
-										required: 'Brand is required',
-										validate: value => value !== 'none'
-									})}
-									autoComplete="brand"
-									className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-								>
-									<option value='none'>-- select brand --</option>
-									{
-										brands.map((item, index) => {
-											return <option key={item.id} value={item.value}>{item.label}</option>
-										})
-									}
-								</select>
-							</div>
+							<select
+								id="brand"
+								{...register('brand', {
+									required: 'Brand is required',
+									validate: value => value !== 'none'
+								})}
+								autoComplete="brand"
+								className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							>
+								<option value='none'>-- select brand --</option>
+								{
+									brands.map((item, index) => {
+										return <option key={item.id} value={item.value}>{item.label}</option>
+									})
+								}
+							</select>
 							{errors.brand && <p className='text-red-600 font-semibold'>{errors.brand.message}</p>}
 						</div>
 						<div className="sm:col-span-2">

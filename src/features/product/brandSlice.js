@@ -1,14 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { fetchBrands } from './brandApi';
-
-
-const initialState = {
-	brands: [],
-	status: 'idle',
-	error: null,
-}
-
+import { fetchBrands, addBrand} from './brandApi';
 
 export const fetchBrandsAsync = createAsyncThunk(
 	'brand/fetchBrands',
@@ -17,11 +9,31 @@ export const fetchBrandsAsync = createAsyncThunk(
 			const response = await fetchBrands();
 			return response.data;
 		} catch (error) {
-			return rejectWithValue(error);			
+			return rejectWithValue(error.message);			
 		}
 	}
 );
 
+
+export const addBrandAsync = createAsyncThunk(
+	'brand/addBrand',
+	async (brand, { rejectWithValue }) => {
+		try {
+			const response = await addBrand(brand);
+
+			return response.data;
+		} catch (error) {
+			return rejectWithValue(error.message);
+		}
+	}
+);
+
+
+const initialState = {
+	brands: [],
+	status: 'idle',
+	addBrandStatus: 'idle'
+}
 
 
 export const brandSlice = createSlice({
@@ -36,12 +48,27 @@ export const brandSlice = createSlice({
 			.addCase(fetchBrandsAsync.fulfilled, (state, action) => {
 				state.status = 'idle';
 				const brands = action.payload?.sort((a, b) => a.label.localeCompare(b.label));
+				console.log('brands ', brands);
 
 				state.brands = brands;
 			})
 			.addCase(fetchBrandsAsync.rejected, (state, action) => {
-				state.status = 'failed';
-				state.error = action.error.message;
+				state.status = 'idle';
+			})
+		
+
+			.addCase(addBrandAsync.pending, (state) => {
+				state.addBrandStatus = 'loading';
+			})
+			.addCase(addBrandAsync.fulfilled, (state, action) => {
+				state.addBrandStatus = 'idle';
+				const brand = action.payload.brand
+
+				state.brands.push(brand);
+				state.brands?.sort((a, b) => a.label.localeCompare(b.label))
+			})
+			.addCase(addBrandAsync.rejected, (state, action) => {
+				state.addBrandStatus = 'idle';
 			})
 	}
 });
@@ -49,7 +76,7 @@ export const brandSlice = createSlice({
 
 export const selectAllBrands = state => state.brand.brands;
 export const selectBrandsStatus = state => state.brand.status;
-export const selectBrandsError = state => state.brand.error;
+export const selectAddBrandStatus = state => state.brand.addBrandStatus;
 
 
 export default brandSlice.reducer;

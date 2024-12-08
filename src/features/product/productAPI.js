@@ -56,14 +56,14 @@ export async function fetchProductById(id) {
 
 		return data;
 	} catch (error) {
-		throw error;		
+		throw error;
 	}
 
 }
 
 
-export function addProduct(product) {
-	return new Promise(async resolve => {
+export async function addProduct(product) {
+	try {
 		const res = await fetch(baseUrl + '/products', {
 			method: 'POST',
 			credentials: 'include', // Include cookies in the request
@@ -71,12 +71,20 @@ export function addProduct(product) {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(product),
-
 		});
+
+		if (!res.ok) {
+			const errorData = await res.json();
+			throw new Error(errorData.message);
+		}
+
 		const data = await res.json();
 
-		resolve({ data });
-	})
+		return data;
+	} catch (error) {
+		throw error;
+	}
+
 }
 
 export async function updateProduct(product) {

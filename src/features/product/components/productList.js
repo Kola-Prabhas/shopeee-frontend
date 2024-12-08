@@ -46,7 +46,7 @@ export default function ProductList() {
 	const filters = [
 		{
 			id: 'brand',
-			name: 'Brands',
+			name: 'Brand',
 			options: brands
 		},
 		{

@@ -47,7 +47,7 @@ export default function ProductList() {
 	const filters = [
 		{
 			id: 'brand',
-			name: 'Brands',
+			name: 'Brand',
 			options: brands
 		},
 		{
@@ -87,6 +87,8 @@ export default function ProductList() {
 		dispatch(fetchCategoriesAsync());
 	}, [dispatch]);
 
+
+	// TODO: remove error form here
 	if (error) {
 		toast.error(error);
 	}

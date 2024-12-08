@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCartItems } from '../../cart/cartSlice';
-import { selectUserInfo } from '../../user/userSlice';
 import {
 	createOrderAsync,
 	selectCurrentOrder,
@@ -15,6 +14,8 @@ import {
 	addUserAddressAsync,
 	fetchUserAddressesAsync
 } from "../../user/addressSlice";
+
+import { useGetUserInfoQuery } from '../../user/userQueryAPI';
 
 import { ThreeDots } from 'react-loader-spinner'
 
@@ -31,20 +32,17 @@ export default function Checkout() {
 	const [selectedAddress, setSelectedAddress] = useState(null);
 
 	const navigate = useNavigate();
-
 	const dispatch = useDispatch();
-	const user = useSelector(selectUserInfo);
+
+	const { data: user } = useGetUserInfoQuery();
+
 	const userAddresses = useSelector(selectUserAddresses);
 	const userAddressesStatus = useSelector(selectUserAddressesStatus);
 
-
-	// const order = useSelector(selectCurrentOrder);
-	// const order = {}; // TODO: Replace with actual order
 	const items = useSelector(selectCartItems);
 
 	const currentOrderStatus = useSelector(selectCurrentOrderStatus);
 	const currentOrder = useSelector(selectCurrentOrder);
-	// const createUserOrderStatus = 'idle';
 
 	const totalItems = items.length;
 	const totalPrice = items.reduce(
@@ -79,6 +77,8 @@ export default function Checkout() {
 				paymentStatus: 'unpaid'
 			}
 
+			console.log('order ', order);
+
 			dispatch(createOrderAsync(order));
 
 		} else {
@@ -100,8 +100,6 @@ export default function Checkout() {
 	}
 
 	if (currentOrder && currentOrderStatus === 'idle') {
-
-		console.log('this code executed')
 		navigate(`/stripe-checkout`, { replace: true })
 	}
 

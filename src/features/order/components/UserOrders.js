@@ -6,21 +6,22 @@ import {
 	selectOrdersStatus,
 	fetchUserOrdersAsync
 } from '../orderSlice';
-import { selectUserInfo } from '../../user/userSlice';
 
-import { ThreeDots } from 'react-loader-spinner'
+import { ThreeDots } from 'react-loader-spinner';
+
+import { getUserId } from '../../auth/utils/getUserId';
 
 
 export default function UserOrders() {
 	const dispatch = useDispatch()
-	const user = useSelector(selectUserInfo)
 	const orders = useSelector(selectOrders);
 	const ordersStatus = useSelector(selectOrdersStatus);
 
+	const userId = getUserId();
 
 	useEffect(() => {
 		if (!orders || orders?.length === 0) {
-			dispatch(fetchUserOrdersAsync(user.id))
+			dispatch(fetchUserOrdersAsync(userId))
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])

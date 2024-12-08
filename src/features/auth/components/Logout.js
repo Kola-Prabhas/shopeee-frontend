@@ -1,26 +1,24 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Navigate } from 'react-router-dom';
-import { selectUser, logoutUserAsync } from "../authSlice";
+import { logoutUserAsync } from "../authSlice";
 import { useDispatch } from "react-redux";
 import { resetUser } from "../../user/userSlice";
+import { getUserId } from "../utils/getUserId";
 
 
 function Logout() {
-	const user = useSelector(selectUser); 
 	const dispatch = useDispatch();
+
+	const userId = getUserId();
+
 
 	useEffect(() => {
 		sessionStorage.removeItem('user');
+		
 		dispatch(resetUser())
-		dispatch(logoutUserAsync(user.id))
-	}, [dispatch, user.id]);
+		dispatch(logoutUserAsync(userId))
+	}, [dispatch, userId]);
 
 
-
-	// return !user && <Navigate to='/login' />
-
-	
 	return (
 		<div> User logout successful</div>
 	)

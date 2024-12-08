@@ -1,7 +1,6 @@
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
 export async function createUser(user) {
-
 	try {
 		const response = await fetch(baseUrl + '/auth/signup', {
 			method: 'POST',
@@ -11,19 +10,24 @@ export async function createUser(user) {
 			},
 			body: JSON.stringify(user),
 		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+
+			console.log('errorData ', errorData)
+
+			throw new Error(errorData.message);
+		}
+
 		const data = await response.json();
 
-		return { data };
+		return data;
 	} catch (e) {
-		console.log(e);
 		throw e;
 	}
-
 }
 
 export async function loginUser(user) {
-	console.log('baseUrl ', baseUrl);
-
 	try {
 		const res = await fetch(baseUrl + '/auth/login', {
 			method: 'POST',
@@ -34,12 +38,16 @@ export async function loginUser(user) {
 			body: JSON.stringify(user),
 		});
 
+		if (!res.ok) {
+			const errorData = await res.json();
+
+			throw new Error(errorData.message);
+		}
+
 		const data = await res.json();
 
-
-		return { data }
+		return data.data;
 	} catch (e) {
-		console.log(e);
 		throw e;
 	}
 }
@@ -94,13 +102,17 @@ export async function resetPasswordRequest(email) {
 			body: JSON.stringify({ email }),
 		});
 
+		if (!res.ok) {
+			const errorData = await res.json();
+
+			throw new Error(errorData.message);
+		}
+
 		const data = await res.json();
 
-		return { data }
+		return data;
 	} catch (e) {
-		console.log('An error occurred while making reset password request ', e);
-
-		return { data: e }
+		throw e;
 	}
 }
 
@@ -116,13 +128,17 @@ export async function resetPassword({ email, password, token }) {
 			body: JSON.stringify({ email, password, token }),
 		});
 
+		if (!res.ok) {
+			const errorData = await res.json();
+
+			throw new Error(errorData.message);
+		}
+
 		const data = await res.json();
 
-		return { data }
+		return data;
 	} catch (e) {
-		console.log('An error occurred while making resetting password', e);
-
-		return { data: e }
+		throw e;
 	}
 }
 

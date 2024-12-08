@@ -9,6 +9,7 @@ function Footer() {
 						<img
 							src="https://cdn-icons-png.flaticon.com/512/888/888857.png"
 							alt='PlayStore'
+							loading='lazy'
 							className="w-7 md:w-8"
 						/>
 						<div className="text-left ml-3">
@@ -20,6 +21,7 @@ function Footer() {
 						<img
 							src="https://cdn-icons-png.flaticon.com/512/888/888841.png"
 							alt='AppStore'
+							loading='lazy'
 							className="w-7 md:w-8"
 						/>
 						<div className="text-left ml-3">

@@ -1,13 +1,13 @@
-import { useSelector } from "react-redux";
-import { selectUser } from "../features/auth/authSlice";
 import AdminHome from "../features/admin/components/AdminHome";
 import Home from "../features/user/components/Home";
 
+import {getUserRole} from '../features/auth/utils/getUserRole';
+
 
 export default function HomePage() {
-	const user = useSelector(selectUser);
+	const userRole = getUserRole();
 
-	if (user.role === 'admin') {
+	if (userRole === 'admin') {
 		return <AdminHome />
 	}
 

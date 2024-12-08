@@ -6,24 +6,25 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import { selectCartItems, fetchItemsByUserIdAsync } from '../features/cart/cartSlice';
-import { fetchUserInfoAsync, selectUserInfo } from '../features/user/userSlice';
-// import { fetchUserOrdersAsync} from '../features/order/orderSlice';
-import { selectLoginStatus, selectUser } from '../features/auth/authSlice';
 
+import { getUserId } from '../features/auth/utils/getUserId';
+import { getUserRole } from '../features/auth/utils/getUserRole';
+
+import { useGetUserInfoQuery } from '../features/user/userQueryAPI';
 
 // Links in the navbar
 const navigation = [
 	{ name: 'Home', link: '/', user: true },
 	{ name: 'Orders', link: '/user-orders', user: true },
-	{ name: 'Admin Home', link: '/', admin: true },
-	{ name: 'Orders Dashboard', link: '/admin/orders', admin: true },
+	{ name: 'Home', link: '/', admin: true },
+	{ name: 'Orders', link: '/admin/orders', admin: true },
 
 ]
 
 // Links that appear when user clicks on their profile
 const userNavigation = [
 	{ name: 'My Profile', link: '/profile' },
-	{ name: 'My Orders', link: '/user-orders' },
+	// { name: 'My Orders', link: '/user-orders' },
 	{ name: 'Sign out', link: '/logout' },
 ]
 
@@ -33,29 +34,29 @@ function classNames(...classes) {
 
 
 export default function Navbar({ children }) {
-	const userInfo = useSelector(selectUserInfo);
-	const user = useSelector(selectUser);
-	const loginStatus = useSelector(selectLoginStatus);
+	const userId = getUserId();
+	const userRole = getUserRole();
+
 	const items = useSelector(selectCartItems);
-	
+
+	const {
+		data: user,
+	} = useGetUserInfoQuery();
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (!userInfo && user) {
-			dispatch(fetchUserInfoAsync());
-		}
-
-		if (userInfo && userInfo.role !== 'admin') {
+		if (userId && userRole !== 'admin') {
 			dispatch(fetchItemsByUserIdAsync());
 		}
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [dispatch, userInfo]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dispatch, userId, userRole]);
 
 
 	return (
 		<div className="min-h-full">
-			{userInfo && <Disclosure as="nav" className="bg-gray-800">
+			{userId && <Disclosure as="nav" className="bg-gray-800">
 				{({ open }) => (
 					<>
 						<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -72,7 +73,7 @@ export default function Navbar({ children }) {
 									<div className="hidden md:block">
 										<div className="ml-10 flex items-baseline space-x-4">
 											{navigation.map((item) => {
-												return item[userInfo.role] && (
+												return item[userRole] && (
 													<Link
 														key={item.name}
 														to={item.link}
@@ -93,7 +94,7 @@ export default function Navbar({ children }) {
 								</div>
 								<div className="hidden md:block">
 									<div className="ml-4 flex items-center md:ml-6">
-										{userInfo.role !== 'admin' && <>
+										{userRole !== 'admin' && <>
 											<Link to='/cart'>
 												<button
 													type="button"
@@ -133,7 +134,7 @@ export default function Navbar({ children }) {
 											>
 												<Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
 													{userNavigation
-														.filter(x => x.link !== '/user-orders' || userInfo.role !== 'admin')
+														.filter(x => x.link !== '/user-orders' || userRole !== 'admin')
 														.map((item) => {
 															return (
 																<Menu.Item
@@ -183,7 +184,7 @@ export default function Navbar({ children }) {
 						<Disclosure.Panel className="md:hidden">
 							<div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
 								{navigation.map((item) => (
-									item[userInfo.role] && <Disclosure.Button
+									item[userRole] && <Disclosure.Button
 										key={item.name}
 										as="a"
 										href={item.href}
@@ -193,7 +194,7 @@ export default function Navbar({ children }) {
 										)}
 										aria-current={item.current ? 'page' : undefined}
 									>
-										{item.name}
+										<Link to={item.link}>{item.name}</Link>
 									</Disclosure.Button>
 								))}
 							</div>
@@ -208,8 +209,8 @@ export default function Navbar({ children }) {
 											/>
 										</div>
 										<div className="ml-3">
-											<div className="text-base font-medium leading-none text-white">{userInfo.name}</div>
-											<div className="text-sm font-medium leading-none text-gray-400">{userInfo.email}</div>
+											<div className="text-base font-medium leading-none text-white">{user?.name}</div>
+											<div className="text-sm font-medium leading-none text-gray-400">{user?.email}</div>
 										</div>
 									</div>
 
@@ -231,38 +232,30 @@ export default function Navbar({ children }) {
 								</div>
 								<div className="mt-3 space-y-1 px-2">
 									{userNavigation
-										.filter(x => x.link !== '/user-orders' || userInfo.role !== 'admin')
+										.filter(x => x.link !== '/user-orders' || userRole !== 'admin')
 										.map((item) => (
-										<Link
-											key={item.name}
-											to={item.link}
-											className={`${item.link === '/user-orders' && 'md:hidden'}`}
-										>
-											<Disclosure.Button
+											<Link
 												key={item.name}
-												as="a"
-												href={item.href}
-												className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+												to={item.link}
+												className={`${item.link === '/user-orders' && 'md:hidden'}`}
 											>
-												{item.name}
-											</Disclosure.Button>
-										</Link>
+												<Disclosure.Button
+													key={item.name}
+													as="a"
+													href={item.href}
+													className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+												>
+													{item.name}
+												</Disclosure.Button>
+											</Link>
 
-									))}
+										))}
 								</div>
 							</div>
 						</Disclosure.Panel>
 					</>
 				)}
 			</Disclosure>}
-
-			{/* Custom heading to show in all pages on top of the actual page content */}
-			{/* <header className="bg-white shadow">
-					<div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-						<h1 className="text-3xl font-bold tracking-tight text-gray-900">E-commerce</h1>
-					</div>
-				</header> */}
-
 
 			{/* Content of all the pages is rendered here */}
 			<main>

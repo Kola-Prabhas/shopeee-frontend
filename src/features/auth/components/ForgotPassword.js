@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
-import {  useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectMailSent, resetPasswordRequestAsync, selectMailSentStatus } from "../authSlice";
+import { resetPasswordRequestAsync, selectMailSentStatus } from "../authSlice";
 import { ThreeDots } from 'react-loader-spinner'
-
-
 
 
 
@@ -12,18 +10,13 @@ export default function ForgotPassword() {
 	const [email, setEmail] = useState('');
 	const [emailError, setEmailError] = useState(false);
 
-	const disabled = email === '' || emailError;
-	
-	const dispatch = useDispatch();
-
 	const mailSentStatus = useSelector(selectMailSentStatus);
-	const mailSent = useSelector(selectMailSent);
 
-	// let mailSent = true;
+	const disabled = email === '' ||
+		emailError || 
+		mailSentStatus === 'loading';
 
-	// let mailSentStatus = 'idle';
-
-
+	const dispatch = useDispatch();
 
 
 	function handleEmailChange(e) {
@@ -42,21 +35,16 @@ export default function ForgotPassword() {
 			return emailError;
 		}
 
-
 		return e.target.value.match(validEmail) == null;
-
 	}
 
 	function handleSubmit(e) {
 		e.preventDefault();
-		dispatch(resetPasswordRequestAsync(email));
-		setEmail('');
+		dispatch(resetPasswordRequestAsync(email))
 	}
 
 	return (
 		<>
-			{//user && <Navigate to='/' replace={true}></Navigate> 
-			}
 			<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
 				<div className="sm:mx-auto sm:w-full sm:max-w-sm">
 					<img
@@ -91,37 +79,32 @@ export default function ForgotPassword() {
 							</div>
 						</div>
 						<div>
-							{mailSentStatus === 'idle' && (
-								<button
-									type="submit"
-									className={`${disabled ? 'bg-gray-200 text-gray-800 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-500 cursor-pointer'} flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6  shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
-									disabled={disabled}
-								>
-									Send Email
-								</button>
-							)}
-
-							{mailSentStatus === 'loading' && (
-								<div className="flex justify-center">
+							<button
+								type="submit"
+								className={`${disabled ? 'bg-gray-200 text-gray-800 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-500 cursor-pointer'} flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6  shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+								disabled={disabled}
+							>
+								{mailSentStatus === 'loading' ? (
 									<ThreeDots
 										visible={true}
-										height="50"
-										width="50"
+										height="24"
+										width="30"
 										color="#4F46E5"
-										radius="10"
+										radius="20"
 										ariaLabel="three-dots-loading"
 										wrapperStyle={{}}
 										wrapperClass=""
 									/>
-							    </div>
-							)}
-
+								) : (
+									'Send Email'
+								)}
+							</button>
 							{/* {mailSent && mailSentStatus === 'idle' && (
 								<p className="mt-10 text-center text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
 									We have sent a link to your gmail to reset password.									
 								</p>
 							)} */}
-							
+
 						</div>
 					</form>
 

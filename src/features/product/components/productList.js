@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Grid } from 'react-loader-spinner'
-import toast from 'react-hot-toast';
 
 
 import {
@@ -16,7 +15,7 @@ import {
 	selectAllBrands,
 } from '../brandSlice';
 
-import { useFetchProductsByFilterQuery } from '../../product/productQueryApi';
+import { useFetchProductsByFilterQuery } from '../../product/productQueryAPI';
 
 
 import ProductGrid from './productGrid';
@@ -64,7 +63,7 @@ export default function ProductList() {
 		data,
 		isLoading,
 		isFetching,
-		// error
+		//d error
 	} = useFetchProductsByFilterQuery({
 		filter,
 		pagination: { _page: page, _per_page: ITEMS_PER_PAGE },

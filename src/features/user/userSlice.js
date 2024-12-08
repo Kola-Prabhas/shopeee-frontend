@@ -31,10 +31,6 @@ export const userSlice = createSlice({
 		resetUser: state => {
 			state.userInfo = null;
 		},
-		resetCurrentOrder: (state) => {
-			console.log('reset current order ', state.currentOrder);
-			state.currentOrder = null;
-		}
 	},
 
 	extraReducers: (builder) => {
@@ -58,8 +54,6 @@ export const userSlice = createSlice({
 
 
 export const { resetUser } = userSlice.actions;
-
 export const selectUserInfo = (state) => state.user.userInfo;
-export const selectCurrentOrder = (state) => state.user.currentOrder;
 
 export default userSlice.reducer;

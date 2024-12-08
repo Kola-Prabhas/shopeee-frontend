@@ -8,8 +8,8 @@ import orderReducer from '../features/order/orderSlice';
 import userReducer from '../features/user/userSlice';
 import addressReducer from '../features/user/addressSlice';
 
-import { productApi } from '../features/product/productQueryApi';
-// import {orderApi} from '../features/order/orderQueryApi';
+import { productApi } from '../features/product/productQueryAPI';
+import { userApi } from '../features/user/userQueryAPI';
 
 
 
@@ -22,13 +22,13 @@ export const store = configureStore({
 		auth: authReducer,
 		cart: cartReducer,
 		order: orderReducer,
-		// [orderApi.reducerPath]: orderApi.reducer,
 		user: userReducer,
+		[userApi.reducerPath]: userApi.reducer,
 		address: addressReducer,
 	},
 
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware()
 			.concat(productApi.middleware)
-			// .concat(orderApi.middleware),
+			.concat(userApi.middleware),
 });

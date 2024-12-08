@@ -19,7 +19,7 @@ import {
 	selectDeletingCartItems
 } from '../../cart/cartSlice';
 
-import { selectUser } from '../../auth/authSlice';
+import { getUserRole } from '../../auth/utils/getUserRole';
 import CartQuantityChange from '../../cart/components/cartItemQuantityChange';
 
 import Modal from '../../../components/Modal';
@@ -33,7 +33,8 @@ function classNames(...classes) {
 export default function ProductDetails() {
 	const [open, setOpen] = useState(false);
 
-	const user = useSelector(selectUser);
+	const userRole = getUserRole();
+
 	const product = useSelector(selectProductById);
 	const productStatus = useSelector(selectProductStatus);
 
@@ -160,7 +161,7 @@ export default function ProductDetails() {
 							</div>
 						</div>
 
-						{user.role !== 'admin' && <form className="mt-10">
+						{userRole !== 'admin' && <form className="mt-10">
 							{!itemInCart && !isProcessing && (
 								<button
 									type="submit"

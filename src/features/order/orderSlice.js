@@ -86,6 +86,7 @@ export const orderSlice = createSlice({
 				state.totalOrders = action.payload.totalOrders;
 			})
 
+
 			.addCase(fetchUserOrdersAsync.pending, (state) => {
 				state.status = 'loading';
 			})
@@ -104,6 +105,8 @@ export const orderSlice = createSlice({
 				toast.error(error || 'Failed to fetch user orders');
 			})
 
+
+
 			.addCase(createOrderAsync.pending, (state) => {
 				state.currentOrderStatus = 'loading';
 			})
@@ -120,6 +123,8 @@ export const orderSlice = createSlice({
 
 				toast.error(error || 'Failed to create order');
 			})
+
+			
 
 			.addCase(updateOrderAsync.pending, (state) => {
 				state.ordersStatus = 'loading';

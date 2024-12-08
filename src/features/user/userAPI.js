@@ -4,7 +4,7 @@ const baseUrl = process.env.REACT_APP_BASE_URL;
 
 export function fetchUserInfo() {
 	return new Promise(async resolve => {
-		const res = await fetch(baseUrl + '/users/own', {
+		const res = await fetch(baseUrl + '/user', {
 			credentials: 'include', // Include cookies in the request
 		});
 		const data = await res.json();
@@ -18,7 +18,7 @@ export async function updateUser(user) {
 	console.log('user ', user);
 
 	try {
-		const res = await fetch(baseUrl + '/users/' + user.id, {
+		const res = await fetch(baseUrl + '/user/' + user.id, {
 			method: 'PATCH',
 			credentials: 'include', // Include cookies in the request
 			headers: {

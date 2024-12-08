@@ -1,19 +1,19 @@
-import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { selectUser } from "../../auth/authSlice";
-import { selectUserInfo } from "../../user/userSlice";
 import PageNotFound from "../../../pages/404";
 
+import { getUserId } from '../../auth/utils/getUserId';
+import {getUserRole} from '../../auth/utils/getUserRole';
+
 function AdminProtected({ children }) {
-	const userInfo = useSelector(selectUserInfo);
-	const user = useSelector(selectUser);
+	const userId = getUserId();
+	const userRole = getUserRole();
+    
 
-
-	if (!user) {
+	if (!userId) {
 		return <Navigate to='/login' replace={true} />
 	} 
 
-	if (user && userInfo.role !== 'admin') {
+	if (userRole !== 'admin') {
 		return <PageNotFound/>
 	}
 

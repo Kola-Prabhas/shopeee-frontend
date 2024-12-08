@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUserInfo, updateUserAsync } from "../userSlice";
 import {
 	selectUserAddresses,
 	selectDeletingAddresses,
@@ -14,7 +13,9 @@ import {
 import AddressForm from "./AddressForm";
 import UserAddress from "./UserAddress";
 
-import { ThreeDots } from 'react-loader-spinner'
+import { ThreeDots } from 'react-loader-spinner';
+
+import { useGetUserInfoQuery } from '../userQueryAPI';
 
 
 
@@ -22,7 +23,11 @@ import { ThreeDots } from 'react-loader-spinner'
 function UserProfile() {
 	const [editId, setEditId] = useState(null);
 	const [addAddress, setAddAddress] = useState(false);
-	const userInfo = useSelector(selectUserInfo);
+
+	const {
+		data: user,
+	} = useGetUserInfoQuery();
+
 	const userAddresses = useSelector(selectUserAddresses);
 	const userAddressesStatus = useSelector(selectUserAddressesStatus);
 	const deletingAddresses = useSelector(selectDeletingAddresses);
@@ -74,9 +79,9 @@ function UserProfile() {
 					/>
 				</div>
 				<div>
-					<h2 className="text-xl font-medium">{userInfo.name}</h2>
-					<h2 className="font-semibold text-gray-600">{userInfo.email}</h2>
-					<h2 className="font-semibold text-gray-600">{userInfo.phone || '1234567890'}</h2>
+					<h2 className="text-xl font-medium">{user?.name}</h2>
+					<h2 className="font-semibold text-gray-600">{user?.email}</h2>
+					<h2 className="font-semibold text-gray-600">{user?.phone}</h2>
 				</div>
 			</div>
 			<div className='max-w-[800px]'>
@@ -95,7 +100,7 @@ function UserProfile() {
 				)}
 			</div>
 
-			{userAddresses.length === 0 && !addAddress && <p className='max-w-[800px] my-1 text-center font-semibold'>
+			{userAddresses.length === 0 && !addAddress && userAddressesStatus !== 'loading' && <p className='max-w-[800px] my-1 text-center font-semibold'>
 				No Added Addresses. Click the button to add Address
 			</p>}
 

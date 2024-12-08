@@ -51,9 +51,13 @@ export const fetchUserOrdersAsync = createAsyncThunk(
 
 export const updateOrderAsync = createAsyncThunk(
 	'order/updateOrder',
-	async (order) => {
-		const response = await updateOrder(order);
-		return response.data;
+	async (order, {rejectWithValue}) => {
+		try {
+			const response = await updateOrder(order);
+			return response.data;
+		} catch (e) {
+			return rejectWithValue(e.message);
+		}
 	}
 );
 
@@ -63,7 +67,8 @@ const initialState = {
 	orders: [],
 	currentOrder: null,
 	totalOrders: 0,
-	currentOrderStatus: 'idle'
+	currentOrderStatus: 'idle',
+	updateOrderStatus: 'idle'
 };
 
 export const orderSlice = createSlice({
@@ -127,10 +132,10 @@ export const orderSlice = createSlice({
 			
 
 			.addCase(updateOrderAsync.pending, (state) => {
-				state.ordersStatus = 'loading';
+				state.updateOrderStatus = 'loading';
 			})
 			.addCase(updateOrderAsync.fulfilled, (state, action) => {
-				state.ordersStatus = 'idle';
+				state.updateOrderStatus = 'idle';
 				state.orders = state.orders.map(order => {
 					if (order.id === action.payload.id) {
 						return action.payload;
@@ -138,6 +143,9 @@ export const orderSlice = createSlice({
 
 					return order;
 				});
+			})
+			.addCase(updateOrderAsync.rejected, (state) => {
+				state.updateOrderStatus = 'idle';
 			});
 	},
 });
@@ -150,5 +158,6 @@ export const selectTotalOrders = (state) => state.order.totalOrders;
 
 export const selectOrdersStatus = (state) => state.order.status
 export const selectCurrentOrderStatus = (state) => state.order.currentOrderStatus
+export const selectUpdateOrderStatus = (state) => state.order.updateOrderStatus
 
 export default orderSlice.reducer;

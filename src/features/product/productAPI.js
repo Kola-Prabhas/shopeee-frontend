@@ -41,15 +41,24 @@ const baseUrl = process.env.REACT_APP_BASE_URL;
 // }
 
 
-export function fetchProductById(id) {
-	return new Promise(async resolve => {
+export async function fetchProductById(id) {
+	try {
 		const res = await fetch(baseUrl + '/products/' + id, {
 			credentials: 'include', // Include cookies in the request
 		});
+
+		if (!res.ok) {
+			const errorData = await res.json();
+			throw new Error(errorData.message);
+		}
+
 		const data = await res.json();
 
-		resolve({ data });
-	})
+		return data;
+	} catch (error) {
+		throw error;		
+	}
+
 }
 
 
@@ -70,18 +79,27 @@ export function addProduct(product) {
 	})
 }
 
-export function updateProduct(update) {
-	return new Promise(async resolve => {
-		const res = await fetch(baseUrl + '/products/' + update.id, {
+export async function updateProduct(product) {
+	try {
+		const res = await fetch(baseUrl + '/products/' + product.id, {
 			method: 'PATCH',
 			credentials: 'include', // Include cookies in the request
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(update),
+			body: JSON.stringify(product),
 		});
+
+		if (!res.ok) {
+			const errorData = await res.json();
+
+			throw new Error(errorData.message);
+		}
+
 		const data = await res.json();
 
-		resolve({ data });
-	})
+		return data;
+	} catch (error) {
+		throw error;
+	}
 }

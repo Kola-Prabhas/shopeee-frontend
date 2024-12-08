@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom';
 import { StarIcon } from '@heroicons/react/20/solid';
 
 export default function AdminProduct({ product }) {
+	const deleted = product.deleted;
+	const stock = product.stock;
+
 	return (
 		<div>
 			<Link to={`/product-details/${product.id}`} key={product.id}>
@@ -31,8 +34,8 @@ export default function AdminProduct({ product }) {
 							<p className="text-sm font-medium text-gray-900">${product.discountPrice?.toFixed(2)}</p>
 						</div>
 					</div>
-					{product.deleted && <p className='text-sm text-center font-bold text-red-500'>Product Deleted!</p>}
-					{product.stock <= 0 && <p className='text-sm my-2 text-center font-bold text-red-500'>Product out of stock!</p>}
+					{stock === 0 && <p className='absolute top-0 right-0 bg-white rounded-lg px-1 py-0.5 text-xs text-center font-semibold text-red-500'>Out of stock!</p>}
+					{deleted && <p className={`absolute ${stock === 0? 'top-6': 'top-0'} right-0 bg-white rounded-lg px-1 py-0.5 text-xs text-center font-semibold text-red-500`}>Deleted!</p>}
 				</div>
 			</Link>
 			

@@ -15,6 +15,8 @@ import AdminOrdersTable from "./AdminOrdersTable";
 
 import { ITEMS_PER_PAGE } from '../../../app/constants';
 
+import toast from 'react-hot-toast';
+
 
 
 function AdminOrders() {
@@ -43,7 +45,16 @@ function AdminOrders() {
 			status: e.target.value
 		};
 
-		dispatch(updateOrderAsync(update));
+		dispatch(updateOrderAsync(update))
+			.unwrap()
+			.then(data => {
+				toast.success('Order updated successfully');
+			})
+			.catch(err => {
+				toast.error(err.message || 'Failed to update order');
+			});
+		
+		
 		setEditableOrderId(-1);
 	}
 

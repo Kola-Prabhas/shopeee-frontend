@@ -35,7 +35,9 @@ export const categorySlice = createSlice({
 			})
 			.addCase(fetchCategoriesAsync.fulfilled, (state, action) => {
 				state.status = 'idle';
-				state.categories = action.payload;
+
+				const categories = action.payload?.sort((a, b) => a.label.localeCompare(b.label));
+				state.categories = categories;
 			})
 			.addCase(fetchCategoriesAsync.rejected, (state, action) => {
 				state.status = 'failed';

@@ -1,4 +1,8 @@
-import { addProductAsync, selectProductStatus } from '../../product/productSlice';
+import {
+	addProductAsync,
+	selectProductStatus,
+	selectAddProductStatus,
+} from '../../product/productSlice';
 import { selectAllCategories } from '../../product/categorySlice';
 import { selectAllBrands } from '../../product/brandSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +17,8 @@ export default function AdminProductForm() {
 	const brands = useSelector(selectAllBrands);
 
 	const productStatus = useSelector(selectProductStatus);
+	const addProductStatus = useSelector(selectAddProductStatus);
+
  
 	const sortedCategories = categories.slice().sort((a, b) => (a.value).localeCompare(b.value));
 	const sortedBrands = brands.slice().sort((a, b) => (a.value).localeCompare(b.value));
@@ -21,26 +27,11 @@ export default function AdminProductForm() {
 		register,
 		handleSubmit,
 		reset,
-		setValue,
-		formState: { errors }
+		formState: { errors}
 	} = useForm();
 
 	const dispatch = useDispatch();
 
-	function resetFormValues() {
-		setValue('title', '');
-		setValue('description', '');
-		setValue('category', '');
-		setValue('brand', '');
-		setValue('price', '');
-		setValue('discountPercentage', '');
-		setValue('stock', '');
-		setValue('thumbnail', '');
-		setValue('image1', '')
-		setValue('image2', '')
-		setValue('image3', '')
-		setValue('image4', '')
-	}
 
 	return (
 		productStatus === 'loading' ? (
@@ -93,7 +84,6 @@ export default function AdminProductForm() {
 
 
 					dispatch(addProductAsync(newProduct));
-					resetFormValues();
 				})}
 			>
 				<div className="space-y-12 px-6">
@@ -327,7 +317,7 @@ export default function AdminProductForm() {
 				</div>
 
 				<div className="mt-6 flex items-center justify-end gap-x-6">
-					<Link to='/admin'>
+					<Link to='/'>
 						<button
 							type="button"
 							className="w-[50px] text-sm font-semibold leading-6 text-gray-900"

@@ -35,7 +35,9 @@ export const brandSlice = createSlice({
 			})
 			.addCase(fetchBrandsAsync.fulfilled, (state, action) => {
 				state.status = 'idle';
-				state.brands = action.payload;
+				const brands = action.payload?.sort((a, b) => a.label.localeCompare(b.label));
+
+				state.brands = brands;
 			})
 			.addCase(fetchBrandsAsync.rejected, (state, action) => {
 				state.status = 'failed';

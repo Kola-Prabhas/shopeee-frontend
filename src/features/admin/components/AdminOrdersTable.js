@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
-import { selectOrders, selectOrdersStatus } from '../../order/orderSlice';
+import { selectOrders, selectUpdateOrderStatus } from '../../order/orderSlice';
 import { PencilIcon, ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
-import { ThreeDots } from 'react-loader-spinner'
 
 
 
@@ -13,7 +12,7 @@ export default function AdminOrdersTable({
 	handleUpdate,
 }) {
 	const orders = useSelector(selectOrders);
-	const ordersStatus = useSelector(selectOrdersStatus)
+	const updateOrderStatus = useSelector(selectUpdateOrderStatus);
 
 	function getColorByOrderStatus(status) {
 		switch (status) {
@@ -33,7 +32,7 @@ export default function AdminOrdersTable({
 
 	return (
 		<table className="relative min-w-full table-auto">
-			{/* <div className='absolute inset-0 bg-gray-100/10 z-10 cursor-not-allowed' /> */}
+			{updateOrderStatus === 'loading' && <div className='absolute inset-0 bg-gray-100/10 z-10 cursor-not-allowed' />}
 			<thead>
 				<tr className="bg-gray-200 text-gray-600 uppercase text-xs leading-normal">
 					<th className="py-3 px-1 text-left">
@@ -80,12 +79,12 @@ export default function AdminOrdersTable({
 						</div>
 					</th>
 					<th className="py-3 px-1 text-center">
-						Actions
+						Edit
 					</th>
 
 				</tr>
 			</thead>
-			<tbody className="text-gray-600 text-xs font-light">
+			<tbody className="text-gray-600 text-xs font-semibold">
 				{orders?.map(order => {
 					const address = order.selectedAddress;
 
@@ -96,9 +95,7 @@ export default function AdminOrdersTable({
 						>
 							<td className="py-3 px-1 text-left whitespace-nowrap">
 								<div className="flex items-center">
-									<span className="font-medium">
-										#{order.id}
-									</span>
+									#{order.id}
 								</div>
 							</td>
 							<td className="py-3 px-1 text-left">
@@ -113,7 +110,7 @@ export default function AdminOrdersTable({
 												/>
 											</div>
 											<span>
-												<strong>{item.product.title}</strong> ${item.product.price} x {item.quantity}
+												<span className='font-bold'>{item.product.title}</span> ${item.product.price} x {item.quantity}
 											</span>
 										</div>
 									)
@@ -139,7 +136,7 @@ export default function AdminOrdersTable({
 							<td className="py-3 px-1 text-center">
 								{editableOrderId === order.id ? (
 									<select
-										className="border-gray-300 rounded-2xl"
+										className="border-gray-300 rounded-2xl text-xs"
 										value={order.status}
 										onChange={(e) => handleUpdate(e, order)}
 									>
@@ -170,24 +167,11 @@ export default function AdminOrdersTable({
 								</div>
 							</td>
 							<td className="py-3 px-1 text-center">
-								{ordersStatus === 'loading' ? (
-									<ThreeDots
-										visible={true}
-										height="40"
-										width="40"
-										color="#4F46E5"
-										radius="8"
-										ariaLabel="three-dots-loading"
-										wrapperStyle={{}}
-										wrapperClass=""
-									/>
-								) : (
-									<div className="flex item-center justify-center *:cursor-pointer">
-										<div className="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
-											<PencilIcon onClick={() => handleEdit(order)} className="size-[20px]"></PencilIcon>
-										</div>
+								<div className="flex item-center justify-center *:cursor-pointer">
+									<div className="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
+										<PencilIcon onClick={() => handleEdit(order)} className="size-[20px]"></PencilIcon>
 									</div>
-								)}
+								</div>
 							</td>
 						</tr>
 					)

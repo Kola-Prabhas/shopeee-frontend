@@ -5,6 +5,9 @@ import { ThreeDots } from 'react-loader-spinner'
 import { loginUserAsync, selectLoginStatus } from "../authSlice";
 
 
+import toast from "react-hot-toast";
+
+
 const initialLoginDetails = {
 	email: '',
 	password: '',
@@ -55,6 +58,7 @@ export default function Login() {
 		dispatch(loginUserAsync(loginDetails))
 			.unwrap() // Wait for the async thunk to resolve
 			.then((data) => {
+				toast.success('Your login successful');
 				const user = data.user;
 				const redirectUrl = data.redirect;
 
@@ -65,7 +69,7 @@ export default function Login() {
 				}
 			})
 			.catch((error) => {
-				console.error(error);
+				toast.error(error || 'Failed to login');
 			});
 	}
 

@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { resetPasswordRequestAsync, selectMailSentStatus } from "../authSlice";
-import { ThreeDots } from 'react-loader-spinner'
+import { ThreeDots } from 'react-loader-spinner';
+
+import toast from "react-hot-toast";
 
 
 
@@ -13,7 +15,7 @@ export default function ForgotPassword() {
 	const mailSentStatus = useSelector(selectMailSentStatus);
 
 	const disabled = email === '' ||
-		emailError || 
+		emailError ||
 		mailSentStatus === 'loading';
 
 	const dispatch = useDispatch();
@@ -41,6 +43,13 @@ export default function ForgotPassword() {
 	function handleSubmit(e) {
 		e.preventDefault();
 		dispatch(resetPasswordRequestAsync(email))
+			.unwrap()
+			.then(() => {
+				toast.success('An email with link to reset password has been sent to you')
+			})
+			.catch(err => {
+				toast.error(err || 'Failed to send email')
+			});
 	}
 
 	return (

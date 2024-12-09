@@ -5,19 +5,13 @@ import {
 	useElements
 } from "@stripe/react-stripe-js";
 
-import { useSelector, useDispatch } from "react-redux";
-import {
-	selectCurrentOrder,
-	resetCurrentOrder,
-	updateOrderAsync
-} from "../features/order/orderSlice";
+import { useDispatch } from "react-redux";
+import { updateOrderAsync } from "../features/order/orderSlice";
 
 
-export default function CheckoutForm() {
+export default function CheckoutForm({orderId}) {
 	const stripe = useStripe();
 	const elements = useElements();
-	const currentOrder = useSelector(selectCurrentOrder);
-	const orderId = currentOrder.id;
 
 	const [message, setMessage] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);

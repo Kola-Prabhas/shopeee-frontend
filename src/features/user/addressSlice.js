@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit';
-import toast from 'react-hot-toast';
 
 import {
 	fetchUserAddresses,
@@ -7,14 +6,6 @@ import {
 	deleteUserAddress,
 	updateUserAddress
 } from './addressAPI';
-
-
-const initialState = {
-	status: 'idle',
-	addresses: [],
-	deletingAddesses: [], // ids of addresses being deleted
-	updatingAddresses: [], // ids of addresses being updated
-}
 
 
 export const fetchUserAddressesAsync = createAsyncThunk(
@@ -65,7 +56,16 @@ export const updateUserAddressAsync = createAsyncThunk(
 			return rejectWithValue(error.message);
 		}
 	}
-)
+);
+
+
+const initialState = {
+	status: 'idle',
+	addresses: [],
+	deletingAddesses: [], // ids of addresses being deleted
+	updatingAddresses: [], // ids of addresses being updated
+}
+
 
 
 const addressSlice = createSlice({
@@ -81,20 +81,16 @@ const addressSlice = createSlice({
 				state.status = 'idle';
 				state.addresses = action.payload;
 			})
-			.addCase(fetchUserAddressesAsync.rejected, (state, action) => {
+			.addCase(fetchUserAddressesAsync.rejected, (state) => {
 				state.status = 'idle';
-				toast.error(action.payload || 'Failed to fetch addresses');
 			})
 
 
 			.addCase(addUserAddressAsync.fulfilled, (state, action) => {
 				state.addresses.push(action.payload);
-
-				toast.success('Address added successfully');
 			})
-			.addCase(addUserAddressAsync.rejected, (state, action) => {
-				toast.error(action.payload || 'Failed to add address');
-			})
+			// .addCase(addUserAddressAsync.rejected, (state) => {
+			// })
 
 
 			.addCase(deleteUserAddressAsync.pending, (state, action) => {
@@ -108,16 +104,12 @@ const addressSlice = createSlice({
 				
 				state.addresses = state.addresses.filter(address => address.id !== addressId);
 				state.deletingAddesses.splice(deleteAddressIndex, 1);
-
-				toast.success('Address deleted successfully');
 			})
 			.addCase(deleteUserAddressAsync.rejected, (state, action) => {
 				const addressId = action.meta.arg;
 				const addressIndex = state.deletingAddesses.indexOf(addressId);
 
 				state.deletingAddesses.splice(addressIndex, 1);
-
-				toast.error(action.payload || 'Failed to delete address');
 			})
 
 
@@ -130,9 +122,6 @@ const addressSlice = createSlice({
 				const addressId = action.meta.arg.id;
 				const updateAddressIndex = state.updatingAddresses.indexOf(addressId);
 
-				console.log('action ', action.payload);
-				console.log('addressId ', addressId);
-
 				state.addresses = state.addresses.map(address => {
 					console.log('address ', current(address));
 					if (address.id === addressId) {
@@ -142,16 +131,12 @@ const addressSlice = createSlice({
 					return address;
 				})
 				state.updatingAddresses.splice(updateAddressIndex, 1);
-
-				toast.success('Address updated successfully');
 			})
 			.addCase(updateUserAddressAsync.rejected, (state, action) => {
 				const addressId = action.meta.arg.id;
 				const addressIndex = state.deletingAddesses.indexOf(addressId);
 
 				state.updatingAddresses.splice(addressIndex, 1);
-
-				toast.error(action.payload || 'Failed to update address');
 			})
 	}
 });

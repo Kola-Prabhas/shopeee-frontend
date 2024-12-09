@@ -22,6 +22,7 @@ import {
 import { getUserRole } from '../../auth/utils/getUserRole';
 import CartQuantityChange from '../../cart/components/cartItemQuantityChange';
 
+import toast from 'react-hot-toast';
 import Modal from '../../../components/Modal';
 
 
@@ -68,13 +69,30 @@ export default function ProductDetails() {
 			dispatch(addToCartAsync({
 				product: product.id,
 				quantity: 1,
-			}));
+			}))
+				.unwrap()
+				.then(data => {
+					const product = data.product;
+
+					toast.success(`${product.title} added to cart🥳`);
+				})
+				.catch(err => {
+					toast.error(err || 'Failed to add item to cart!');
+				});
 		}
 	}
 
 
 	function handleDelete(itemId) {
-		dispatch(deleteItemFromCartAsync(itemId));
+		dispatch(deleteItemFromCartAsync(itemId))
+			.unwrap()
+			.then(item => {
+				const product = item.product;
+				toast.success(`${product.title} removed from cart`);
+			})
+			.catch(err => {
+				toast.error(err || `Failed to remove ${product.title} from cart`);
+			});
 	}
 
 

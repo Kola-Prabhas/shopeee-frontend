@@ -7,10 +7,6 @@ import {
 	logoutUser
 } from './authAPI';
 
-import toast from 'react-hot-toast';
-
-
-
 export const createUserAsync = createAsyncThunk(
 	'auth/createUser',
 	async (user, { rejectWithValue }) => {
@@ -97,14 +93,9 @@ export const authSlice = createSlice({
 			})
 			.addCase(createUserAsync.fulfilled, (state, action) => {
 				state.signUpStatus = 'idle';
-
-				toast.success('Account created successfully');
 			})
 			.addCase(createUserAsync.rejected, (state, action) => {
 				state.signUpStatus = 'idle';
-
-				const message = action.payload;
-				toast.error(message || 'Failed to create account');
 			})
 
 
@@ -113,14 +104,9 @@ export const authSlice = createSlice({
 			})
 			.addCase(loginUserAsync.fulfilled, (state, action) => {
 				state.loginStatus = 'idle';
-				
-				toast.success('Your login successful');
 			})
 			.addCase(loginUserAsync.rejected, (state, action) => {
 				state.loginStatus = 'idle';
-
-				const message = action.payload;
-				toast.error(message || 'Failed to login');
 			})
 
 
@@ -139,34 +125,20 @@ export const authSlice = createSlice({
 			.addCase(resetPasswordRequestAsync.fulfilled, (state) => {
 				state.mailSentStatus = 'idle';
 				state.mailSent = true;
-
-				toast.success('An email with link to reset password has been sent to you')
 			})
 			.addCase(resetPasswordRequestAsync.rejected, (state, action) => {
 				state.mailSentStatus = 'idle';
-
-				const message = action.payload;
-
-				console.log('message ', message);
-
-				toast.error(message || 'Failed to send email')
 			})
 
 
 			.addCase(resetPasswordAsync.pending, (state) => {
 				state.passwordResetStatus = 'loading';
 			})
-			.addCase(resetPasswordAsync.fulfilled, (state, action) => {
+			.addCase(resetPasswordAsync.fulfilled, (state) => {
 				state.passwordResetStatus = 'idle';
-
-				const message = action.payload;
-				toast.success(message || 'Password reset successful');
 			})
 			.addCase(resetPasswordAsync.rejected, (state, action) => {
 				state.passwordResetStatus = 'idle';
-
-				const message = action.payload;
-				toast.error(message || 'Failed to reset password');
 			})
 	},
 })

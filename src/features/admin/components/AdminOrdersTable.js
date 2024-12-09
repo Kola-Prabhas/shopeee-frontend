@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { selectOrders, selectUpdateOrderStatus } from '../../order/orderSlice';
+import { selectOrders, selectUpdateOrderStatus, selectOrdersStatus, } from '../../order/orderSlice';
 import { PencilIcon, ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
 
 
@@ -13,6 +13,7 @@ export default function AdminOrdersTable({
 }) {
 	const orders = useSelector(selectOrders);
 	const updateOrderStatus = useSelector(selectUpdateOrderStatus);
+	const ordersStatus = useSelector(selectOrdersStatus);
 
 	function getColorByOrderStatus(status) {
 		switch (status) {
@@ -32,7 +33,7 @@ export default function AdminOrdersTable({
 
 	return (
 		<table className="relative min-w-full table-auto">
-			{updateOrderStatus === 'loading' && <div className='absolute inset-0 bg-gray-100/10 z-10 cursor-not-allowed' />}
+			{(ordersStatus === 'loading' || updateOrderStatus === 'loading') && <div className='absolute inset-0 bg-gray-100/10 z-10 cursor-not-allowed' />}
 			<thead>
 				<tr className="bg-gray-200 text-gray-600 uppercase text-xs leading-normal">
 					<th className="py-3 px-1 text-left">
@@ -42,7 +43,7 @@ export default function AdminOrdersTable({
 						Items
 					</th>
 					<th
-						className="py-3 px-1 text-center flex items-center gap-2 cursor-pointer"
+						className="py-3 px-1 text-center flex items-center justify-center gap-2 cursor-pointer"
 						onClick={() => handleSort('totalPrice')}
 					>
 						Total Amount

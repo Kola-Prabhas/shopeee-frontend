@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
 import CheckoutForm from "./CheckoutForm";
 import "../Stripe.css";
-import { useSelector} from "react-redux";
-import { selectCurrentOrder } from "../features/order/orderSlice";
 
 import { ThreeDots } from 'react-loader-spinner';
 
@@ -20,9 +19,11 @@ const stripePromise = loadStripe("pk_test_51PfYgfCP52ANZ4velwZeiqbZBWg6pNcmaiXtR
 export default function StripeCheckout() {
 	const [clientSecret, setClientSecret] = useState("");
 	const [clientSecretLoading, setClientSecretLoading] = useState(true);
-	const currentOrder = useSelector(selectCurrentOrder);
 
-	const totalAmount = currentOrder.totalPrice;
+	const location = useLocation();
+	const totalAmount = location.state.totalPrice;
+	const orderId = location.state.orderId;
+
 
 	useEffect(() => {
 		setClientSecretLoading(true);
@@ -32,7 +33,7 @@ export default function StripeCheckout() {
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ totalAmount: +totalAmount.toFixed(2) }),
 			meta: {
-				order_id: currentOrder.id
+				order_id: orderId
 				// this info will go to stripe and then to our server via webhook
 				// useful for determining which order is successful even if client closes the browser
 			}
@@ -70,7 +71,7 @@ export default function StripeCheckout() {
 			)}
 			{clientSecret && !clientSecretLoading && (
 				<Elements options={options} stripe={stripePromise}>
-					<CheckoutForm />
+					<CheckoutForm orderId={orderId} />
 				</Elements>
 			)}
 		</div>

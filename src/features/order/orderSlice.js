@@ -7,7 +7,6 @@ import {
 } from './orderAPI';
 
 import { clearCartAsync } from '../cart/cartSlice';
-import toast from 'react-hot-toast';
 
 
 export const createOrderAsync = createAsyncThunk(
@@ -21,7 +20,7 @@ export const createOrderAsync = createAsyncThunk(
 
 			return response.order;
 		} catch (e) {
-			rejectWithValue(e.message);
+			return rejectWithValue(e.message);
 		}
 	}
 );
@@ -105,9 +104,6 @@ export const orderSlice = createSlice({
 			})
 			.addCase(fetchUserOrdersAsync.rejected, (state, action) => {
 				state.status = 'idle';
-
-				const error = action.payload;
-				toast.error(error || 'Failed to fetch user orders');
 			})
 
 
@@ -124,9 +120,6 @@ export const orderSlice = createSlice({
 			})
 			.addCase(createOrderAsync.rejected, (state, action) => {
 				state.currentOrderStatus = 'idle';
-				const error = action.payload;
-
-				toast.error(error || 'Failed to create order');
 			})
 
 			

@@ -1,5 +1,7 @@
 import { useDispatch } from 'react-redux';
-import { deleteItemFromCartAsync, updateItemAsync } from '../cartSlice'
+import { updateItemAsync } from '../cartSlice'
+
+import toast from 'react-hot-toast';
 
 
 
@@ -14,7 +16,17 @@ function CartQuantityChange({setOpen, itemId, quantity, stock }) {
 		dispatch(updateItemAsync({
 			id: itemId,
 			quantity: quantity
-		}));
+		}))
+			.unwrap()
+			.then(data => {
+				const quantity = data.quantity;
+				const product = data.product;
+
+				toast.success(`${product.title} quantity updated to ${quantity}`);
+			})
+			.catch(err => {
+				toast.error(err || 'Failed to update cart item');
+			});
 	}
 
 

@@ -4,6 +4,8 @@ import { ThreeDots } from 'react-loader-spinner'
 import { createUserAsync, selectSignUpStatus } from "../authSlice";
 import { useDispatch, useSelector } from 'react-redux';
 
+import toast from "react-hot-toast";
+
 const initialSignupDetails = {
 	email: '',
 	password: '',
@@ -83,19 +85,20 @@ export default function SignUp() {
 		}))
 			.unwrap()
 			.then((data) => {
+				toast.success('Account created successfully');
 
-				console.log('data ', data);
 				const user = data.user;
 				const redirectUrl = data.redirect;
 
 				sessionStorage.setItem('user', JSON.stringify(user));
+
 
 				if (redirectUrl) {
 					navigate(redirectUrl, { replace: true })
 				}
 			})
 			.catch((error) => {
-				console.error(error);
+				toast.error(error || 'Failed to create account');
 			});
 	}
 

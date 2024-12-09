@@ -40,7 +40,14 @@ export default function Cart() {
 	);
 
 	function handleClearCart() {
-		dispatch(clearCartAsync(items));
+		dispatch(clearCartAsync(items))
+			.unwrap()
+			.then(() => {
+				toast.success('Cart cleared successfully');
+			})
+			.catch(err => {
+				toast.error(err || 'Failed to clear cart');
+			});
 	}
 
 

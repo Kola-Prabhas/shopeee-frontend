@@ -94,7 +94,7 @@ function AdminOrders() {
 	const handlePage = (idx) => () => setPage(idx);
 
 
-	if (ordersStatus === 'loading') {
+	if (ordersStatus === 'loading' && totalOrders === 0) {
 		return (
 			<div className='min-h-[100vh] flex items-center justify-center'>
 				<ThreeDots

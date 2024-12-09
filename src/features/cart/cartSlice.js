@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
 import { addToCart, deleteItem, fetchItemsByUserId, clearCart, updateItem } from './cartAPI';
 
-import toast from 'react-hot-toast';
-
 
 export const addToCartAsync = createAsyncThunk(
 	'cart/addToCart',
@@ -100,9 +98,6 @@ export const cartSlice = createSlice({
 			})
 			.addCase(fetchItemsByUserIdAsync.rejected, (state, action) => {
 				state.status = 'idle';
-
-				const message = action.payload;
-				toast.error(message || 'Failed to fetch cart items');
 			})
 
 
@@ -119,18 +114,12 @@ export const cartSlice = createSlice({
 				const itemId = action.meta.arg;
 				const index = state.addingCartItems.indexOf(itemId);
 				state.addingCartItems.splice(index, 1);
-
-				const product = cartItem.product;
-				toast.success(`${product.title} added to cart🥳`);
 			})
 			.addCase(addToCartAsync.rejected, (state, action) => {
 				const itemId = action.meta.arg;
 				const index = state.addingCartItems.indexOf(itemId);
 
 				state.addingCartItems.splice(index, 1);
-
-				const message = action.payload;
-				toast.error(message || 'Failed to add item to cart!');
 			})
 
 
@@ -145,18 +134,12 @@ export const cartSlice = createSlice({
 
 				const updatingCartItemIndex = state.updatingCartItems.indexOf(itemId);
 				state.updatingCartItems.splice(updatingCartItemIndex, 1);
-
-				const product = action.payload.product;
-				toast.success(`${product.title} quantity updated to ${action.payload.quantity}`);
 			})
 			.addCase(updateItemAsync.rejected, (state, action) => {
 				const itemId = action.meta.arg.id;
-				const error = action.payload;
 				const index = state.updatingCartItems.indexOf(itemId);
 
 				state.updatingCartItems.splice(index, 1);
-
-				toast.error(error || 'Failed to update cart item');
 			})
 
 
@@ -170,21 +153,12 @@ export const cartSlice = createSlice({
 
 				const deleteCartItemIndex = state.deletingCartItems.indexOf(action.payload.id);
 				state.deletingCartItems.splice(deleteCartItemIndex, 1);
-
-				const product = action.payload.product;
-				toast.success(`${product.title} removed from cart`);
 			})
 			.addCase(deleteItemFromCartAsync.rejected, (state, action) => {
 				const itemId = action.meta.arg;
 
-				const proxyItem = state.items.find(item => item.id === itemId);
-				const item = current(proxyItem);
-				const product = item.product;
-				
 				const deleteCartItemIndex = state.deletingCartItems.indexOf(itemId);
 				state.deletingCartItems.splice(deleteCartItemIndex, 1);
-
-				toast.error(`Failed to remove ${product.title} from cart`);
 			})
 
 
@@ -194,13 +168,9 @@ export const cartSlice = createSlice({
 			.addCase(clearCartAsync.fulfilled, (state) => {
 				state.status = 'idle';
 				state.items = [];
-				toast.success('Cart cleared successfully')
 			})
 			.addCase(clearCartAsync.rejected, (state, action) => {
 				state.status = 'idle';
-				const error = action.payload;
-
-				toast.error(error || 'Failed to clear cart');
 			})
 	},
 });

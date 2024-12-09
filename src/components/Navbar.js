@@ -10,6 +10,7 @@ import { selectCartItems, fetchItemsByUserIdAsync } from '../features/cart/cartS
 import { getUserId } from '../features/auth/utils/getUserId';
 import { getUserRole } from '../features/auth/utils/getUserRole';
 
+import toast from 'react-hot-toast';
 import { useGetUserInfoQuery } from '../features/user/userQueryAPI';
 
 // Links in the navbar
@@ -25,7 +26,7 @@ const navigation = [
 const userNavigation = [
 	{ name: 'My Profile', link: '/profile' },
 	// { name: 'My Orders', link: '/user-orders' },
-	{ name: 'Sign out', link: '/logout' },
+	{ name: 'Sign out', link: '/login' },
 ]
 
 function classNames(...classes) {
@@ -47,7 +48,11 @@ export default function Navbar({ children }) {
 
 	useEffect(() => {
 		if (userId && userRole !== 'admin') {
-			dispatch(fetchItemsByUserIdAsync());
+			dispatch(fetchItemsByUserIdAsync())
+				.unwrap()
+				.catch(err => {
+					toast.error(err || 'Failed to fetch cart items');
+				});
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps

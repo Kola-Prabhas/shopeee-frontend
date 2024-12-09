@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCartItems } from '../../cart/cartSlice';
+import {
+	selectCartItems,
+	selectUpdatingCartItems,
+	selectDeletingCartItems
+} from '../../cart/cartSlice';
 import {
 	createOrderAsync,
 	selectCurrentOrder,
@@ -23,7 +27,7 @@ import CartItem from './/cartItem';
 import CartTotalStats from './cartTotalStats';
 import AddressForm from '../../user/components/AddressForm';
 
-import { toast } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 
 
@@ -40,6 +44,8 @@ export default function Checkout() {
 	const userAddressesStatus = useSelector(selectUserAddressesStatus);
 
 	const items = useSelector(selectCartItems);
+	const updatingCartItems = useSelector(selectUpdatingCartItems);
+	const deletingCartItems = useSelector(selectDeletingCartItems);
 
 	const currentOrderStatus = useSelector(selectCurrentOrderStatus);
 	const currentOrder = useSelector(selectCurrentOrder);
@@ -60,7 +66,14 @@ export default function Checkout() {
 	}
 
 	function handleAddAddress(address) {
-		dispatch(addUserAddressAsync(address));
+		dispatch(addUserAddressAsync(address))
+			.unwrap()
+			.then(() => {
+				toast.success('Address added successfully');
+			})
+			.catch(err => {
+				toast.error(err || 'Failed to add address');
+			})
 	}
 
 	function handleCreateOrder() {
@@ -77,10 +90,13 @@ export default function Checkout() {
 				paymentStatus: 'unpaid'
 			}
 
-			console.log('order ', order);
+			dispatch(createOrderAsync(order))
+				.unwrap()
+				.catch(e => {
+					console.log('error ', e);
 
-			dispatch(createOrderAsync(order));
-
+					toast.error(e || 'Failed to create order');
+				});
 		} else {
 			toast.error('Please select an address to place order');
 		}
@@ -89,7 +105,11 @@ export default function Checkout() {
 
 	useEffect(() => {
 		if (userAddresses?.length === 0) {
-			dispatch(fetchUserAddressesAsync());
+			dispatch(fetchUserAddressesAsync())
+				.unwrap()
+				.catch((err) => {
+					toast.error(err || 'Failed to fetch addresses');
+				});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch])
@@ -100,7 +120,13 @@ export default function Checkout() {
 	}
 
 	if (currentOrder && currentOrderStatus === 'idle') {
-		navigate(`/stripe-checkout`, { replace: true })
+		navigate(`/stripe-checkout`, {
+			state: {
+				orderId: currentOrder.id,
+				totalPrice: currentOrder.totalPrice
+			},
+			replace: true
+		})
 	}
 
 	return (
@@ -116,7 +142,7 @@ export default function Checkout() {
 										Name:
 									</p>
 									<p className="text-gray-500">
-										{user.name}
+										{user?.name}
 									</p>
 								</div>
 								<div>
@@ -124,7 +150,7 @@ export default function Checkout() {
 										Email:
 									</p>
 									<p className="text-gray-500">
-										{user.email}
+										{user?.email}
 									</p>
 								</div>
 								<div>
@@ -132,7 +158,7 @@ export default function Checkout() {
 										Phone:
 									</p>
 									<p className="text-gray-500">
-										{user.phone || '1234567890'}
+										{user?.phone}
 									</p>
 								</div>
 							</div>
@@ -224,7 +250,12 @@ export default function Checkout() {
 					<h2 className="text-2xl sm:text-3xl mt-4 mb-6 font-semibold text-gray-700 text-center">Cart</h2>
 					<div className="border-t border-gray-200 px-4 py-6 sm:px-6">
 						{items.map((item) => (
-							<CartItem item={item} />
+							<CartItem
+								key={item.id}
+								item={item}
+								isCurrentlyUpdating={updatingCartItems.includes(item.id)}
+								isCurrentlyDeleting={deletingCartItems.includes(item.id)}
+							/>
 						))}
 					</div>
 

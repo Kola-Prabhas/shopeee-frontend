@@ -7,6 +7,7 @@ import {
 	fetchUserOrdersAsync
 } from '../orderSlice';
 
+import toast from 'react-hot-toast';
 import { ThreeDots } from 'react-loader-spinner';
 
 import { getUserId } from '../../auth/utils/getUserId';
@@ -22,15 +23,19 @@ export default function UserOrders() {
 	useEffect(() => {
 		if (!orders || orders?.length === 0) {
 			dispatch(fetchUserOrdersAsync(userId))
+				.unwrap()
+				.catch(err => {
+					toast.error(err || 'Failed to fetch user orders');
+				})
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 
 	return (
 		<>
 			<h1 className="text-4xl my-4 font-bold tracking-tight text-gray-800 text-center">My Orders</h1>
-			{ordersStatus === 'loading'? (
+			{ordersStatus === 'loading' ? (
 				<div className='min-h-[100vh] mt-[-100px] flex items-center justify-center'>
 					<ThreeDots
 						visible={true}

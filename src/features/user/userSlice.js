@@ -1,12 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchUserInfo, updateUser} from './userAPI';
-
-const initialState = {
-	status: 'idle',
-	userInfo: null,
-};
-
-
+import { fetchUserInfo, updateUser } from './userAPI';
 
 export const fetchUserInfoAsync = createAsyncThunk(
 	'user/fetchUserInfo',
@@ -23,6 +16,15 @@ export const updateUserAsync = createAsyncThunk(
 		return response.data;
 	}
 );
+
+
+const initialState = {
+	status: 'idle',
+	userInfo: null,
+};
+
+
+
 
 export const userSlice = createSlice({
 	name: 'user',

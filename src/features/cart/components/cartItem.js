@@ -7,7 +7,7 @@ import Modal from '../../../components/Modal';
 
 
 
-function CartItem({ item, isCurrentlyUpdating=false, isCurrentlyDeleting = false }) {
+function CartItem({ item, isCurrentlyUpdating=false, isCurrentlyDeleting=false }) {
 	const [open, setOpen] = useState(false);
 	const dispatch = useDispatch();
 

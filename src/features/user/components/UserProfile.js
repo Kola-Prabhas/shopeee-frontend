@@ -14,6 +14,7 @@ import AddressForm from "./AddressForm";
 import UserAddress from "./UserAddress";
 
 import { ThreeDots } from 'react-loader-spinner';
+import toast from "react-hot-toast";
 
 import { useGetUserInfoQuery } from '../userQueryAPI';
 
@@ -38,16 +39,37 @@ function UserProfile() {
 
 
 	function handleDelete(addressId) {
-		dispatch(deleteUserAddressAsync(addressId));
+		dispatch(deleteUserAddressAsync(addressId))
+			.unwrap()
+			.then(() => {
+				toast.success('Address deleted successfully');
+			})
+			.catch(err => {
+				toast.error(err || 'Failed to delete address');
+			});
 	}
 
 	function handleAddAddress(address) {
-		dispatch(addUserAddressAsync(address));
+		dispatch(addUserAddressAsync(address))
+			.unwrap()
+			.then(() => {
+				toast.success('Address added successfully');
+			})
+			.catch(err => {
+				toast.error(err || 'Failed to add address');
+			});
 	}
 
 
 	function handleEditAddress(id, address) {
-		dispatch(updateUserAddressAsync({ id, address }));
+		dispatch(updateUserAddressAsync({ id, address }))
+			.unwrap()
+			.then(() => {
+				toast.success('Address updated successfully');
+			})
+			.catch(err => {
+				toast.error(err || 'Failed to update address');
+			});;
 	}
 
 
@@ -61,7 +83,11 @@ function UserProfile() {
 
 	useEffect(() => {
 		if (userAddresses?.length === 0) {
-			dispatch(fetchUserAddressesAsync());
+			dispatch(fetchUserAddressesAsync())
+				.unwrap()
+				.catch(err => {
+					toast.error(err || 'Failed to fetch addresses');
+				});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch])

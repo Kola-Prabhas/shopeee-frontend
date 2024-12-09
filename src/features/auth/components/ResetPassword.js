@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ThreeDots } from 'react-loader-spinner'
-import { selectPasswordResetStatus, resetPasswordAsync } from "../authSlice";
+import { selectPasswordResetStatus,  } from "../authSlice";
 import { useDispatch, useSelector } from 'react-redux';
+
+import toast from "react-hot-toast";
 
 
 export default function ResetPassword() {
@@ -65,11 +67,12 @@ export default function ResetPassword() {
 			token
 		}))
 			.unwrap()
-			.then(data => {
+			.then(() => {
+				toast.success('Password reset successful');
 				navigate('/login', { replace: true })
 			})
 			.catch((e) => {
-				console.log(e);
+				toast.error(e || 'Failed to reset password');
 			});
 	}
 

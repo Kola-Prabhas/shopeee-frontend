@@ -16,6 +16,8 @@ import CartTotalStats from './cartTotalStats';
 import Modal from '../../../components/Modal';
 import { useEffect, useState } from 'react';
 
+import toast from 'react-hot-toast';
+
 import { resetCurrentOrder } from "../../order/orderSlice";
 
 

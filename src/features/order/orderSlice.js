@@ -38,9 +38,9 @@ export const fetchAllOrdersAsync = createAsyncThunk(
 
 export const fetchUserOrdersAsync = createAsyncThunk(
 	'order/fetchUserOrders',
-	async ({ userId }, { rejectWithValue }) => {
+	async ({ userId, sortOptions}, { rejectWithValue }) => {
 		try {
-			const response = await fetchUserOrders({ userId });
+			const response = await fetchUserOrders({ userId, sortOptions });
 			return response;
 		} catch (e) {
 			return rejectWithValue(e.message);

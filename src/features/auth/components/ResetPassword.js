@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ThreeDots } from 'react-loader-spinner'
-import { selectPasswordResetStatus,  } from "../authSlice";
+import { selectPasswordResetStatus, resetPasswordAsync  } from "../authSlice";
 import { useDispatch, useSelector } from 'react-redux';
 
 import toast from "react-hot-toast";

@@ -16,7 +16,7 @@ export default function Product({ product }) {
 				<div className="mt-4 flex justify-between">
 					<div className='flex-grow-0'>
 						<h3 className="text-sm text-gray-700">
-							<a href={product.thumbnail}>
+							<a href={product.thumbnail} className='line-clamp-1'>
 								<span aria-hidden="true" className="absolute inset-0" />
 								{product.title}
 							</a>

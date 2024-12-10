@@ -123,7 +123,7 @@ export default function Checkout() {
 		navigate(`/stripe-checkout`, {
 			state: {
 				orderId: currentOrder.id,
-				totalPrice: currentOrder.totalPrice
+				totalPrice: currentOrder.totalDiscountPrice
 			},
 			replace: true
 		})

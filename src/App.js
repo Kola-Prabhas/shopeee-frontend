@@ -24,7 +24,7 @@ import ProductDetailsPage from './pages/ProductDetailPage';
 
 import AdminProductDetailPage from './pages/AdminProductDetailPage';
 
-import Protected from './features/auth/components/protected';
+// import LoginProtected from './features/auth/components/LoginProtected';
 import AdminProtected from './features/admin/components/AdminProtected';
 
 
@@ -34,7 +34,7 @@ import AdminProductFormPage from './pages/AdminProductFormPage';
 import AdminEditProductPage from './pages/AdminEditProductPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import StripeCheckout from './pages/StripeCheckout';
-import UserProtected from "./features/auth/components/userProtected";
+import LoginProtected from "./features/auth/components/loginProtected";
 
 
 const router = createBrowserRouter([
@@ -43,23 +43,23 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "/",
-				element: <UserProtected><HomePage /></UserProtected>,
+				element: <HomePage />,
 			},
 			{
 				path: "/cart",
-				element: <Protected><CartPage /></Protected>,
+				element: <LoginProtected><CartPage /></LoginProtected>,
 			},
 			{
 				path: "/checkout",
-				element: <Protected><CheckoutPage /></Protected>,
+				element: <LoginProtected><CheckoutPage /></LoginProtected>,
 			},
 			{
 				path: "/stripe-checkout",
-				element: <Protected><StripeCheckout /></Protected>,
+				element: <LoginProtected><StripeCheckout /></LoginProtected>,
 			},
 			{
 				path: "/product-details/:id",
-				element: <UserProtected><ProductDetailsPage /></UserProtected>,
+				element: <ProductDetailsPage />,
 			},
 			{
 				path: "/admin/product-details/:id",
@@ -83,15 +83,15 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/user-orders",
-				element: <Protected><UserOrdersPage /></Protected>,
+				element: <LoginProtected><UserOrdersPage /></LoginProtected>,
 			},
 			{
 				path: "/profile",
-				element: <Protected><UserProfilePage /></Protected>,
+				element: <LoginProtected><UserProfilePage /></LoginProtected>,
 			},
 			{
 				path: "/logout",
-				element: <UserProtected><LogoutPage /></UserProtected>,
+				element: <LoginProtected><LogoutPage /></LoginProtected>,
 			},
 		]
 	},

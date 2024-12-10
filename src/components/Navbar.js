@@ -26,7 +26,7 @@ const navigation = [
 const userNavigation = [
 	{ name: 'My Profile', link: '/profile' },
 	// { name: 'My Orders', link: '/user-orders' },
-	{ name: 'Sign out', link: '/login' },
+	{ name: 'Sign out', link: '/' },
 ]
 
 function classNames(...classes) {
@@ -36,7 +36,7 @@ function classNames(...classes) {
 
 export default function Navbar({ children }) {
 	const userId = getUserId();
-	const userRole = getUserRole();
+	const userRole = getUserRole() ?? 'user';
 
 	const items = useSelector(selectCartItems);
 
@@ -61,7 +61,7 @@ export default function Navbar({ children }) {
 
 	return (
 		<div className="min-h-full">
-			{userId && <Disclosure as="nav" className="bg-gray-800">
+			<Disclosure as="nav" className="bg-gray-800">
 				{({ open }) => (
 					<>
 						<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -128,7 +128,7 @@ export default function Navbar({ children }) {
 													/>
 												</Menu.Button>
 											</div>
-											<Transition
+											{userId && <Transition
 												as={Fragment}
 												enter="transition ease-out duration-100"
 												enterFrom="transform opacity-0 scale-95"
@@ -145,26 +145,30 @@ export default function Navbar({ children }) {
 																<Menu.Item
 																	key={item.name}
 																	className={`${item.link === '/user-orders' && 'md:hidden'}`}
-																	onClick={item.name === 'Sign Out' ? () => sessionStorage.removeItem('user') : null}
-
 																>
-																	{({ active }) => (
-																		<Link
-																			to={item.link}
-																			className={classNames(
-																				active ? 'bg-gray-100' : '',
-																				'block px-4 py-2 text-sm text-gray-700'
-																			)}
-																		>
-																			{item.name}
-																		</Link>
-																	)}
+																	{({ active }) => {
+																		return (
+																			<Link
+																				to={item.link}
+																				onClick={item.name === 'Sign out' ? () => {
+																					sessionStorage.removeItem('user');
+																					window.location.reload();
+																				} : null}
+																				className={classNames(
+																					active ? 'bg-gray-100' : '',
+																					'block px-4 py-2 text-sm text-gray-700'
+																				)}
+																			>
+																				{item.name}
+																			</Link>
+																		)
+																	}}
 																</Menu.Item>
 															)
 
 														})}
 												</Menu.Items>
-											</Transition>
+											</Transition>}
 										</Menu>
 									</div>
 								</div>
@@ -189,7 +193,7 @@ export default function Navbar({ children }) {
 						<Disclosure.Panel className="md:hidden">
 							<div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
 								{navigation.map((item) => (
-									item[userRole] && <Disclosure.Button
+									<Disclosure.Button
 										key={item.name}
 										as="a"
 										href={item.href}
@@ -235,7 +239,7 @@ export default function Navbar({ children }) {
 									</div>
 
 								</div>
-								<div className="mt-3 space-y-1 px-2">
+								{userId && <div className="mt-3 space-y-1 px-2">
 									{userNavigation
 										.filter(x => x.link !== '/user-orders' || userRole !== 'admin')
 										.map((item) => (
@@ -255,12 +259,12 @@ export default function Navbar({ children }) {
 											</Link>
 
 										))}
-								</div>
+								</div>}
 							</div>
 						</Disclosure.Panel>
 					</>
 				)}
-			</Disclosure>}
+			</Disclosure>
 
 			{/* Content of all the pages is rendered here */}
 			<main>

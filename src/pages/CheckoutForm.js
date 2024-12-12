@@ -70,7 +70,7 @@ export default function CheckoutForm({ orderId, totalAmount }) {
 			elements,
 			confirmParams: {
 				// Make sure to change this to your payment completion page
-				return_url: `http://localhost:3000/order-details/${orderId}`,
+				return_url: `/order-details/${orderId}`,
 			},
 		});
 

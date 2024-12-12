@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { ThreeDots } from 'react-loader-spinner'
+import toast from 'react-hot-toast';
 
 import {
 	clearCartAsync,
@@ -14,11 +16,10 @@ import {
 import CartItem from './cartItem';
 import CartTotalStats from './cartTotalStats';
 import Modal from '../../../components/Modal';
-import { useEffect, useState } from 'react';
-
-import toast from 'react-hot-toast';
 
 import { resetCurrentOrder } from "../../order/orderSlice";
+
+import { getUserId } from '../../auth/utils/getUserId';
 
 
 export default function Cart() {
@@ -30,6 +31,8 @@ export default function Cart() {
 	const cartItemsStatus = useSelector(selectCartItemsStatus);
 
 	const dispatch = useDispatch();
+
+	const userId = getUserId();
 
 	const totalItems = items.length;
 	const totalPrice = items.reduce(
@@ -58,6 +61,7 @@ export default function Cart() {
 		return () => dispatch(resetCurrentOrder());
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
+
 
 
 	return (
@@ -116,13 +120,24 @@ export default function Cart() {
 							totalPrice={totalPrice}
 							totalDiscountPrice={totalDiscountPrice}
 						/>
-						<Link to='/checkout'>
-							<div className="mt-6 mx-auto max-w-[400px]">
-								<span className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">
-									Checkout
-								</span>
-							</div>
-						</Link>
+						{userId ? (
+							<Link to='/checkout'>
+								<div className="mt-6 mx-auto max-w-[400px]">
+									<span className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">
+										Checkout
+									</span>
+								</div>
+							</Link>
+						) : (
+							<button
+								onClick={() => {
+									toast.error('Please login to checkout')
+								}}
+								className="block mt-6 mx-auto w-full max-w-[400px] rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+							>
+								Checkout
+							</button>
+						)}
 						<div className="mt-6 flex justify-center text-center text-sm text-gray-500">
 							<p>
 								or{' '}
@@ -139,10 +154,12 @@ export default function Cart() {
 						</div>
 					</div>
 				</>}
-				{items.length === 0 && <h3 className="mt-20 text-xl font-semibold tracking-tight text-indigo-500 text-center">
-					Your cart is empty. Add items to cart to view them here
-				</h3>}
-			</div>
+				{
+					items.length === 0 && <h3 className="mt-20 text-xl font-semibold tracking-tight text-indigo-500 text-center">
+						Your cart is empty. Add items to cart to view them here
+					</h3>
+				}
+			</div >
 		)
 	);
 }

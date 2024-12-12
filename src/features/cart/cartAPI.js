@@ -31,6 +31,8 @@ export async function fetchItemsByUserId() {
 			credentials: 'include', // Include cookies in the request
 		});
 
+		console.log('response ', res);
+
 		if (!res.ok) { 
 			const errorData = await res.json();
 			throw new Error(errorData.message);

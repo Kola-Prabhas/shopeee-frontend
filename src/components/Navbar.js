@@ -17,6 +17,9 @@ import { useGetUserInfoQuery } from '../features/user/userQueryAPI';
 const navigation = [
 	{ name: 'Home', link: '/', user: true },
 	{ name: 'Orders', link: '/user-orders', user: true },
+	{ name: 'Login', link: '/login', user: true },
+	{ name: 'Sign Up', link: '/signup', user: true },
+
 	{ name: 'Home', link: '/', admin: true },
 	{ name: 'Orders', link: '/admin/orders', admin: true },
 
@@ -78,6 +81,12 @@ export default function Navbar({ children }) {
 									<div className="hidden md:block">
 										<div className="ml-10 flex items-baseline space-x-4">
 											{navigation.map((item) => {
+												if (item.link === '/login' && userId) {
+													return null;
+												} else if (item.link === '/signup' && userId) {
+													return null;
+												}
+
 												return item[userRole] && (
 													<Link
 														key={item.name}
@@ -192,20 +201,28 @@ export default function Navbar({ children }) {
 
 						<Disclosure.Panel className="md:hidden">
 							<div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-								{navigation.map((item) => (
-									<Disclosure.Button
-										key={item.name}
-										as="a"
-										href={item.href}
-										className={classNames(
-											item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-											'block rounded-md px-3 py-2 text-base font-medium'
-										)}
-										aria-current={item.current ? 'page' : undefined}
-									>
-										<Link to={item.link}>{item.name}</Link>
-									</Disclosure.Button>
-								))}
+								{navigation.map((item) => {
+									if (item.link === '/login' && userId) {
+										return null;
+									} else if (item.link === '/signup' && userId) {
+										return null;
+									}
+									
+									return (
+										item[userRole] && <Disclosure.Button
+											key={item.name}
+											as="a"
+											href={item.href}
+											className={classNames(
+												item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+												'block rounded-md px-3 py-2 text-base font-medium'
+											)}
+											aria-current={item.current ? 'page' : undefined}
+										>
+											<Link to={item.link}>{item.name}</Link>
+										</Disclosure.Button>
+									)
+								})}
 							</div>
 							<div className="border-t border-gray-700 pb-3 pt-4">
 								<div className="flex justify-between items-center px-2">

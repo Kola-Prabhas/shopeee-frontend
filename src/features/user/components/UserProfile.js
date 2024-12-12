@@ -20,7 +20,6 @@ import { useGetUserInfoQuery } from '../userQueryAPI';
 
 
 
-
 function UserProfile() {
 	const [editId, setEditId] = useState(null);
 	const [addAddress, setAddAddress] = useState(false);
@@ -107,7 +106,6 @@ function UserProfile() {
 				<div>
 					<h2 className="text-xl font-medium">{user?.name}</h2>
 					<h2 className="font-semibold text-gray-600">{user?.email}</h2>
-					<h2 className="font-semibold text-gray-600">{user?.phone}</h2>
 				</div>
 			</div>
 			<div className='max-w-[800px]'>

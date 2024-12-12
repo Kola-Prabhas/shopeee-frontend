@@ -5,17 +5,21 @@ import { createUserAsync, selectSignUpStatus } from "../authSlice";
 import { useDispatch, useSelector } from 'react-redux';
 
 import toast from "react-hot-toast";
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+
 
 const initialSignupDetails = {
+	name: '',
 	email: '',
+	phone: '',
 	password: '',
-	"confirm-password": ''
 }
 
 export default function SignUp() {
 	const [signupDetails, setSignupDetails] = useState(initialSignupDetails);
-	const [passwordError, setPasswordError] = useState(false);
 	const [emailError, setEmailError] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+
 
 	const navigate = useNavigate();
 
@@ -26,7 +30,6 @@ export default function SignUp() {
 		signupDetails.password === '' ||
 		signupDetails["confirm-password"] === '' ||
 		emailError ||
-		passwordError ||
 		signUpStatus === 'loading';
 
 
@@ -38,10 +41,10 @@ export default function SignUp() {
 
 		// Validate 
 		const emailError = validateEmail(e);
-		const passwordError = validatePassword(e);
+		// const passwordError = validatePassword(e);
 
 		setEmailError(emailError);
-		setPasswordError(passwordError);
+		// setPasswordError(passwordError);
 		setSignupDetails(newDetails);
 	}
 
@@ -57,27 +60,12 @@ export default function SignUp() {
 		return e.target.value.match(validEmail) == null;
 	}
 
-	function validatePassword(e) {
-		const id = e.target.id;
-
-		if (id !== 'password' && id !== 'confirm-password') {
-			return passwordError;
-		}
-
-		if (id === 'password' && signupDetails['confirm-password'] !== '') {
-			return e.target.value !== signupDetails['confirm-password'];
-		} else if (id === 'confirm-password' && signupDetails['password'] !== '') {
-			return e.target.value !== signupDetails['password'];
-		}
-
-		return false;
-	}
-
 
 	function handleSubmit(e) {
 		e.preventDefault();
 
 		dispatch(createUserAsync({
+			name: signupDetails.name,
 			email: signupDetails.email,
 			password: signupDetails.password,
 			addresses: [],
@@ -102,6 +90,10 @@ export default function SignUp() {
 			});
 	}
 
+	function toggleShowPassword() {
+		setShowPassword(!showPassword);
+	}
+
 
 
 	return (
@@ -121,6 +113,22 @@ export default function SignUp() {
 				<form className="space-y-6" onSubmit={handleSubmit}>
 					<div className="space-y-2">
 						<label htmlFor="email" className="block text-sm text-left font-medium leading-6 text-gray-900">
+							Name
+						</label>
+						<div className="space-y-1">
+							<input
+								id="name"
+								name="name"
+								type="text"
+								readOnly={signUpStatus === 'loading'}
+								value={signupDetails.name}
+								onChange={handleChange}
+								className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							/>
+						</div>
+					</div>
+					<div className="space-y-2">
+						<label htmlFor="email" className="block text-sm text-left font-medium leading-6 text-gray-900">
 							Email address
 						</label>
 						<div className="space-y-1">
@@ -137,7 +145,6 @@ export default function SignUp() {
 							<p className="text-red-500 italic text-sm font-semibold">{emailError && 'Invalid Email Address'}</p>
 						</div>
 					</div>
-
 					<div>
 						<div className="flex items-center justify-between">
 							<label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
@@ -145,20 +152,32 @@ export default function SignUp() {
 							</label>
 
 						</div>
-						<div className="mt-2">
+						<div className="relative mt-2">
 							<input
 								id="password"
 								name="password"
-								type="password"
+								type={showPassword ? 'text' : 'password'}
 								readOnly={signUpStatus === 'loading'}
 								autoComplete="current-password"
 								value={signupDetails.password}
 								onChange={handleChange}
-								className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+								className="block w-full rounded-md border-0 pr-10 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 							/>
+							{showPassword ? (
+								<EyeSlashIcon
+									onClick={toggleShowPassword}
+									className='size-6 absolute right-2 top-[6px] text-gray-500 cursor-pointer'
+								/>
+
+							) : (
+								<EyeIcon
+									onClick={toggleShowPassword}
+									className='size-6 absolute right-2 top-[6px] text-gray-500 cursor-pointer'
+								/>
+							)}
 						</div>
 					</div>
-					<div className="space-y-2">
+					{/* <div className="space-y-2">
 						<div className="flex items-center justify-between">
 							<label htmlFor="confirm-password" className="block text-sm font-medium leading-6 text-gray-900">
 								Confirm Password
@@ -178,7 +197,7 @@ export default function SignUp() {
 							/>
 							<p className="text-red-500 italic text-sm font-semibold">{passwordError && "Passwords aren't matching"}</p>
 						</div>
-					</div>
+					</div> */}
 
 					<div>
 						<button

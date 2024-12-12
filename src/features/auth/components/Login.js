@@ -1,9 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ThreeDots } from 'react-loader-spinner'
 import { loginUserAsync, selectLoginStatus } from "../authSlice";
 
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 import toast from "react-hot-toast";
 
@@ -17,6 +18,7 @@ const initialLoginDetails = {
 export default function Login() {
 	const [loginDetails, setLoginDetails] = useState(initialLoginDetails);
 	const [emailError, setEmailError] = useState(false); // used to check whether the email is valid or not
+	const [showPassword, setShowPassword] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -25,7 +27,7 @@ export default function Login() {
 
 	const disabled = loginDetails.email === '' ||
 		loginDetails.password === '' ||
-		emailError || 
+		emailError ||
 		loginStatus === 'loading';
 
 
@@ -51,6 +53,10 @@ export default function Login() {
 		return e.target.value.match(validEmail) == null;
 	}
 
+	function toggleShowPassword() {
+		setShowPassword(!showPassword);
+	}
+
 
 	function handleSubmit(e) {
 		e.preventDefault();
@@ -65,7 +71,7 @@ export default function Login() {
 				sessionStorage.setItem('user', JSON.stringify(user));
 
 				if (redirectUrl) {
-					navigate(redirectUrl, {replace: true})
+					navigate(redirectUrl, { replace: true })
 				}
 			})
 			.catch((error) => {
@@ -120,22 +126,34 @@ export default function Login() {
 								</Link>
 							</div>
 						</div>
-						<div className="my-2">
+						<div className="relative my-2">
 							<input
 								id="password"
 								name="password"
-								type="password"
+								type={showPassword ? 'text' : 'password'}
 								readOnly={loginStatus === 'loading'}
 								autoComplete="current-password"
 								value={loginDetails.password}
 								onChange={handleChange}
-								className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+								className="block w-full rounded-md border-0 pr-10 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 							/>
+							{showPassword ? (
+								<EyeSlashIcon
+									onClick={toggleShowPassword}
+									className='size-6 absolute right-2 top-[6px] text-gray-500 cursor-pointer'
+								/>
+
+							) : (
+								<EyeIcon
+									onClick={toggleShowPassword}
+									className='size-6 absolute right-2 top-[6px] text-gray-500 cursor-pointer'
+								/>
+							)}
 						</div>
 					</div>
 
 					<div>
-						<button
+						<button4
 							type="submit"
 							className={`${disabled ? 'bg-gray-200 text-gray-800 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-500 cursor-pointer'} flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6  shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
 							disabled={disabled}
@@ -154,7 +172,7 @@ export default function Login() {
 							) : (
 								'Sign in'
 							)}
-						</button>
+						</button4>
 					</div>
 				</form>
 

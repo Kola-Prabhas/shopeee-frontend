@@ -20,6 +20,7 @@ import {
 } from '../../cart/cartSlice';
 
 import { getUserRole } from '../../auth/utils/getUserRole';
+import { getUserId } from '../../auth/utils/getUserId';
 import CartQuantityChange from '../../cart/components/cartItemQuantityChange';
 
 import toast from 'react-hot-toast';
@@ -35,6 +36,7 @@ export default function ProductDetails() {
 	const [open, setOpen] = useState(false);
 
 	const userRole = getUserRole();
+	const userId = getUserId();
 
 	const product = useSelector(selectProductById);
 	const productStatus = useSelector(selectProductStatus);
@@ -64,6 +66,13 @@ export default function ProductDetails() {
 
 	function handleCartClick(e, product) {
 		e.preventDefault();
+
+
+		if (!userId) {
+			toast.error('Please login to add item to cart!');
+			
+			return;
+		}
 
 		if (!itemInCart) {
 			dispatch(addToCartAsync({

@@ -23,8 +23,6 @@ import ProductDetailsPage from './pages/ProductDetailPage';
 
 
 import AdminProductDetailPage from './pages/AdminProductDetailPage';
-
-// import LoginProtected from './features/auth/components/LoginProtected';
 import AdminProtected from './features/admin/components/AdminProtected';
 
 

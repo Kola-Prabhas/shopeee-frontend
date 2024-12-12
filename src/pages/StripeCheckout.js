@@ -24,10 +24,6 @@ export default function StripeCheckout() {
 	const totalAmount = location.state.totalPrice;
 	const orderId = location.state.orderId;
 
-	console.log('total amount ', totalAmount);
-	console.log('order id ', orderId);
-
-
 	useEffect(() => {
 		setClientSecretLoading(true);
 		// Create PaymentIntent as soon as the page loads
@@ -74,7 +70,10 @@ export default function StripeCheckout() {
 			)}
 			{clientSecret && !clientSecretLoading && (
 				<Elements options={options} stripe={stripePromise}>
-					<CheckoutForm orderId={orderId} />
+					<CheckoutForm
+						orderId={orderId}
+						totalAmount={totalAmount}
+					/>
 				</Elements>
 			)}
 		</div>

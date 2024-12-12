@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { updateOrderAsync } from "../features/order/orderSlice";
 
 
-export default function CheckoutForm({orderId}) {
+export default function CheckoutForm({ orderId, totalAmount }) {
 	const stripe = useStripe();
 	const elements = useElements();
 
@@ -50,8 +50,8 @@ export default function CheckoutForm({orderId}) {
 		});
 	}, [stripe]);
 
-	
-	
+
+
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -80,12 +80,12 @@ export default function CheckoutForm({orderId}) {
 		// your `return_url`. For some payment methods like iDEAL, your customer will
 		// be redirected to an intermediate site first to authorize the payment, then
 		// redirected to the `return_url`.
-		
+
 		if (error.type === "card_error" || error.type === "validation_error") {
 			setMessage(error.message);
 		} else {
 			setMessage("An unexpected error occurred.");
-		} 
+		}
 
 		setIsLoading(false);
 	};
@@ -95,15 +95,21 @@ export default function CheckoutForm({orderId}) {
 	}
 
 	return (
-		<form id="payment-form" onSubmit={handleSubmit}>
-			<PaymentElement id="payment-element" options={paymentElementOptions} />
-			<button disabled={isLoading || !stripe || !elements} id="submit">
-				<span id="button-text">
-					{isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
-				</span>
-			</button>
-			{/* Show any error or success messages */}
-			{message && <div id="payment-message">{message}</div>}
-		</form>
+		<>
+			<form id="payment-form" onSubmit={handleSubmit}>
+				<h1 className='flex items-center justify-center gap-1 font-semibold mb-4 -mt-4'>
+					<p>Total Amount: </p>
+					<span className='text-gray-400 sm:text-lg'>${totalAmount}</span>
+				</h1>
+				<PaymentElement id="payment-element" options={paymentElementOptions} />
+				<button disabled={isLoading || !stripe || !elements} id="submit">
+					<span id="button-text">
+						{isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+					</span>
+				</button>
+				{/* Show any error or success messages */}
+				{message && <div id="payment-message">{message}</div>}
+			</form>
+		</>
 	);
 }

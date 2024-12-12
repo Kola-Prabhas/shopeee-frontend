@@ -15,8 +15,6 @@ export function fetchUserInfo() {
 
 
 export async function updateUser(user) {
-	console.log('user ', user);
-
 	try {
 		const res = await fetch(baseUrl + '/user/' + user.id, {
 			method: 'PATCH',
@@ -34,8 +32,6 @@ export async function updateUser(user) {
 		}
 
 		const data = await res.json();
-
-		console.log('data ', data);
 
 		return { data };
 	} catch (e) {

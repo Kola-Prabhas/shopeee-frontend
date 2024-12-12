@@ -93,8 +93,6 @@ export default function Checkout() {
 			dispatch(createOrderAsync(order))
 				.unwrap()
 				.catch(e => {
-					console.log('error ', e);
-
 					toast.error(e || 'Failed to create order');
 				});
 		} else {

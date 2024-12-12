@@ -22,7 +22,6 @@ export default function UserOrders() {
 
 	useEffect(() => {
 		if (!orders || orders?.length === 0) {
-			console.log('ordersStatus ', ordersStatus);
 			const sortOptions = {
 				'_sort': 'createdAt',
 				'_order': 'desc'
@@ -31,7 +30,6 @@ export default function UserOrders() {
 			dispatch(fetchUserOrdersAsync({ userId, sortOptions }))
 				.unwrap()
 				.catch(err => {
-					console.log('error ', err);
 					toast.error(err || 'Failed to fetch user orders');
 				})
 		}

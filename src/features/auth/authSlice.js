@@ -51,7 +51,6 @@ export const resetPasswordRequestAsync = createAsyncThunk(
 
 			return response.data;
 		} catch (error) {
-			console.log('err.message ', error.message);
 			return rejectWithValue(error.message)			
 		}
 	}

@@ -42,7 +42,6 @@ export async function addUserAddress(address) {
 
 		return data.data;
 	} catch (e) {
-		console.log('error ', e);
 		throw e;
 	}
 }
@@ -68,7 +67,6 @@ export async function deleteUserAddress(id) {
 }
 
 export async function updateUserAddress(id, address) {
-	console.log('address ', address);
 	try {
 		const res = await fetch(baseUrl + '/address/' + id, {
 			method: 'PUT',
@@ -81,7 +79,6 @@ export async function updateUserAddress(id, address) {
 
 		if (!res.ok) {
 			const errorData = await res.json();
-			console.log('errorData ', errorData);
 			throw new Error(errorData.message);
 		}
 
@@ -89,7 +86,6 @@ export async function updateUserAddress(id, address) {
 
 		return data.data;
 	} catch (e) {
-		console.log('error ', e);
 		throw e;
 	}
 }

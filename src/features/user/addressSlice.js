@@ -52,7 +52,6 @@ export const updateUserAddressAsync = createAsyncThunk(
 
 			return response.address;
 		} catch (error) {
-			console.log('error ', error);
 			return rejectWithValue(error.message);
 		}
 	}
@@ -123,7 +122,6 @@ const addressSlice = createSlice({
 				const updateAddressIndex = state.updatingAddresses.indexOf(addressId);
 
 				state.addresses = state.addresses.map(address => {
-					console.log('address ', current(address));
 					if (address.id === addressId) {
 						return action.payload;
 					}

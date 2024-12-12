@@ -11,7 +11,6 @@ export async function fetchCategories() {
 		return { data }
 
 	} catch (error) {
-		console.log(error);
 		throw error
 	}
 }

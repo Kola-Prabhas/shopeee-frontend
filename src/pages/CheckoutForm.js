@@ -70,7 +70,7 @@ export default function CheckoutForm({ orderId, totalAmount }) {
 			elements,
 			confirmParams: {
 				// Make sure to change this to your payment completion page
-				return_url: `/order-details/${orderId}`,
+				return_url: `https://swiftstore-ten.vercel.app/order-details/${orderId}`,
 			},
 		});
 
@@ -84,6 +84,7 @@ export default function CheckoutForm({ orderId, totalAmount }) {
 		if (error.type === "card_error" || error.type === "validation_error") {
 			setMessage(error.message);
 		} else {
+			console.log('error ', error);
 			setMessage("An unexpected error occurred.");
 		}
 

@@ -4,7 +4,7 @@ import {
 	selectProductStatus,
 	selectAddProductStatus,
 } from '../../product/productSlice';
-import { productApi } from '../../product/productQueryAPI';
+import { productApi } from '../../product/productQueryApi';
 import { fetchCategoriesAsync, selectAllCategories } from '../../product/categorySlice';
 import { fetchBrandsAsync, selectAllBrands } from '../../product/brandSlice';
 import { useDispatch, useSelector } from 'react-redux';

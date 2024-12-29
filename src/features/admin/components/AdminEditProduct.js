@@ -7,7 +7,7 @@ import {
 } from '../../product/productSlice';
 import { fetchCategoriesAsync, selectAllCategories } from '../../product/categorySlice';
 import { fetchBrandsAsync, selectAllBrands } from '../../product/brandSlice';
-import { productApi } from '../../product/productQueryAPI';
+import { productApi } from '../../product/productQueryApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';

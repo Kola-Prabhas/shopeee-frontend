@@ -19,7 +19,7 @@ import {
 	fetchUserAddressesAsync
 } from "../../user/addressSlice";
 
-import { useGetUserInfoQuery } from '../../user/userQueryAPI';
+import { useGetUserInfoQuery } from '../../user/userQueryApi';
 
 import { ThreeDots } from 'react-loader-spinner'
 

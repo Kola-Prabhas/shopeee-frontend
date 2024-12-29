@@ -16,7 +16,7 @@ import UserAddress from "./UserAddress";
 import { ThreeDots } from 'react-loader-spinner';
 import toast from "react-hot-toast";
 
-import { useGetUserInfoQuery } from '../userQueryAPI';
+import { useGetUserInfoQuery } from '../userQueryApi';
 
 
 

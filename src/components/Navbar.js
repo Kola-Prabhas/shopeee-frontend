@@ -11,7 +11,7 @@ import { getUserId } from '../features/auth/utils/getUserId';
 import { getUserRole } from '../features/auth/utils/getUserRole';
 
 import toast from 'react-hot-toast';
-import { useGetUserInfoQuery } from '../features/user/userQueryAPI';
+import { useGetUserInfoQuery } from '../features/user/userQueryApi';
 
 // Links in the navbar
 const navigation = [

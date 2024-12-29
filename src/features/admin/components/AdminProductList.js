@@ -15,7 +15,7 @@ import {
 } from '../../product/brandSlice';
 
 
-import { useFetchProductsByFilterQuery } from '../../product/productQueryAPI';
+import { useFetchProductsByFilterQuery } from '../../product/productQueryApi';
 
 
 import AdminProductGrid from './AdminProductGrid';

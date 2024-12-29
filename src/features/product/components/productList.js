@@ -15,7 +15,7 @@ import {
 	selectAllBrands,
 } from '../brandSlice';
 
-import { useFetchProductsByFilterQuery } from '../../product/productQueryAPI';
+import { useFetchProductsByFilterQuery } from '../../product/productQueryApi';
 
 
 import ProductGrid from './productGrid';

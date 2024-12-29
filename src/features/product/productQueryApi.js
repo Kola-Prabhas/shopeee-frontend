@@ -65,4 +65,4 @@ export const productApi = createApi({
 })
 
 
-export const {useFetchProductsByFilterQuery } = productApi;
+export const { useFetchProductsByFilterQuery } = productApi;

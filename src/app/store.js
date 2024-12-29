@@ -8,7 +8,7 @@ import orderReducer from '../features/order/orderSlice';
 import userReducer from '../features/user/userSlice';
 import addressReducer from '../features/user/addressSlice';
 
-import { productApi } from '../features/product/productQueryAPI';
+import { productApi } from '../features/product/productQueryAPI.js';
 import { userApi } from '../features/user/userQueryAPI';
 
 

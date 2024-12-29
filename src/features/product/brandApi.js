@@ -1,8 +1,6 @@
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export async function fetchBrands() {
-	console.log('baseurl ', baseUrl);
-
 	try {
 		const res = await fetch(baseUrl + '/brands', {
 			credentials: 'include', // Include cookies in the request

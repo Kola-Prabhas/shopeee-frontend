@@ -8,12 +8,12 @@ import {
 import { useDispatch } from "react-redux";
 import { updateOrderAsync } from "../features/order/orderSlice";
 
-const baseUrl = process.env.REACT_APP_BACKEND_URL;
-
 
 export default function CheckoutForm({ orderId, totalAmount }) {
 	const stripe = useStripe();
 	const elements = useElements();
+
+	const baseUrl = window.location.origin;
 
 	const [message, setMessage] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
@@ -72,7 +72,8 @@ export default function CheckoutForm({ orderId, totalAmount }) {
 			elements,
 			confirmParams: {
 				// Make sure to change this to your payment completion page
-				return_url: baseUrl +`/${orderId}`,
+				// return_url: baseUrl + `/${orderId}`,
+				return_url: `${baseUrl}/order-details/${orderId}`,
 			},
 		});
 

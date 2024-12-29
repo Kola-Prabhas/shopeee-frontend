@@ -217,7 +217,7 @@ export default function SignUp() {
 									wrapperClass=""
 								/>
 							) : (
-								'Sign in'
+								'Sign Up'
 							)}
 						</button>
 					</div>

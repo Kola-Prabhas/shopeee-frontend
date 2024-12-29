@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const baseUrl = process.env.REACT_APP_BASE_URL + '/orders';
+const baseUrl = process.env.REACT_APP_BACKEND_URL + '/orders';
 
 export const orderApi = createApi({
 	reducerPath: 'orderApi',

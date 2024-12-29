@@ -9,7 +9,7 @@ import "../Stripe.css";
 import { ThreeDots } from 'react-loader-spinner';
 
 
-const baseUrl = process.env.REACT_APP_BASE_URL;
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.

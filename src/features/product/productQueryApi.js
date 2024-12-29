@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // import { fetchProductsByFilter } from './productAPI';
 
 
-const baseUrl = process.env.REACT_APP_BASE_URL + '/products';
+const baseUrl = process.env.REACT_APP_BACKEND_URL + '/products';
 
 
 export const productApi = createApi({

@@ -6,6 +6,10 @@ Welcome to [`Swiftstore`](https://swiftstore-rose.vercel.app), an e-commerce pla
 - **Sorting & Filtering Items**: Easily find products that match your preferences.
 - **Adding Items to Cart**: Keep track of desired products and manage your cart effortlessly.
 - **Secure Payments**: Checkout using Stripe for a smooth and secure transaction experience.
+- **User Authentication**: Login and signup functionalities to personalize the shopping experience.
+- **Manage Addresses**: Users can securely add, update, and manage their delivery addresses.
+- **Password Reset**: Reset password securely via a link sent to the user's registered email.
+- **Order Notifications**: Receive an email confirmation when an order is successfully placed.
 
 ---
 
@@ -58,4 +62,8 @@ npm start
 The application will be available at `http://localhost:3000`.
 
 ---
+
+
+
+
 
